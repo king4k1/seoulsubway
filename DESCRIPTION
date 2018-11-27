@@ -9,7 +9,8 @@ Description: Finding shortest path for subway in Seoul
     also you can get a station list in shortest path.
 Depends:
   R (>= 3.4.4),
-  tidyverse,
+  dplyr,
+  stringr,
   ggplot2,
   Rcpp,
   ggmap
