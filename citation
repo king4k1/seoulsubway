@@ -1,0 +1,13 @@
+데이터 :
+1> 공공데이터포털 "서울시 역코드로 지하철역 위치 조회“
+미개통 3개역(마전(무정차), 탕정, 풍기) 제외(2018.11.20. 기준)
+
+2> 환승역, 환승거리 및 소요시간 정보(서울교통공사 17.10 기준)
+미입력 환승정보의 경우 평균 환승시간 3분 입력.
+
+인용 
+1> Haversine 함수. 
+Sinnott, R.W, "Virtues of the Haversine", Sky and Telescope, Vol. 68, Issue 2, pp.158, 1984. 
+2> 지하철의 평균표정속도는 34km이다.
+정은혜.서울 지하철...“1호선이 가장 느리다.” 
+https://www.insight.co.kr/newsRead.php?ArtNo=54171
