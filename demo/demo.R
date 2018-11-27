@@ -15,33 +15,24 @@ Seoulsubway는 서울 지하철에 대한 정보를 포함하고 있는 패키�
 
 ### How to Install
 #devtools::install_github("king4k1/seoulsubway")
-```{r}
 library(seoulsubway)
-```
 
 ### sample data for utilize.
-```{r}
 data("subway_sample")
 head(subway_sample)
-```
 
 ### Get shortestpath information.
 
 * Need first setting for get infor(any case)
-```{r}
+
 depart = "먹골"
 depart_line = "7"
 arrival = "혜화"
 arrival_line = "4"
-```
 
 
 ### "먹골" -> "혜화"
-```{r}
 shortestpath(depart = "먹골", depart_line = "7", arrival = "혜화", arrival_line = "4")
-```
 
 ### "태릉입구" -> "잠실"
-```{r}
 shortestpath(depart = "태릉입구", depart_line = "6", arrival = "잠실", arrival_line = "2")
-```
