@@ -11,10 +11,8 @@ Depends:
   R (>= 3.4.4),
   dplyr,
   stringr,
-  ggplot2,
   Rcpp,
-  Rcmdr,
   ggmap
 
-imports: subinjo92/nkmap
+remotes: subinjo92/nkmap
 
