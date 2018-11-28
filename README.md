@@ -30,6 +30,7 @@ data("subway_sample")
 
 head(subway_sample)
 ```
+![](tools/head.png)
 
 
 ### 시간대 별 역 하차객수 확인 
@@ -42,6 +43,7 @@ subway_count <- filter(subway_count, down_Name%in%c("강남","혜화","시청", 
 
 ggplot(subway_count, aes(x=Time, y=N, col=down_Name)) + geom_line(position = 'jitter') +  theme(legend.position="bottom")
 ```
+![](tools/Rplot1.png)
 
 
 ## shortestpath
@@ -55,6 +57,7 @@ shortestpath 함수는 지하철 최단거리를 제공합니다.
 ```r
 shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4",)
 ```
+![](tools/path1.png)
 
 
 ```r
@@ -63,15 +66,19 @@ pathplot(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4
          naver_secret ='uP1fgrNQID', naver_key='YvhIigePOgOCr1rKLcyT', 
          kakao_key ='bd0f02bafa236ced3eebb2d12845a306', zoom=8)
 ```
+![](tools/Rplot2.png)
 
 
 ### ex2. 보문(6) -> 서울(4)
 ```r
 shortestpath(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4")
 ```
+![](tools/path2.png)
 
 ```r
 pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4",
          naver_secret ='uP1fgrNQID', naver_key='YvhIigePOgOCr1rKLcyT', 
          kakao_key ='bd0f02bafa236ced3eebb2d12845a306', zoom=8)
 ```
+![](tools/Rplot3.png)
+

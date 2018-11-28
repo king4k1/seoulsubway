@@ -1,0 +1,19 @@
+﻿https://github.com/king4k1 링크 내  Seoulsubway repository에 패키지 구성해두었습니다. 
+패키지명은 Seoulsubway이며, 내부 최단거리 함수는 shortestpath()로 이름 지었습니다. 
+추가로 랜덤하게 demo를 위하여 subway_sample이라는 5000건의 경로 데이터를 생성하였습니다.  
+
+기존 방식이 모든 경로를 산출하여 비교하는 방식이여서 함수 산출에 있어서 속도가 좀 느려서.
+get_transfercriteria라는 함수를 통해 위경도를 기준으로 공간을 나누고 
+이 내부에 속하는 환승역의 경우만 고려해주는 방식으로 구성하였습니다.
+이때, 0.05정도로 약간의 위경도 패널티를 주어 우회하는 경로의 경우를 고려하였습니다. 
+
+추가로 tryCatch()를 이용하여 반복문을 통한 데이터 생성시 
+문제가 생기는 경우를 해소하였습니다.
+
+data : subway_data(21개노선의 리스트형태), subway_sample(5000건의 경로데이터),
+        transfer_info(환승소요시간에 대한 정보), transfer_station(모든 환승가능역의 대한 정보)
+
+추가 함수 : 
+get_pathinfo(하나의 노선 내에서 두 역 사이 소요시간 및 역수),
+get_transfercriteria(출/도착역 위경도를 기준으로 공간 나누어 환승가능한 역 산출)
+get_transferinfo(출/도착역에 대한 환승가능경우 산출)	 
