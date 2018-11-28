@@ -14,7 +14,7 @@ pathplot <- function(depart, depart_line, arrival, arrival_line, naver_secret, n
     g <- ggmap(get_kakao_navermap(center = c(lon = meanY, lat = meanX), 
                                   zoom = zoom, naver_key = "YvhIigePOgOCr1rKLcyT", url_2 = "http://naver.com", 
                                   keyword = F, address = F, kakao_key = "bd0f02bafa236ced3eebb2d12845a306", 
-                                  naver_secret = "uP1fgrNQID", baselayer = "satellite"))
+                                  naver_secret = "uP1fgrNQID", overlayers = "anno_satellite"))
     g2 <- g + geom_point(data = Path, aes(x = long, y = lat, col = Line)) + 
       geom_path(data = Path, aes(x = long, y = lat, col = Line)) + 
       scale_colour_manual(values = c("red"))
@@ -29,7 +29,7 @@ pathplot <- function(depart, depart_line, arrival, arrival_line, naver_secret, n
     g <- ggmap(get_kakao_navermap(center = c(lon = meanY, lat = meanX), 
                                   zoom = zoom, naver_key = "YvhIigePOgOCr1rKLcyT", url_2 = "http://naver.com", 
                                   keyword = F, address = F, kakao_key = "bd0f02bafa236ced3eebb2d12845a306", 
-                                  naver_secret = "uP1fgrNQID", baselayer = "satellite"))
+                                  naver_secret = "uP1fgrNQID", overlayers = "anno_satellite"))    
     g2 <- g + geom_point(data = Path, aes(x = long, y = lat, col = Line)) + 
       geom_path(data = Path, aes(x = long, y = lat, col = Line)) + 
       scale_colour_manual(values = c("red", "green"))
@@ -44,7 +44,7 @@ pathplot <- function(depart, depart_line, arrival, arrival_line, naver_secret, n
     g <- ggmap(get_kakao_navermap(center = c(lon = meanY, lat = meanX), 
                                   zoom = zoom, naver_key = "YvhIigePOgOCr1rKLcyT", url_2 = "http://naver.com", 
                                   keyword = F, address = F, kakao_key = "bd0f02bafa236ced3eebb2d12845a306", 
-                                  naver_secret = "uP1fgrNQID", baselayer = "satellite"))
+                                  naver_secret = "uP1fgrNQID", overlayers = "anno_satellite"))    
     g2 <- g + geom_point(data = Path, aes(x = long, y = lat, col = Line)) + 
       geom_path(data = Path, aes(x = long, y = lat, col = Line)) + 
       scale_color_manual(values = c("red", "blue", "green"))
