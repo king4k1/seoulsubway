@@ -24,7 +24,7 @@ devtools::install_github("king4k1/seoulsubway")
 
 경로에는 1-8호선의 데이터만 고려합니다.
 
-```
+```r
 library(seoulsubway)
 data("subway_sample")
 
@@ -34,7 +34,7 @@ head(subway_sample)
 
 ### 시간대 별 역 하차객수 확인 
 
-```
+```r
 subway_count <- subway_sample %>% group_by(Time, down_Name) %>% summarise(N=n())
 
 # 4개의 역에 대한 결과 (예시)
@@ -52,12 +52,12 @@ shortestpath 함수는 지하철 최단거리를 제공합니다.
 
 
 ### ex1. 먹골(7) -> 혜화(4)
-```
+```r
 shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4")
 ```
 
 ### ex2. 먹골(7) -> 혜화(4)
-```
+```r
 shortestpath(depart="태릉입구", depart_line="7", arrival = "응암", arrival_line = "6")
 ```
 
