@@ -13,7 +13,8 @@ Depends:
   stringr,
   ggplot2,
   Rcpp,
+  Rcmdr,
   ggmap
 
-remotes: subinjo92/nkmap
+imports: subinjo92/nkmap
 
