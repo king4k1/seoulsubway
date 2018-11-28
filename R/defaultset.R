@@ -1,4 +1,4 @@
-depart <- iconv("먹골",from="cp949",to="euc-KR")
+depart <- "0"
 depart_line <- "7"
-arrival <- iconv("태릉입구",from="cp949",to="euc-KR")
+arrival <- "0"
 arrival_line <- "4"
