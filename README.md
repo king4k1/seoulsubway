@@ -28,10 +28,11 @@ devtools::install_github("king4k1/seoulsubway")
 ```r
 library(seoulsubway)
 data("subway_sample")
-head(subway_sample)
+
+head(subway_sample, 25)
 ```
 
-![](tools/head.png)
+![](tools/head222.png)
 
 ### 시간대 별 역 하차객수 확인 
 
