@@ -31,11 +31,17 @@ data("subway_sample")
 head(subway_sample)
 ```
    ID up_Line  up_Name down_Line down_Name Time Count
+   
 1 ID1       7     중계         2      방배    9     1
+
 2 ID2       2 홍대입구         2      잠실   11     1
+
 3 ID3       2   왕십리         2  잠실나루   10     1
+
 4 ID4       6     합정         6    이태원   10     1
+
 5 ID5       5     행당         1      서울    8     1
+
 6 ID6       2     선릉         7      하계   10     1
 
 
