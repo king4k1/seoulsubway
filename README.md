@@ -4,6 +4,7 @@
 
 이 패키지 내에는 서울 지하철에 대한 정보와 최단거리 함수 그리고 지도상의 표현이 가능한 함수가 포함되어 있습니다.
 
+<hr>
 
 ### _Install!_ 
 
@@ -27,9 +28,9 @@ devtools::install_github("king4k1/seoulsubway")
 ```r
 library(seoulsubway)
 data("subway_sample")
-
 head(subway_sample)
 ```
+
 ![](tools/head.png)
 
 ### 시간대 별 역 하차객수 확인 
@@ -44,6 +45,7 @@ ggplot(subway_count, aes(x=Time, y=N, col=down_Name)) + geom_line(position = 'ji
 ```
 ![](tools/Rplot1.png)
 
+<hr>
 
 ## shortestpath
 
