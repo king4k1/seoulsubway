@@ -73,15 +73,6 @@ pathplot(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4
 
 ### ex2. 보문(6) -> 서울(4)
 ```r
-shortestpath(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4")
-
-```
-
-![](tools/path2.png)
-
-
-
-```r
 pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4",
          naver_secret ='uP1fgrNQID', naver_key='YvhIigePOgOCr1rKLcyT', 
          kakao_key ='bd0f02bafa236ced3eebb2d12845a306', zoom=8)
