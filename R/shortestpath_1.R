@@ -39,7 +39,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
     if (nrow(Transfer_Time) >= 1) {
       Transfer_Time <- as.numeric(Transfer_Time$Transfer_Time)
     } else {
-      Transfer_Time <- 3
+      Transfer_Time <- 2.35
     }
     Transfer_1[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_list[i, 
                                                                                "Name"]), Line = c(depart_line, arrival_line), Count = c(as.character(Path1_Count), 

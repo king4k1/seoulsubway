@@ -77,13 +77,13 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
       if (nrow(Transfer_Time1) >= 1) {
         Transfer_Time1 <- as.numeric(Transfer_Time1$Transfer_Time)
       } else {
-        Transfer_Time1 <- 3
+        Transfer_Time1 <- 2.35
       }
       # if no results about transfer_info data -> print 3(mean transfer time)
       if (nrow(Transfer_Time2) >= 1) {
         Transfer_Time2 <- as.numeric(Transfer_Time2$Transfer_Time)
       } else {
-        Transfer_Time2 <- 3
+        Transfer_Time2 <- 2.35
       }
       Transfer_2[[paste0(i, "-", j)]] <- list(Info = data.frame(Depart = c(depart, Transfer_First$Name, Transfer_Second[j, "Name"]),
                                                                 Line = c(depart_line, Transfer_Line, arrival_line), 
