@@ -76,7 +76,7 @@ pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4
          kakao_key =kakao_key, zoom=8)
 ```
 ![](tools/Rplot3.png)
-### ex2. 보문(6) -> 서울(1)
+### ex3. 보문(6) -> 서울(1)
 ```r
 pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1",
          naver_secret =naver_secret, naver_key=naver_key, 
