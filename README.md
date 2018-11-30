@@ -53,7 +53,7 @@ shortestpath 함수는 지하철 최단거리를 제공합니다.
 
 ### ex1. 먹골(7) -> 혜화(4)
 ```r
-shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4",)
+shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4")
 ```
 
 ![](tools/path1.png)
@@ -76,4 +76,11 @@ pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4
          kakao_key =kakao_key, zoom=8)
 ```
 ![](tools/Rplot3.png)
+### ex2. 보문(6) -> 서울(1)
+```r
+pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1",
+         naver_secret =naver_secret, naver_key=naver_key, 
+         kakao_key =kakao_key, zoom=8)
+```
+![](tools/Rplot6BS.png)
 

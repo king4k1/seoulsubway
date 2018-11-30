@@ -14,5 +14,5 @@ Depends:
   Rcpp,
   ggmap
 
-remotes: subinjo92/nkmap
+Suggests: subinjo92/nkmap
 

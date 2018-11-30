@@ -48,6 +48,7 @@ pathplot <- function(depart, depart_line, arrival, arrival_line, naver_secret, n
     g2 <- g + geom_point(data = Path, aes(x = long, y = lat, col = Line)) + 
       geom_path(data = Path, aes(x = long, y = lat, col = Line)) + 
       scale_color_manual(values = c("red", "blue", "green"))
+    
   }
   return(g2)
 }
