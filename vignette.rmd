@@ -1,0 +1,130 @@
+---
+title: "Introduction to seoulsubway"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to seoulsubway}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+library(seoulsubway)
+```
+
+This document introduces you to seoulsubway's basic set of tools, and shows you how to apply them to sample data("subway_sample").
+
+
+## Data: subway_sample
+
+```{r}
+data("subway_sample")
+dim(subway_sample)
+head(subway_sample)
+```
+Note that `subway_sample` is a data.table and data.frame. It contains 5000 obs(path sample) and 7 variables. 
+
+Seven variables include riding station, riding line, getting off station, getting off line, time, and number of passengers.
+
+## Introduction to functions.
+
+* `shortestpath()` will give you information about the shortest path to the subway.
+
+* `shortestpath_0()` will give you information about the shortest path to the subway when you don't transfer.
+
+* `shortestpath_1()` will give you information about the shortest path to the subway when you do transfer only one time.
+
+* `shortestpath_2()` will give you information about the shortest path to the subway when you do transfer only two time.
+
+* `pathplot()` will give you map which include shortestpath informataion. 
+
+
+## Find path for sample data
+
+### Find shortestpath for zero transfer count
+
+when you input arrival_line == depart_line path route.
+
+`shortestpath_0` will give you information about the shortest path to the subway when you don't transfer. also It considered circulate line #2
+
+```{r}
+samplepath <- subway_sample[which(subway_sample$ID=="ID124"),]
+samplepath
+shortestpath_0(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+             arrival = samplepath$down_Name, arrival_line = samplepath$down_Line)
+```
+
+### Find shortestpath for one transfer count
+
+`shortestpath_1` will give you information about the shortest path to the subway when you do only one transfer. 
+
+```{r}
+samplepath <- subway_sample[which(subway_sample$ID=="ID142"),]
+samplepath
+shortestpath_1(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+             arrival = samplepath$down_Name, arrival_line = samplepath$down_Line)
+```
+
+
+### Find shortestpath for two transfer count
+
+`shortestpath_2` will give you information about the shortest path to the subway when you do two transfer.
+
+```{r}
+samplepath <- subway_sample[which(subway_sample$ID=="ID10"),]
+samplepath
+shortestpath_2(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+             arrival = samplepath$down_Name, arrival_line = samplepath$down_Line)
+```
+
+
+### Find shortestpath in all case(transfer count : 0,1,2)
+
+`shortestpath` will give you information about the shortest path to the subway in all case. 
+we can compare these result with shortestpath_2 above.
+
+when we input same path in `shortestpath_2()` and `shortestpath()`, but `shortestpath()` in all case get another path.
+
+because `shortestpath()` will give you totally selected path from another three.
+
+```{r}
+shortestpath(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+             arrival = samplepath$down_Name, arrival_line = samplepath$down_Line)
+```
+
+
+### plot map which includes shortestpath info.
+
+`pathplot` will give you a map which includes shortestpath information.
+
+It depends on 'nkmap' packages. i suggest to install nkmap in ["subinjo92"](https://github.com/subinjo92/nkmap) 's github.
+
+```{r, message=FALSE}
+library(nkmap)
+
+samplepath <- subway_sample[which(subway_sample$ID=="ID15"),]
+samplepath
+
+pathplot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+             arrival = samplepath$down_Name, arrival_line = samplepath$down_Line, naver_secret, naver_key, kakao_key, zoom =8)
+
+samplepath <- subway_sample[which(subway_sample$ID=="ID30"),]
+samplepath
+
+pathplot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+             arrival = samplepath$down_Name, arrival_line = samplepath$down_Line, naver_secret, naver_key, kakao_key, zoom =7)
+```
+
+
+## Introduction to sub-functions.
+
+* `checkline()` will give you accurate transfer path.
+
+* `get_pathinfo()` will give you total time & count from A->B in same line.
+
+* `get_transfercriteria()` will give you selected case of transfer route through longitude&lattitude. This function will divide the wide space based depart/arrival station.
+
+* `get_transferinfo()` will give you all case of transfer route.
