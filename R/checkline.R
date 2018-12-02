@@ -22,6 +22,7 @@ checkline <- function(dat) {
   if (isTRUE(length(anywrongdat4) == 0) == FALSE) {
     dat <- dat[-anywrongdat4, ]
   }
+  
   dat
 }
 
