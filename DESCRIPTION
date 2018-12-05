@@ -12,7 +12,6 @@ Depends:
   dplyr,
   stringr,
   Rcpp,
-  ggmap
-
-Suggests: subinjo92/nkmap
+  ggmap,
+  nkmap
 
