@@ -7,6 +7,7 @@ Maintainer: The package maintainer <kinh4k@gmail.com>
 Description: Finding shortest path for subway in Seoul
     when you want to get a shortest path, you can use it.
     also you can get a station list in shortest path.
+License: MIT + License files
 Depends:
   R (>= 3.4.4),
   dplyr,
