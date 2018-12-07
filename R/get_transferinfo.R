@@ -25,10 +25,10 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
                                                fixed(depart_line)), ]
     transfer_arrival <- transfer_depart[str_which(transfer_depart$Transfer, 
                                                   arrival_line), ]
-    transfer_arrival <- transfer_arrival[which(transfer_arrival$Name %in% 
-                                                 subway_data[[arrival_line]]$Name), ]
     transfer_arrival <- checkline(dat = transfer_arrival)
     # find available transfer station(depart, arrival both)
+    transfer_arrival <- transfer_arrival[which(transfer_arrival$Name %in% 
+                                                 subway_data[[arrival_line]]$Name), ]
   }
   if (count == 2) {
     transfer_arrival <- list()
