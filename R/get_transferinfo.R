@@ -82,5 +82,5 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
       transfer_arrival[[cut_list[l]]] <- NULL
     }
   }
-  transfer_arrival
+  return(transfer_arrival)
 }

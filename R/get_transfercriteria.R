@@ -38,6 +38,6 @@ get_transfercriteria <- function(depart, depart_line, arrival, arrival_line) {
                                 ]
   transfer_long <- transfer_long[which(transfer_long$long >= long_lowerbound), 
                                  ]
-  transfer_long
+  return(transfer_long)
 }
 
