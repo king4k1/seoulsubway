@@ -6,6 +6,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   data("transfer_info", envir = environment())
   Transfer_list <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
                                     count = 1)
+  Transfer_list <- checkline(Transfer_list) 
   # get available transfer station list if Transfer_list has no result
   # get break; cannot get result from shortestpath_1
   Total_Depart_Raw <- nrow(subway_data[[depart_line]])

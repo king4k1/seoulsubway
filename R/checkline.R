@@ -23,6 +23,6 @@ checkline <- function(dat) {
     dat <- dat[-anywrongdat4, ]
   }
   
-  dat
+  return(dat)
 }
 
