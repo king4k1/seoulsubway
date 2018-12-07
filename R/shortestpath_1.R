@@ -6,8 +6,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   data("transfer_info", envir = environment())
   Transfer_list <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
                                     count = 1)
-  # get available transfer station list if Transfer_list has no result
-  # get break; cannot get result from shortestpath_1
+  # get available transfer station list
   Total_Depart_Raw <- nrow(subway_data[[depart_line]])
   Total_Transfer_Raw <- nrow(subway_data[[arrival_line]])
   Transfer_1 <- list()
@@ -41,12 +40,13 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
     } else {
       Transfer_Time <- 2.35
     }
-    Transfer_1[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_list[i, 
-                                                                               "Name"]), Line = c(depart_line, arrival_line), Count = c(as.character(Path1_Count), 
-                                                                                                                                        as.character(Path2_Count)), Time = c(as.character(Path1_Time), 
-                                                                                                                                                                             as.character(Path2_Time)), Arrive = c(Transfer_list[i, "Name"], 
-                                                                                                                                                                                                                   arrival)), Total = c(Count = Path1_Count + Path2_Count, Time = Path1_Time + 
-                                                                                                                                                                                                                                          Path2_Time + Transfer_Time + 3))
+    Transfer_1[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_list[i, "Name"]),
+                                              Line = c(depart_line, arrival_line),
+                                              Count = c(as.character(Path1_Count), as.character(Path2_Count)),
+                                              Time = c(as.character(Path1_Time), as.character(Path2_Time)),
+                                              Arrive = c(Transfer_list[i, "Name"], arrival)), 
+                            Total = c(Count = Path1_Count + Path2_Count,
+                                      Time = Path1_Time + Path2_Time + Transfer_Time + 3))
   }
   Transfer_1_Count_Time <- c()
   for (i in seq_along(Transfer_1)) {
