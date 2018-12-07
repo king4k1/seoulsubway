@@ -17,6 +17,7 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
   data(transfer_info, envir = environment())
   data(subway_data, envir = environment())
   # load data
+  checkline <- seoulsubway::checkline
   transfer_long <- get_transfercriteria(depart, depart_line, arrival, 
                                         arrival_line)
   # set criteria for available transfer station
