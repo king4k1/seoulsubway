@@ -17,10 +17,10 @@ data("subway_data_DT")
 
 ## get station_name vector for construct matrix
 ```{r}
-seoul0401 <- fread(file=file.choose(), encoding = "UTF-8")
-# you need to choose transaction data
+transaction_data <- fread(file=file.choose(), encoding = "UTF-8")
+# choose transaction data
 
-seoul_route <- seoul0401%>%select(승차역명, 승차호선명)
+seoul_route <- transaction_data%>%select(승차역명, 승차호선명)
 seoul_route <- unique(seoul_route)
 ind1 <- str_locate(seoul_route$승차역명, "[(]")
 ind2 <- which(is.na(ind1[,1])==TRUE)
@@ -52,13 +52,16 @@ head(subway_make_list)
 ## function to get route : get_path()
 
 ```{r}
-seoul_route[1,]$Name ; seoul_route[1,]$Line ; seoul_route[2,]$Name ; seoul_route[2,]$Line
+depart <- seoul_route[1,]$Name ; depart_line <- seoul_route[1,]$Line
+arrival <- seoul_route[2,]$Name ; arrival_line <- seoul_route[2,]$Line
 
 get_path<- function(depart, depart_line, arrival, arrival_line){
 result <- shortestpath(depart, depart_line, arrival, arrival_line)
+
 if(result$Time==300){
   Path <- "no result"
   ind <- 0
+  result$Info <- data.frame(matrix(0,4,5))
 }
 if(result$Time!=300 & nrow(result$Info)==1){
   Path <- result$Path
@@ -85,9 +88,7 @@ get_path(depart=seoul_route[1,]$Name, depart_line=seoul_route[1,]$Line,
 
 ## get list format R data
 
-```{r, eval=FALSE}
-# if you run this --> more than 24hours... maybe...
-
+```{r}
 subway_route_set <- list()
 for(i in 1:277){
   for(j in 1:277){
