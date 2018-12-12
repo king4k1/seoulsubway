@@ -23,6 +23,7 @@ transaction_data <- fread(file=file.choose(), encoding = "UTF-8")
 seoul_route <- transaction_data%>%select(승차역명, 승차호선명)
 seoul_route <- unique(seoul_route)
 ind1 <- str_locate(seoul_route$승차역명, "[(]")
+ind <- ind1[-which(is.na(ind1[,1])),1]
 ind2 <- which(is.na(ind1[,1])==TRUE)
 seoul_route$승차역명[-ind2] <- str_sub(seoul_route$승차역명[-ind2], 1, ind-1)
 seoul_route$승차역명 <- str_replace(seoul_route$승차역명, "서울역", "서울")
