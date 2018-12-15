@@ -18,6 +18,8 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
   data(subway_data, envir = environment())
   # load data
   checkline <- function(dat) {
+    # for consider a case of branch line
+    if(isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line,depart_line))==FALSE){
     anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, "-")))
     if (isTRUE(length(anywrongdat) == 0) == FALSE) {
       dat <- dat[-anywrongdat, ]
@@ -25,6 +27,18 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
     anywrongdat2 <- which(str_detect(dat$Transfer, paste0(arrival_line, "-")))
     if (isTRUE(length(anywrongdat2) == 0) == FALSE) {
       dat <- dat[-anywrongdat2, ]
+    }
+    }
+    # for consider a case of branch line
+    if(isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line,depart_line))){
+      anydat <- which(str_detect(dat$Transfer, fixed(paste0(depart_line, "|", arrival_line))))
+      if (isTRUE(length(anydat) == 0) == FALSE) {
+        dat <- dat[anydat, ]
+      }
+      anydat2 <- which(str_detect(dat$Transfer, fixed(paste0(arrival_line, "|", depart_line))))
+      if (isTRUE(length(anydat2) == 0) == FALSE) {
+        dat <- dat[anydat2, ]
+      }
     }
     anywrongdat3 <- which(str_detect(dat$Transfer, paste0("K", depart_line)))
     if (isTRUE(length(anywrongdat3) == 0) == FALSE) {
