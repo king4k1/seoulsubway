@@ -39,6 +39,8 @@ Seven variables include riding station, riding line, getting off station, gettin
 
 * `shortestpath_2()` will give you information about the shortest path to the subway when you do transfer only two time.
 
+* `shortestpath_3()` will give you information about the shortest path to the subway when you do transfer only three time.
+
 * `pathplot()` will give you map which include shortestpath informataion. 
 
 
@@ -81,7 +83,18 @@ shortestpath_2(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
 ```
 
 
-### Find shortestpath in all case(transfer count : 0,1,2)
+### Find shortestpath for three transfer count
+
+`shortestpath_3` will give you information about the shortest path to the subway when you do three transfer.
+
+```{r}
+samplepath <- subway_sample[which(subway_sample$ID=="ID10"),]
+samplepath
+shortestpath_3(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+             arrival = samplepath$down_Name, arrival_line = samplepath$down_Line)
+```
+
+### Find shortestpath in all case(transfer count : 0,1,2,3)
 
 `shortestpath` will give you information about the shortest path to the subway in all case. 
 we can compare these result with shortestpath_2 above.
@@ -121,7 +134,7 @@ pathplot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
 
 ## Introduction to sub-functions.
 
-* `checkline()` will give you accurate transfer path.
+* `checkline()` in `get_trasferinfo()` will give you accurate transfer path.
 
 * `get_pathinfo()` will give you total time & count from A->B in same line.
 
