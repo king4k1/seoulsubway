@@ -10,8 +10,7 @@ Description: Finding shortest path for subway in Seoul
 License: MIT + file LICENSE
 Depends:
   R (>= 3.4.4),
-  dplyr,
-  stringr,
+  tidyverse,
   Rcpp,
   ggmap
 suggest:
