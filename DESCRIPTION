@@ -12,7 +12,8 @@ Depends:
   R (>= 3.4.4),
   tidyverse,
   Rcpp,
-  ggmap
+  ggmap,
+  readxl (>= 1.1.1)
 suggest:
   nkmap
 
