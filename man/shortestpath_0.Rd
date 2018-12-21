@@ -7,7 +7,7 @@ shortestpath_0(depart, depart_line, arrival, arrival_line)
 \description{
 Prints shortestpath(No transfer / time depend) for subway in Seoul.
 when you can't get a path, then print 100count default.
-cause this is just a sub-function for subwayshortestpath().
+cause this is just a sub-function for shortestpath().
 }
 \examples{
 shortestpath_0(depart="먹골", depart_line="7", arrival="고속터미널", arrival_line="7")

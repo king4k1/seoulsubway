@@ -25,6 +25,15 @@ shortestpath <- function(depart, depart_line, arrival, arrival_line) {
   Total <- list(One, Two)
   Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time))
   }
-  return(Total[[Short_Path_Ind]])
+  Total <- Total[[Short_Path_Ind]]
+  if(Total$Time == 300){
+    Total <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
+                                     arrival = arrival, arrival_line = arrival_line), warning = function(w) {
+                                       Total = list(Time = 300)
+                                     }, error = function(e) {
+                                       Total = list(Time = 300)
+                                     })
+  }
+  return(Total)
 }
 

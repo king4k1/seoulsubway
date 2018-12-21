@@ -6,7 +6,7 @@
 
 # shortestpath() 함수의 속도를 향상시키기 위함에 본 함수의 목적이 있다.
 
-get_transfercriteria <- function(depart, depart_line, arrival, arrival_line) {
+get_transfercriteria <- function(depart, depart_line, arrival, arrival_line, penalty) {
   data(subway_data_DT, envir = environment())
   data(subway_data, envir = environment())
   data(transfer_info, envir = environment())
@@ -21,14 +21,14 @@ get_transfercriteria <- function(depart, depart_line, arrival, arrival_line) {
   # get criteria from depart/arrival's longitude&lattitude
   lat_criteria <- c(depart_info$lat, arrival_info$lat)
   lat_lowerbound <- as.numeric(lat_criteria[which.min(lat_criteria)]) - 
-    0.05
+    penalty
   lat_upperbound <- as.numeric(lat_criteria[which.max(lat_criteria)]) + 
-    0.05
+    penalty
   long_criteria <- c(depart_info$long, arrival_info$long)
   long_lowerbound <- as.numeric(long_criteria[which.min(long_criteria)]) - 
-    0.05
+    penalty
   long_upperbound <- as.numeric(long_criteria[which.max(long_criteria)]) + 
-    0.05
+    penalty
   # give penalty for bypass selection
   transfer_lat <- transfer_station[which(transfer_station$lat <= lat_upperbound), 
                                    ]

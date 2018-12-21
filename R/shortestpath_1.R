@@ -28,7 +28,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
     Path2_Count <- as.numeric(Path2_Info["count"])
     Path2_Time <- as.numeric(Path2_Info["time"])
     # get transfer time from transfer_info data set; no result can get
-    # 3(average spend time for transfer)
+    # 2.35(average spend time for transfer)
     Transfer_Time_List <- transfer_info[which(transfer_info$Transfer_Name == 
                                                 Transfer_list[i, "Name"]), ]
     Transfer_Time_T <- Transfer_Time_List[which(Transfer_Time_List$Transfer_Line == 
