@@ -62,7 +62,7 @@ result <- shortestpath(depart, depart_line, arrival, arrival_line)
 if(result$Time==300){
   Path <- "no result"
   ind <- 0
-  result$Info <- data.frame(matrix(0,4,5))
+  result$Info <- data.frame(matrix(0,5,5))
 }
 if(result$Time!=300 & nrow(result$Info)==1){
   Path <- result$Path
@@ -79,18 +79,22 @@ if(result$Time!=300 & nrow(result$Info)==3){
   Path <- Path[-which(duplicated(Path$Name)),]$Name
   ind <- which(seoul_station%in%Path)
 }
+if(result$Time!=300 & nrow(result$Info)==4){
+  Path <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
+  Path <- Path[-which(duplicated(Path$Name)),]$Name
+  ind <- which(seoul_station%in%Path)
+}
 return(data.frame(Path, ind))
 }
 
-get_path(depart=seoul_route[1,]$Name, depart_line=seoul_route[1,]$Line,
-                       arrival=seoul_route[2,]$Name, arrival_line=seoul_route[2,]$Line)
+get_path(depart="봉화산", depart_line="6",
+                       arrival="강동", arrival_line="5-A")
 ```
 
 
 ## get list format R data
 
 ```{r}
-load(file.choose())
 seoul_route <- seoul_route%>%arrange(Name)
 subway_route2 <- list()
 for(i in 1:276){
@@ -109,7 +113,7 @@ for(i in 1:276){
 
 ## handling for complete data set
 
-```{r}
+```{r, eval= FALSE}
 load("D:/subway_analysis/subway_route.RData")
 a <- rep(0,37600)
 for(i in 1:37600){
@@ -121,10 +125,12 @@ k <- rep(0,1249)
 for(i in 1:1249){
 k[i] <- isTRUE(subway_route[[which(a==1)[i]]][1,1]=="no result")
 }
+k2 <- which(a==1)[k==1]
+kill <-names(subway_route)[k2]
+?separte
+library(tidyr)
+kill <- as.data.frame(kill)
+head(kill)
 
-subway_route[[paste0(seoul_route[1,]$Name,"(",seoul_route[1,]$Line,")",
-                            "-",seoul_route[113,]$Name,"(",seoul_route[113,]$Line,")")]]
-
-sum(k)
-
+kill <- seperate
 ```
