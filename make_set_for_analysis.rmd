@@ -30,16 +30,16 @@ seoul_route$승차역명 <- str_replace(seoul_route$승차역명, "서울역", "
 seoul_route$승차역명 <- str_replace(seoul_route$승차역명, "이수", "총신대입구")
 seoul_route$승차호선명 <- str_sub(seoul_route$승차호선명, 1, 1)
 colnames(seoul_route) <- c("Name", "Line")
-ind_2_A <- which(seoul_route$Name %in% c("용답","신답","용두"))
-ind_2_B <- which(seoul_route$Name %in% c("도림천","양천구청","신정네거리"))
+ind_2_A <- which(seoul_route$Name %in% c("용답","신답","용두","신설동"))
+ind_2_B <- which(seoul_route$Name %in% c("도림천","양천구청","신정네거리","까치산"))
 ind_5_A <- which(seoul_route$Name %in% c("둔촌동","올림픽공원","방이", "오금","개롱","거여","마천"))
 ind_6_A <- which(seoul_route$Name %in% c("역촌","독바위","구산"))
 seoul_route[ind_2_A,]$Line <- "2-A"
 seoul_route[ind_2_B,]$Line <- "2-B"
 seoul_route[ind_5_A,]$Line <- "5-A"
 seoul_route[ind_6_A,]$Line <- "6-A"
+seoul_route[seoul_route$Name=="신설동"][1]$Line <- "1" # 신설동역 2가지 호선에 대하여 하나는 1호선으로 표기 필요
 head(seoul_route)
-
 
 seoul_station <- subway_data_DT$Name
 seoul_station <- sort(unique(seoul_station))
@@ -90,18 +90,19 @@ get_path(depart=seoul_route[1,]$Name, depart_line=seoul_route[1,]$Line,
 ## get list format R data
 
 ```{r}
-subway_route_set_symmetric <- list()
+load(file.choose())
+seoul_route <- seoul_route%>%arrange(Name)
+subway_route2 <- list()
 for(i in 1:276){
   for(j in (i+1):277){
-    subway_route_set_symmetric[[paste0(seoul_route[i,]$Name,"(",seoul_route[i,]$Line,")",
+    subway_route2[[paste0(seoul_route[i,]$Name,"(",seoul_route[i,]$Line,")",
                             "-",seoul_route[j,]$Name,"(",seoul_route[j,]$Line,")")]] <- get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
                        arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line)
   }
-  if(i %in% c(10*(1:27),277)){
-    save(file="D:/subway_analysis/data/subway_route_set_symmetric.RData",subway_route_set_symmetric)
+  if(i %in% c(10*(1:25),277)){
+    save(file="D:/subway_analysis/data/subway_route2.RData",subway_route2, seoul_route)
   }
 }
-
 
 ```
 
@@ -109,41 +110,21 @@ for(i in 1:276){
 ## handling for complete data set
 
 ```{r}
-load(file = "D:/subway_analysis/data/subway_route_set.RData")
-
-for(i in 273:277){
-  for(j in 1:277){
-    subway_route_set[[paste0(seoul_route[i,]$Name,"(",seoul_route[i,]$Line,")",
-                            "-",seoul_route[j,]$Name,"(",seoul_route[j,]$Line,")")]] <- get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
-                       arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line)
-  }
-}
-
-subway_route_set[[76105]]
-
-seoul_route
-a <- rep(0,76176)
-for(i in 1:76176){
-  a[i] <- nrow(subway_route_set[[i]])
+load("D:/subway_analysis/subway_route.RData")
+a <- rep(0,37600)
+for(i in 1:37600){
+  a[i] <- nrow(subway_route[[i]])
 }
 
 a[which(a==1)]
-k <- rep(0,5473)
-for(i in 1:5473){
-k[i] <- isTRUE(subway_route_set[[which(a==1)[i]]][1,1]=="no result")
+k <- rep(0,1249)
+for(i in 1:1249){
+k[i] <- isTRUE(subway_route[[which(a==1)[i]]][1,1]=="no result")
 }
 
+subway_route[[paste0(seoul_route[1,]$Name,"(",seoul_route[1,]$Line,")",
+                            "-",seoul_route[113,]$Name,"(",seoul_route[113,]$Line,")")]]
 
 sum(k)
-i<-1
 
-
-depart = "종합운동장"
-depart_line = "2"
-arrival="신도림"
-arrival_line <- "2-B"
-arrival="성수"
-arrival_line <- "2-A"
-shortestpath("강동","5","거여","5-A")
-get_transferinfo("종합운동장","2","성수","2-A",1)
 ```

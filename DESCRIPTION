@@ -10,7 +10,6 @@ Description: Finding shortest path for subway in Seoul
 License: MIT + file LICENSE
 Depends:
   R (>= 3.4.4)
-Imports:
   dplyr,
   stringr,
   Rcpp,
