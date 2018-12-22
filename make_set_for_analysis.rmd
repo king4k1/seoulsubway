@@ -115,22 +115,25 @@ for(i in 1:276){
 
 ```{r, eval= FALSE}
 load("D:/subway_analysis/subway_route.RData")
-a <- rep(0,37600)
+find_null <- rep(0,37600)
 for(i in 1:37600){
-  a[i] <- nrow(subway_route[[i]])
+  find_null[i] <- nrow(subway_route2[[i]])
 }
 
-a[which(a==1)]
-k <- rep(0,1249)
-for(i in 1:1249){
-k[i] <- isTRUE(subway_route[[which(a==1)[i]]][1,1]=="no result")
+null_set <- find_null[which(find_null==1)]
+null_set_list <- rep(0,418)
+for(i in 1:418){
+null_set_list[i] <- isTRUE(subway_route2[[which(find_null==1)[i]]][1,1]=="no result")
 }
-k2 <- which(a==1)[k==1]
-kill <-names(subway_route)[k2]
-?separte
-library(tidyr)
-kill <- as.data.frame(kill)
-head(kill)
+null_index <- which(find_null==1)[null_set_list==1]
+null_route <-names(subway_route2)[null_index]
+null_route <- as.data.frame(null_route)
+str_split(null_route$null_route, pattern="[(a)]", n=4)
+str_locate(null_route$null_route, "[-]")
 
-kill <- seperate
+null_route <- separate(null_route, null_route, c("depart","depart_line","arrival", "arrival_line"), sep="[(a)]")
+null_route$arrival <- str_remove(null_route$arrival, "-")
+i<-1
+shortestpath(null_route$depart[i], null_route$depart_line[i], null_route$arrival[i], null_route$arrival_line[i])
+
 ```

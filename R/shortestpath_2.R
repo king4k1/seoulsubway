@@ -21,7 +21,7 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
     Transfer_Second_Ind <- str_split(Transfer_Second$Transfer, paste0("[", 
                                                                       "$", "|", "]"))[[1]]
     # process variable for get transfer line
-    Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)]
+    Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)][1]
     Transfer_Second_Line <- arrival_line
     Total_Transfer_Raw <- nrow(subway_data[[Transfer_First_Line]])
     Start_Ind2_2 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_First$Name)
