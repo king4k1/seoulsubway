@@ -15,9 +15,7 @@ shortestpath <- function(depart, depart_line, arrival, arrival_line) {
                                    One = list(Time = 300)
                                  })
   Two <- tryCatch(shortestpath_2(depart = depart, depart_line = depart_line, 
-                                 arrival = arrival, arrival_line = arrival_line), warning = function(w) {
-                                   Two = list(Time = 300)
-                                 }, error = function(e) {
+                                 arrival = arrival, arrival_line = arrival_line), error = function(e) {
                                    Two = list(Time = 300)
                                  })
   # use tryCatch() for consider error case get results of Three case, and
@@ -25,14 +23,12 @@ shortestpath <- function(depart, depart_line, arrival, arrival_line) {
   Total <- list(One, Two)
   Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time))
   }
-  
+  # if shortest path(by two transfer) is null -> consider three transfer
   Total <- Total[[Short_Path_Ind]]
   
   if(Total$Time == 300){
     Total <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
-                                     arrival = arrival, arrival_line = arrival_line), warning = function(w) {
-                                       Total = list(Time = 300)
-                                     }, error = function(e) {
+                                     arrival = arrival, arrival_line = arrival_line), error = function(e) {
                                        Total = list(Time = 300)
                                      })
   }

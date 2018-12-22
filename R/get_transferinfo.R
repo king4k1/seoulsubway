@@ -28,6 +28,14 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
       if (isTRUE(length(anywrongdat2) == 0) == FALSE) {
         dat <- dat[-anywrongdat2, ]
       }
+      anywrongdat3 <- which(str_detect(dat$Transfer, paste0(depart_line, "2")))
+      if (isTRUE(length(anywrongdat3) == 0) == FALSE) {
+        dat <- dat[-anywrongdat3, ]
+      }
+      anywrongdat4 <- which(str_detect(dat$Transfer, paste0(arrival_line, "2")))
+      if (isTRUE(length(anywrongdat4) == 0) == FALSE) {
+        dat <- dat[-anywrongdat4, ]
+      }
     }
     # for consider a case of branch line
     if(isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line,depart_line))){
@@ -50,6 +58,7 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
     }
     return(dat)
   }
+  
   transfer_long <- get_transfercriteria(depart, depart_line, arrival, 
                                         arrival_line, penalty = 0.05)
   # set criteria for available transfer station
@@ -71,7 +80,7 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
     # set available transfer station for waypoint.(== first transfer
     # station)
     transfer_middle <- checkline(dat = transfer_middle, depart_line = depart_line,
-                                 arrival_line = arrival_line)
+                                 arrival_line = names(subway_data))
     for (i in 1:nrow(transfer_middle)) {
       transfer_middle_list_sub <- str_remove(transfer_middle$Transfer[i],
                                              fixed(depart_line))
@@ -129,7 +138,7 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
     # set available transfer station for waypoint.(== first transfer
     # station)
     transfer_middle_first <- checkline(dat = transfer_middle_first, depart_line = depart_line,
-                                       arrival_line = arrival_line)
+                                       arrival_line = names(subway_data))
     for (i in 1:nrow(transfer_middle_first)) {
       transfer_middle_list_sub <- str_remove(transfer_middle_first$Transfer[i],
                                              fixed(depart_line))
@@ -145,7 +154,8 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
                                               penalty = 0.05)
         transfer_middle_second <- transfer_long[str_which(transfer_long$Transfer, 
                                                           fixed(transfer_middle_list[j])), ]
-        transfer_middle_second <- checkline(transfer_middle_second, 
+        
+        transfer_middle_second <- checkline(dat = transfer_middle_second, 
                                             depart_line = transfer_middle_list[j],
                                             arrival_line = arrival_line)
         for(j2 in 1:nrow(transfer_middle_second)){
