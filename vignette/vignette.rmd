@@ -141,3 +141,9 @@ pathplot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
 * `get_transfercriteria()` will give you selected case of transfer route through longitude&lattitude. This function will divide the wide space based depart/arrival station.
 
 * `get_transferinfo()` will give you all case of transfer route.
+
+## Introduction to analysis-functions.
+
+* `get_path()` will give you binary path information.
+
+* `get_total_count()` will give you total use of subway count for each station in data.
