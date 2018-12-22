@@ -88,6 +88,8 @@ pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1
 
 * `get_path()` 함수를 통해서 제작한 277X277 경로 매트릭스 "subway_route" 에서의 binary한 결과를 이용하여 역별 총 누적 회수를 계산한다.
 
+* 5000건의 subway_sample 데이터를 통하여 지하철의 혼잡정도를 확인하자.
+
 ```r
 total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", depart_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
 
@@ -98,3 +100,6 @@ ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geo
 ![](tools/total_count.png)
 
 
+* 위 결과를 보면 동대문역사문화공원이 가장 지하철 경유회수가 많은 역임을 알 수 있다.
+
+* 위에 나열된 방식으로 `seoulsubway` 패키지를 통하여 트랜잭션 데이터를 분석할 수 있다.
