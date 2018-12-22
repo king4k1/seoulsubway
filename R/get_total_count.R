@@ -12,6 +12,10 @@ get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, ar
   depart_line <- dat[,depart_line_name]
   arrival <- dat[,arrival_name]
   arrival_line <- dat[,arrival_line_name]
+  
+  time.started <- Sys.time()
+  cat(paste('Started at : ', time.started, ' / ...ing...', sep = ''))
+  
   for(i in 1:nrow(dat)){
     get <- paste0(depart[i], "(", depart_line[i], ")", "-", 
                   arrival[i], "(", arrival_line[i], ")")
@@ -23,5 +27,9 @@ get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, ar
     }
     total[result$ind] <- total[result$ind] + 1
   }
-  return(totals)
+  
+  time.finished <- Sys.time() # Store finished time
+  time.elapsed  <- time.finished - time.started # Calculate elapsed time
+  cat(paste('Finished..! / elapsed time : ', time.elapsed, '\n\n', sep = ''))
+  return(total)
 }

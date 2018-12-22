@@ -59,8 +59,7 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
     return(dat)
   }
   
-  transfer_long <- get_transfercriteria(depart, depart_line, arrival, 
-                                        arrival_line, penalty = 0.05)
+  transfer_long <- get_transfercriteria(depart, arrival, penalty = 0.05)
   # set criteria for available transfer station
   if (count == 1) {
     transfer_depart <- transfer_long[str_which(transfer_long$Transfer, 
@@ -91,9 +90,8 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
         transfer_middle_list <- transfer_middle_list_sub[-ind_null]
       }
       for (j in seq_along(transfer_middle_list)) {
-        transfer_long <- get_transfercriteria(transfer_middle[i, "Name"],
-                                              transfer_middle_list[j],
-                                              arrival, arrival_line, penalty = 0.05)
+        transfer_long <- get_transfercriteria(transfer_middle[i, "Name"], 
+                                              arrival, penalty = 0.05)
         # set criteria for available transfer station
         transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
                                                        fixed(transfer_middle_list[j])), ]
@@ -150,8 +148,7 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
       }
       for (j in seq_along(transfer_middle_list)) {
         transfer_long <- get_transfercriteria(transfer_middle_first[i, "Name"],
-                                              transfer_middle_list[j], arrival, arrival_line,
-                                              penalty = 0.05)
+                                              arrival, penalty = 0.05)
         transfer_middle_second <- transfer_long[str_which(transfer_long$Transfer, 
                                                           fixed(transfer_middle_list[j])), ]
         
@@ -170,8 +167,7 @@ get_transferinfo <- function(depart, depart_line, arrival,arrival_line, count = 
           }
           for(k in seq_along(transfer_middle2_list)){
             transfer_long <- get_transfercriteria(transfer_middle_second[j2, "Name"],
-                                                  transfer_middle2_list[k], arrival, arrival_line,
-                                                  penalty = 0.1)
+                                                  arrival, penalty = 0.1)
             # set criteria wider for available transfer station(branch line)
             transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
                                                            fixed(transfer_middle2_list[j])), ]
