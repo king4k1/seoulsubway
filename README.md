@@ -19,7 +19,7 @@ devtools::install_github("king4k1/seoulsubway")
 
 <hr>
 
-## subway_sample
+### subway_sample
 
 총 5000건의 지하철 경로에 대한 정보를 포함하고 있습니다.
 
@@ -44,9 +44,7 @@ ggplot(subway_count, aes(x=Time, y=N, col=down_Name)) + geom_line(position = 'ji
 
 <hr>
 
-## shortestpath
-
-shortestpath 함수는 지하철 최단거리를 제공합니다.
+### `shortestpath()` 함수는 지하철 최단거리를 제공합니다.
 
 총 13개의 노선(1-9호선과 신분당선, 분당선, 경의중앙선, 우이신설선)이 포함되어 있습니다.
 
@@ -84,7 +82,7 @@ pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1
 ```
 ![](tools/Rplot6BS.png)
 
-### `get_total_count()` : 모든 경로에 따른 역별 누적 경유회수 출력
+### `get_total_count()` 함수는 모든 경로에 따른 역별 누적 경유회수 출력합니다.
 
 * `get_path()` 함수를 통해서 제작한 277X277 경로 매트릭스 "subway_route" 에서의 binary한 결과를 이용하여 역별 총 누적 회수를 계산한다.
 
