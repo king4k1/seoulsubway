@@ -84,3 +84,17 @@ pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1
 ```
 ![](tools/Rplot6BS.png)
 
+## `get_total_count()` : 모든 경로에 따른 역별 누적 경유회수 출력
+
+* `get_path()` 함수를 통해서 제작한 277X277 경로 매트릭스 "subway_route" 에서의 binary한 결과를 이용하여 역별 총 누적 회수를 계산한다.
+
+```r
+total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", depart_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
+
+total_count_upper500 <- total_count[which(total_count>=500)]
+total_count_upper500 <- total_count_upper500%>%gather(key = "station", value = "count")
+ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geom_bar(stat="identity") +  theme(axis.text.x=element_text(angle=90, face="bold")) + theme(legend.position="none")
+```
+![](tools/total_count.png)
+
+
