@@ -173,13 +173,13 @@ get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, ar
   arrival <- dat[,arrival_name]
   arrival_line <- dat[,arrival_line_name]
   for(i in 1:nrow(dat)){
-    key <- paste0(depart[i], "(", depart_line[i], ")", "-", 
+    get <- paste0(depart[i], "(", depart_line[i], ")", "-", 
                   arrival[i], "(", arrival_line[i], ")")
-    key_2 <- paste0(arrival[i], "(", arrival_line[i], ")", "-",
+    get_2 <- paste0(arrival[i], "(", arrival_line[i], ")", "-",
                     depart[i], "(", depart_line[i], ")")
-    result <- subway_route[[key]]
+    result <- subway_route[[get]]
     if(is.null(result)){
-    result <- subway_route[[key_2]]  
+    result <- subway_route[[get_2]]  
     }
   subway_make_list[result$ind] <- subway_make_list[result$ind] + 1
   }
