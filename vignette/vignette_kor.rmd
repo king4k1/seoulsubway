@@ -127,7 +127,7 @@ shortestpath(depart="강동", depart_line="5-A",
 #### `get_path()` 는 지하철 최단경로에 해당하는 binary한 결과를 산출합니다.
 
 * `get_path()` 함수를 통하여 (1) 이동경로에 해당하는 역명과 (2) 총 460개의 역을 한글순서로 정렬한 역에 해당하는 index를 산출합니다.
-```{r}
+```{r, warning=FALSE}
 get_path(depart="먹골", depart_line="7", arrival="혜화", arrival_line="4")
 ```
 

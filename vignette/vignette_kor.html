@@ -652,14 +652,6 @@ Department of Statistics, SKKU</div></em></h4>
 <li><code>get_path()</code> 함수를 통하여 (1) 이동경로에 해당하는 역명과 (2) 총 460개의 역을 한글순서로 정렬한 역에 해당하는 index를 산출합니다.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_path</span>(<span class="dt">depart=</span><span class="st">&quot;먹골&quot;</span>, <span class="dt">depart_line=</span><span class="st">&quot;7&quot;</span>, <span class="dt">arrival=</span><span class="st">&quot;혜화&quot;</span>, <span class="dt">arrival_line=</span><span class="st">&quot;4&quot;</span>)</code></pre></div>
-<pre><code>## Warning in stri_detect_regex(string, pattern, opts_regex = opts(pattern)):
-## longer object length is not a multiple of shorter object length
-
-## Warning in stri_detect_regex(string, pattern, opts_regex = opts(pattern)):
-## longer object length is not a multiple of shorter object length
-
-## Warning in stri_detect_regex(string, pattern, opts_regex = opts(pattern)):
-## longer object length is not a multiple of shorter object length</code></pre>
 <pre><code>##            Path ind
 ## 1          먹골  32
 ## 2      태릉입구  68
@@ -708,7 +700,7 @@ Department of Statistics, SKKU</div></em></h4>
 <li><p><code>subway_sample</code> 을 이용하여 5000개의 경로에 대한 누적결과를 산출하는데 5분 이내의 시간이 소요되는 것을 확인하였습니다.</p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">total_count &lt;-<span class="st"> </span><span class="kw">get_total_count</span>(<span class="dt">dat=</span>subway_sample, <span class="dt">depart_name =</span> <span class="st">&quot;up_Name&quot;</span>, <span class="dt">depart_line_name =</span> <span class="st">&quot;up_Line&quot;</span>, <span class="dt">arrival_name =</span> <span class="st">&quot;down_Name&quot;</span>, <span class="dt">arrival_line_name =</span> <span class="st">&quot;down_Line&quot;</span>)</code></pre></div>
-<pre><code>## Started at : 2018-12-22 20:12:56 / ...ing...Finished..! / elapsed time : 6.05719343026479</code></pre>
+<pre><code>## Started at : 2018-12-22 20:30:10 / ...ing...Finished..! / elapsed time : 4.79821643431981</code></pre>
 <ul>
 <li>산출된 결과를 5000개의 경로에 대한 정보를 total_count에 저장한 후 500count 이상을 기록한 지하철역만을 산출하여 그림으로 그려보았습니다. 이러한 방식으로 다음단계의 분석이 가능할 것 같습니다.</li>
 </ul>
