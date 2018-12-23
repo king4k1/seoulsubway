@@ -154,7 +154,6 @@ total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", depar
 * 산출된 결과를 5000개의 경로에 대한 정보를 total_count에 저장한 후 500count 이상을 기록한 지하철역만을 산출하여 그림으로 그려보았습니다. 이러한 방식으로 다음단계의 분석이 가능할 것 같습니다.
 
 ```{r, fig.pos="H", fig.height=6, fig.width=6}
-total_count_upper500 <- total_count[which(total_count>=500)]
-total_count_upper500 <- total_count_upper500%>%gather(key = "station", value = "count")
+total_count_upper500 <- total_count[which(total_count$value>=500),]
 ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geom_bar(stat="identity") +  theme(axis.text.x=element_text(angle=90, face="bold")) + theme(legend.position="none")
 ```

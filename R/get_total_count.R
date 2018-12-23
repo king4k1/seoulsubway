@@ -28,8 +28,9 @@ get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, ar
     total[result$ind] <- total[result$ind] + 1
   }
   
+  total_gather <- total%>%gather(key = "station", value = "count")
   time.finished <- Sys.time() # Store finished time
   time.elapsed  <- time.finished - time.started # Calculate elapsed time
   cat(paste('Finished..! / elapsed time : ', time.elapsed, '\n\n', sep = ''))
-  return(total)
+  return(total_gather)
 }
