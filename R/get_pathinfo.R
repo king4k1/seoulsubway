@@ -6,15 +6,17 @@
 
 get_pathinfo <- function(total, ind1, ind2, line) {
   data(subway_data, envir = environment())
-  data(transfer_info, envir = environment())
-  # load data
+  Path_Count <- abs(ind1 - ind2)
+  Path_Time <- sum(subway_data[[line]][ind1:ind2, "Time"]) - subway_data[[line]][ind1, "Time"]
+  # (normal case) get index.
+  
   if (line == "2") {
     Circulate <- total - abs(ind1 - ind2)
     Circulate2 <- abs(ind1 - ind2)
     Circulate <- c(Circulate, Circulate2)
-    Circulate_Time <- c(sum(subway_data[[line]][c(ind1:total, 1:ind2), 
-                                                "Time"]) - subway_data[[line]][ind1, "Time"], sum(subway_data[[line]][c(ind2:total, 
-                                                                                                                        1:ind1), "Time"]) - subway_data[[line]][ind1, "Time"])
+    Circulate_Time <- c(sum(subway_data[[line]][c(ind1:total,
+                        1:ind2), "Time"]) - subway_data[[line]][ind1, "Time"], sum(subway_data[[line]][c(ind2:total,
+                        1:ind1), "Time"]) - subway_data[[line]][ind1, "Time"])
     Circulate_Time <- Circulate_Time[which.min(Circulate_Time)]
     Circulate2_Time <- sum(subway_data[[line]][ind1:ind2, "Time"]) - 
       subway_data[[line]][ind1, "Time"]
@@ -23,11 +25,13 @@ get_pathinfo <- function(total, ind1, ind2, line) {
     Path_Time <- Circulate_Time[which.min(Circulate_Time)]
     # consider circulate line(line number 2) => use absolute value & total
     # - abs
-  } else {
-    Path_Count <- abs(ind1 - ind2)
-    Path_Time <- sum(subway_data[[line]][ind1:ind2, "Time"]) - subway_data[[line]][ind1, 
-                                                                                   "Time"]
-    # (normal case) get index.
+  }
+  
+  if (line == "6-A" & ind1 > ind2) {
+      Path_Count <- 6 + ind2 - ind1 
+      Path_Time <- sum(subway_data[[line]][c(ind2:6,
+                       1:ind1), "Time"]) - subway_data[[line]][ind1, "Time"] + 2 
+      # 6-A -> 6-A 순환구조 환승시간
   }
   return(data.frame(count = as.numeric(Path_Count), time = as.numeric(Path_Time)))
 }

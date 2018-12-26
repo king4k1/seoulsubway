@@ -11,7 +11,7 @@ criteria is informed in get_transfercriteria
 you can choose 1,2 in 'count' argument
 }
 \examples{
-get_transferinfo(depart="먹골", depart_line="7", arrival="혜화", arrival_line="4", count=1)
+get_transferinfo(depart="", depart_line="", arrival="", arrival_line="", count=1)
 
-get_transferinfo(depart="먹골", depart_line="7", arrival="혜화", arrival_line="4", count=2)
+get_transferinfo(depart="", depart_line="", arrival="", arrival_line="", count=2)
 }

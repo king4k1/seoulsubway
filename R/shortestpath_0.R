@@ -19,12 +19,16 @@ shortestpath_0 <- function(depart, depart_line, arrival, arrival_line) {
   Set$Path <- subway_data[[depart_line]][Start_Ind_0:End_Ind_0, ]
   if (isTRUE(depart_line == 2) & isTRUE(as.numeric(Transfer_0[3]) == 
                                         (Total_Depart_Raw - Start_Ind_0 + End_Ind_0))) {
-    Set$Path <- subway_data[[depart_line]][c(Start_Ind_0:Total_Depart_Raw, 
+    Set$Path <- subway_data[["2"]][c(Start_Ind_0:Total_Depart_Raw, 
                                              1:End_Ind_0), ]
   } else if (isTRUE(depart_line == 2) & isTRUE(as.numeric(Transfer_0[3]) == 
                                                (Total_Depart_Raw - End_Ind_0 + Start_Ind_0))) {
-    Set$Path <- subway_data[[depart_line]][c(End_Ind_0:Total_Depart_Raw, 
+    Set$Path <- subway_data[["2"]][c(End_Ind_0:Total_Depart_Raw, 
                                              1:Start_Ind_0), ]
+  }
+  if (isTRUE(depart_line == "6-A") & Start_Ind_0 > End_Ind_0) {
+    Set$Path <- subway_data[["6-A"]][c(Start_Ind_0 :Total_Depart_Raw, 
+                                             1:End_Ind_0), ]
   }
   return(Set)
 }

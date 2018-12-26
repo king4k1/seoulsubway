@@ -11,8 +11,6 @@ editor_options:
 #devtools::install_github("king4k1/seoulsubway")
 library(seoulsubway)
 library(data.table)
-library(dplyr)
-library(stringr)
 data("subway_data_DT")
 ```
 

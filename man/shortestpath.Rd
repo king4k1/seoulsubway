@@ -10,5 +10,5 @@ when you can't get a path, you should consider another one.
 cause these function is just consider zero, one, two, Three transfer count to find shortestpath for subway.
 }
 \examples{
-shortestpath(depart="혜화", depart_line="4", arrival="아차산", arrival_line="5")
+shortestpath(depart="", depart_line="", arrival="", arrival_line="")
 }
