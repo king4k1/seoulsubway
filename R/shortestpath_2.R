@@ -124,15 +124,15 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
                                     ]
   }
   if (isTRUE(depart_line == "6-A") & Start_Ind_2 > End_Ind_2) {
-    Set$Path1 <- subway_data[["6-A"]][c(Start_Ind_2 :Total_Depart_Raw, 
+    Set$Path1 <- subway_data[["6-A"]][c(Start_Ind_2 :6, 
                                         1:End_Ind_2), ]
   }
   if (isTRUE(Set["Info"][[1]][2, "Line"] == "6-A") & Start_Ind2_2 > End_Ind2_2) {
-    Set$Path2 <- subway_data[["6-A"]][c(Start_Ind2_2 :Total_Transfer_Raw, 
+    Set$Path2 <- subway_data[["6-A"]][c(Start_Ind2_2 :6, 
                                         1:End_Ind2_2), ]
   }
   if (isTRUE(arrival_line == "6-A") & Start_Ind3_2 > End_Ind3_2) {
-    Set$Path3 <- subway_data[["6-A"]][c(Start_Ind3_2 :Total_End_raw, 
+    Set$Path3 <- subway_data[["6-A"]][c(Start_Ind3_2 :6, 
                                         1:End_Ind3_2), ]
   }
   # consider line number 2 & 6-A for circulate system.

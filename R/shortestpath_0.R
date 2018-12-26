@@ -27,7 +27,7 @@ shortestpath_0 <- function(depart, depart_line, arrival, arrival_line) {
                                              1:Start_Ind_0), ]
   }
   if (isTRUE(depart_line == "6-A") & Start_Ind_0 > End_Ind_0) {
-    Set$Path <- subway_data[["6-A"]][c(Start_Ind_0 :Total_Depart_Raw, 
+    Set$Path <- subway_data[["6-A"]][c(Start_Ind_0 :6, 
                                              1:End_Ind_0), ]
   }
   return(Set)
