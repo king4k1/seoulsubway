@@ -10,7 +10,8 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
   Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
                                     count = 3)
   if(length(Transfer_List)==0){
-    stop("you can`t get a path from these transfer count number 3")
+    stop("you can`t get a path from these transfer count number 3 
+       or station and line do not match")
   }
   Transfer_3 <- list()
   # get available transfer station list these results are list format and
