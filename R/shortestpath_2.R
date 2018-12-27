@@ -9,6 +9,9 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
   Start_Ind_2 <- which(subway_data[[depart_line]]$Name == depart)
   Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
                                     count = 2)
+  if(length(Transfer_List)==0){
+    stop("you can`t get a path from these transfer count number 2")
+  }
   Transfer_2 <- list()
   # get available transfer station list these results are list format and
   # get first/second transfer station
@@ -29,16 +32,16 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
     Start_Ind3_2 <- which(subway_data[[arrival_line]]$Name == Transfer_Second$Name)
     End_Ind3_2 <- which(subway_data[[arrival_line]]$Name == arrival)
     # get information about each path way
-    Path1_Info <- get_pathinfo(total = Total_Depart_Raw, ind1 = Start_Ind_2, 
-                               ind2 = End_Ind_2, line = depart_line)
+    Path1_Info <- get_pathinfo(total = Total_Depart_Raw, start = Start_Ind_2, 
+                               end = End_Ind_2, line = depart_line)
     Path1_Count <- as.numeric(Path1_Info["count"])
     Path1_Time <- as.numeric(Path1_Info["time"])
-    Path2_Info <- get_pathinfo(total = Total_Transfer_Raw, ind1 = Start_Ind2_2, 
-                               ind2 = End_Ind2_2, line = Transfer_First_Line)
+    Path2_Info <- get_pathinfo(total = Total_Transfer_Raw, start = Start_Ind2_2, 
+                               end = End_Ind2_2, line = Transfer_First_Line)
     Path2_Count <- as.numeric(Path2_Info["count"])
     Path2_Time <- as.numeric(Path2_Info["time"])
-    Path3_Info <- get_pathinfo(total = Total_End_raw, ind1 = Start_Ind3_2, 
-                               ind2 = End_Ind3_2, line = arrival_line)
+    Path3_Info <- get_pathinfo(total = Total_End_raw, start = Start_Ind3_2, 
+                               end = End_Ind3_2, line = arrival_line)
     Path3_Count <- as.numeric(Path3_Info["count"])
     Path3_Time <- as.numeric(Path3_Info["time"])
     # get transfer time{ex) depart -> transfer} each

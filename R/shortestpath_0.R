@@ -7,8 +7,8 @@ shortestpath_0 <- function(depart, depart_line, arrival, arrival_line) {
   End_Ind_0 <- which(subway_data[[depart_line]]$Name == arrival)
   Total_Depart_Raw <- nrow(subway_data[[depart_line]])
   if (depart_line == arrival_line) {
-    Path_Info <- get_pathinfo(total = Total_Depart_Raw, ind1 = Start_Ind_0, 
-                              ind2 = End_Ind_0, line = depart_line)
+    Path_Info <- get_pathinfo(total = Total_Depart_Raw, start = Start_Ind_0, 
+                              end = End_Ind_0, line = depart_line)
     Path_Count <- as.numeric(Path_Info["count"])
     Path_Time <- as.numeric(Path_Info["time"])
     Transfer_0 <- data.frame(Depart = depart, Line = depart_line, Count = Path_Count, 
