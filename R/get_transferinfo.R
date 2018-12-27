@@ -19,7 +19,6 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line,
   data(subway_data, envir = environment())
   # load data
   checkline <- function(dat, depart_line, arrival_line) {
-    # for consider a case of branch line
     if (FALSE %in% (names(subway_data) %in% arrival_line)) {
       if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, 
                                                                     depart_line)) == FALSE) {
@@ -67,6 +66,17 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line,
                                                             arrival_line)))
       if (isTRUE(length(anywrongdat4) == 0) == FALSE) {
         dat <- dat[-anywrongdat4, ]
+      }
+    }else{
+      anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, 
+                                                           "-")))
+      if (isTRUE(length(anywrongdat) == 0) == FALSE) {
+        dat <- dat[-anywrongdat, ]
+      }
+      anywrongdat3 <- which(str_detect(dat$Transfer, paste0(depart_line, 
+                                                            "2")))
+      if (isTRUE(length(anywrongdat3) == 0) == FALSE) {
+        dat <- dat[-anywrongdat3, ]
       }
     }
     return(dat)
@@ -169,7 +179,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line,
                                                           fixed(transfer_middle_list[j])), ]
         
         transfer_middle_second <- checkline(dat = transfer_middle_second, 
-                                            depart_line = transfer_middle_list[j], arrival_line = arrival_line)
+                                            depart_line = transfer_middle_list[j], arrival_line = names(subway_data))
         for (j2 in 1:nrow(transfer_middle_second)) {
           transfer_middle2_list_sub <- str_remove(transfer_middle_second$Transfer[j2], 
                                                   fixed(transfer_middle_list[j]))
@@ -182,7 +192,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line,
           }
           for (k in seq_along(transfer_middle2_list)) {
             transfer_long <- get_transfercriteria(transfer_middle_second[j2, 
-                                                                         "Name"], arrival, penalty = 0.1)
+                                                                         "Name"], arrival, penalty = 0.05)
             # set criteria wider for available transfer station(branch line)
             transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
                                                            fixed(transfer_middle2_list[j])), ]
@@ -207,21 +217,29 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line,
     }
     cut_crit <- c()
     cut_dup <- c()
+    cut_dup2 <- c()
     for (k in seq_along(transfer_arrival)) {
       cut_crit[k] <- is.na(transfer_arrival[[k]]$third[1, 1])
-      cut_dup[k] <- isTRUE(transfer_arrival[[k]]$second[1, 1] == 
-                             transfer_arrival[[k]]$third[1, 1])
+      cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1, 1] == 
+                             transfer_arrival[[k]]$second[1, 1])
+      cut_dup2[k] <- isTRUE(transfer_arrival[[k]]$second[1, 1] == 
+                              transfer_arrival[[k]]$third[1, 1])
     }
     # if second transfer station is null(no result) ==> remove one
     cut_ind <- which(cut_crit)
     cut_list <- names(transfer_arrival)[cut_ind]
     cut_ind <- which(cut_dup)
     cut_dup <- names(transfer_arrival)[cut_ind]
+    cut_ind <- which(cut_dup2)
+    cut_dup2 <- names(transfer_arrival)[cut_ind]
     for (l in seq_along(cut_list)) {
       transfer_arrival[[cut_list[l]]] <- NULL
     }
     for (l in seq_along(cut_dup)) {
       transfer_arrival[[cut_dup[l]]] <- NULL
+    }
+    for (l in seq_along(cut_dup2)) {
+      transfer_arrival[[cut_dup2[l]]] <- NULL
     }
   }
   return(transfer_arrival)
