@@ -113,20 +113,23 @@ for(i in 1:276){
 ## handling for complete data set
 
 ```{r, eval= FALSE}
-find_null <- rep(0,37600)
-for(i in 1:37600){
+find_null <- rep(0,38225)
+for(i in 1:38225){
   find_null[i] <- nrow(subway_route2[[i]])
 }
 
 null_set <- find_null[which(find_null==1)]
-null_set_list <- rep(0,33)
-for(i in 1:33){
+null_set_list <- rep(0,313)
+for(i in 1:313){
 null_set_list[i] <- isTRUE(subway_route2[[which(find_null==1)[i]]][1,1]=="no result")
 }
 null_index <- which(find_null==1)[null_set_list==1]
 null_route_name <-names(subway_route2)[null_index]
 null_route <- as.data.frame(null_route_name)
 
+for(i in 1:46){
+  subway_route2[[null_route_name[i]]] <- subway_route[[null_route_name[i]]]
+}
 null_route <- separate(null_route, null_route_name, c("depart","depart_line","arrival", "arrival_line"), sep="[(a)]")
 null_route$arrival <- str_remove(null_route$arrival, "-")
 
@@ -185,5 +188,24 @@ get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, ar
 }
 
 get_total_count(dat=dat, depart_name = "up_Name", depart_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
+
+data(subway_route)
+data("seoul_route")
+ind <- which(seoul_route$Line=="6-A")
+which(seoul_route$Name=="새절")
+subway_route2 <- list()
+data("seoul_station")
+i <- 14;j<-135
+for(i in 1:277){
+  for(j in i:277){
+    subway_route2[[paste0(seoul_route[i,]$Name,"(",seoul_route[i,]$Line,")",
+                            "-",seoul_route[j,]$Name,"(",seoul_route[j,]$Line,")")]] <- get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
+                       arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line)
+  }
+    if(i %in% c(10*(1:25),277)){
+    save(file="D:/subway_route2.RData",subway_route2)
+  }
+}
+
 
 ```
