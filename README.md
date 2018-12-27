@@ -91,8 +91,7 @@ pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1
 ```r
 total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", depart_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
 
-total_count_upper500 <- total_count[which(total_count>=500)]
-total_count_upper500 <- total_count_upper500%>%gather(key = "station", value = "count")
+total_count_upper500 <- total_count[which(total_count$count>=500), ]
 ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geom_bar(stat="identity") +  theme(axis.text.x=element_text(angle=90, face="bold")) + theme(legend.position="none")
 ```
 ![](tools/total_count.png)
