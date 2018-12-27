@@ -1,32 +1,33 @@
 # get_path from shortestpath
 
 get_path <- function(depart, depart_line, arrival, arrival_line){
+  data("seoul_station", envir = environment())
   result <- shortestpath(depart, depart_line, arrival, arrival_line)
   
   if(result$Time==300){
-    Path <- "no result"
+    station <- "no result"
     ind <- 0
     result$Info <- data.frame(matrix(0,5,5))
   }
   if(result$Time!=300 & nrow(result$Info)==1){
-    Path <- result$Path
-    Path <- Path$Name
-    ind <- which(seoul_station%in%Path)
+    station <- result$Path
+    station <- station$Name
+    ind <- which(seoul_station%in%station)
   }
   if(result$Time!=300 & nrow(result$Info)==2){
-    Path <- rbind(result$Path1, result$Path2)
-    Path <- Path[-which(duplicated(Path$Name)),]$Name
-    ind <- which(seoul_station%in%Path)
+    station <- rbind(result$Path1, result$Path2)
+    station <- station[-which(duplicated(station$Name)),]$Name
+    ind <- which(seoul_station%in%station)
   }
   if(result$Time!=300 & nrow(result$Info)==3){
-    Path <- rbind(result$Path1, result$Path2, result$Path3)
-    Path <- Path[-which(duplicated(Path$Name)),]$Name
-    ind <- which(seoul_station%in%Path)
+    station <- rbind(result$Path1, result$Path2, result$Path3)
+    station <- station[-which(duplicated(station$Name)),]$Name
+    ind <- which(seoul_station%in%station)
   }
   if(result$Time!=300 & nrow(result$Info)==4){
-    Path <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
-    Path <- Path[-which(duplicated(Path$Name)),]$Name
-    ind <- which(seoul_station%in%Path)
+    station <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
+    station <- station[-which(duplicated(station$Name)),]$Name
+    ind <- which(seoul_station%in%station)
   }
-  return(data.frame(Path, ind))
+  return(data.frame(station, ind))
 }
