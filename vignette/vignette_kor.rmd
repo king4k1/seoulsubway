@@ -44,7 +44,7 @@ head(transfer_station)
 * 2호선의 경우 순환하는 것을 고려하는 단계를 추가하여 제작하였습니다.
 
 ```{r, warning=FALSE}
-get_pathinfo(total=nrow(subway_data[["2"]]), ind1=10, ind2=15, line="2")
+get_pathinfo(total=nrow(subway_data[["2"]]), start=10, end=15, line="2")
 
 # 위 결과는 2호선 내 10번째 역과 15번째 역 사이의 소요시간과 이동회수를 산출하였습니다.
 ```

@@ -2,7 +2,7 @@
 \alias{get_transferinfo}
 \title{get_transferinfo}
 \usage{
-get_transferinfo(depart, depart_line, arrival, arrival_line, count=count)
+get_transferinfo(depart, depart_line, arrival, arrival_line, count)
 }
 \description{
 Prints available transfer station when you move from A to B in subway line

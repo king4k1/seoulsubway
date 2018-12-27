@@ -12,8 +12,7 @@
 
 # 이 함수는 shortestpath()함수의 속도를 향상시키기 위함에 목적이 있다.
 
-get_transferinfo <- function(depart, depart_line, arrival, arrival_line, 
-                             count = count) {
+get_transferinfo <- function(depart, depart_line, arrival, arrival_line, count) {
   data(subway_data_DT, envir = environment())
   data(transfer_info, envir = environment())
   data(subway_data, envir = environment())
