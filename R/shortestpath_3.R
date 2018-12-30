@@ -107,67 +107,7 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
   Path_3_Shortest <- which.min(Transfer_3_Count_Time)
   # select shortest path(time depend)
   Transfer_3 <- Transfer_3[[Path_3_Shortest]]
-  Set <- list(Info = Transfer_3$Info, Count = as.numeric(Transfer_3["Total"][[1]]["Count"]), 
-              Time = as.numeric(Transfer_3["Total"][[1]]["Time"]))
-  End_Ind_3 <- which(subway_data[[depart_line]]$Name == as.character(Set["Info"][[1]][1, "Arrive"]))
-  Start_Ind2_3 <- which(subway_data[[as.character(Set["Info"][[1]][2, "Line"])]]$Name == as.character(Set["Info"][[1]][2, "Depart"]))
-  End_Ind2_3 <- which(subway_data[[as.character(Set["Info"][[1]][2, "Line"])]]$Name == 
-                        as.character(Set["Info"][[1]][2, "Arrive"]))
-  End_Ind3_3 <- which(subway_data[[as.character(Set["Info"][[1]][3, "Line"])]]$Name == 
-                        as.character(Set["Info"][[1]][3, "Arrive"]))
-  Start_Ind3_3 <- which(subway_data[[as.character(Set["Info"][[1]][3, "Line"])]]$Name == as.character(Set["Info"][[1]][3, 
-                                                                                          "Depart"]))
-  Start_Ind4_3 <- which(subway_data[[arrival_line]]$Name == as.character(Set["Info"][[1]][4, 
-                                                                                          "Depart"]))
-  
-  Set$Path1 <- subway_data[[depart_line]][Start_Ind_3:End_Ind_3, ]
-  Set$Path2 <- subway_data[[as.character(Set["Info"][[1]][2, "Line"])]][Start_Ind2_3:End_Ind2_3, ]
-  Set$Path3 <- subway_data[[as.character(Set["Info"][[1]][3, "Line"])]][Start_Ind3_3:End_Ind3_3, ]
-  Set$Path4 <- subway_data[[as.character(Set["Info"][[1]][4, "Line"])]][Start_Ind4_3:End_Ind4_3, ]
-  
-  if (isTRUE(depart_line == 2) & isTRUE(depart_line == (Total_Depart_Raw - Start_Ind_3 + End_Ind_3))) {
-    Set$Path1 <- subway_data[["2"]][c(Start_Ind_3:Total_Depart_Raw, 1:End_Ind_3), ]
-  } else if (isTRUE(depart_line == 2) & isTRUE(depart_line == (Total_Depart_Raw - 
-                                                               End_Ind_3 + Start_Ind_3))) {
-    Set$Path1 <- subway_data[["2"]][c(End_Ind_3:Total_Depart_Raw, 1:Start_Ind_3), ]
-  }
-  if (isTRUE(Set["Info"][[1]][2, "Line"] == 2) & isTRUE(Set["Info"][[1]][2, 
-                                                                         "Count"] == (Total_Transfer1_Raw - Start_Ind2_3 + End_Ind2_3))) {
-    Set$Path2 <- subway_data[["2"]][c(Start_Ind2_3:Total_Transfer1_Raw, 1:End_Ind2_3), ]
-  } else if (isTRUE(Set["Info"][[1]][2, "Line"] == 2) & isTRUE(Set["Info"][[1]][2, 
-                                                                                "Count"] == (Total_Transfer1_Raw - End_Ind2_3 + Start_Ind2_3))) {
-    Set$Path2 <- subway_data[["2"]][c(End_Ind2_3:Total_Transfer1_Raw, 1:Start_Ind2_3), ]
-  }
-  if (isTRUE(Set["Info"][[1]][3, "Line"] == 2) & isTRUE(Set["Info"][[1]][3, "Count"] == 
-                                         (Total_Transfer2_Raw - Start_Ind3_3 + End_Ind3_3))) {
-    Set$Path3 <- subway_data[["2"]][c(Start_Ind3_3:Total_Transfer2_Raw, 1:End_Ind3_3), ]
-  } else if (isTRUE(Set["Info"][[1]][3, "Line"] == 2) & isTRUE(Set["Info"][[1]][3, "Count"] == 
-                                                (Total_Transfer2_Raw - End_Ind3_3 + Start_Ind3_3))) {
-    Set$Path3 <- subway_data[["2"]][c(End_Ind3_3:Total_Transfer2_Raw, 1:Start_Ind3_3), ]
-  }
-  if (isTRUE(arrival_line == 2) & isTRUE(Set["Info"][[1]][4, "Count"] == 
-                                         (Total_End_raw - Start_Ind4_3 + End_Ind4_3))) {
-    Set$Path4 <- subway_data[["2"]][c(Start_Ind3_3:Total_End_raw, 1:End_Ind4_3), ]
-  } else if (isTRUE(arrival_line == 2) & isTRUE(Set["Info"][[1]][4, "Count"] == 
-                                                (Total_End_raw - End_Ind4_3 + Start_Ind4_3))) {
-    Set$Path4 <- subway_data[["2"]][c(End_Ind4_3:Total_End_raw, 1:Start_Ind4_3), ]
-  }
-  if (isTRUE(depart_line == "6-A") & Start_Ind_3 > End_Ind_3) {
-    Set$Path1 <- subway_data[["6-A"]][c(Start_Ind_3 :6, 
-                                        1:End_Ind_3), ]
-  }
-  if (isTRUE(Set["Info"][[1]][2, "Line"] == "6-A") & Start_Ind2_3 > End_Ind2_3) {
-    Set$Path2 <- subway_data[["6-A"]][c(Start_Ind2_3 :6, 
-                                        1:End_Ind2_3), ]
-  }
-  if (isTRUE(Set["Info"][[1]][3, "Line"] == "6-A") & Start_Ind3_3 > End_Ind3_3) {
-    Set$Path3 <- subway_data[["6-A"]][c(Start_Ind3_3 :6, 
-                                        1:End_Ind3_3), ]
-  }
-  if (isTRUE(arrival_line == "6-A") & Start_Ind4_3 > End_Ind4_3) {
-    Set$Path4 <- subway_data[["6-A"]][c(Start_Ind4_3 :6, 
-                                        1:End_Ind4_3), ]
-  }
+  Set <- get_pathresult(Transfer_3)
   # consider line number 2 & 6-A for circulate system.
   return(Set)
 }

@@ -28,7 +28,8 @@ shortestpath <- function(depart, depart_line, arrival, arrival_line) {
     Total <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
                                      arrival = arrival, arrival_line = arrival_line), error = function(e) {
                                        Total = list(Time = 300)
-                                       message("you can`t get a path from these transfer count number 1,2,3 \n or station and line do not match")
+                                       message("you can`t get a path from these transfer count number 1,2,3 
+or station and line do not match, also you should consider branch line(2-A, 2-B, 5-A, 6-A, K2)")
                                      })
   }
   return(Total)
