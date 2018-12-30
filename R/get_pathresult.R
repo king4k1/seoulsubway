@@ -54,7 +54,8 @@ get_pathresult <- function(shortestpath_result) {
       Set$Path2 <- subway_data[["6-A"]][c(Start_Ind2_1:6, 1:End_Ind2_1), 
                                         ]
     }
-  } else if (nrow(Set$Info) == 3) {
+  }
+  if (nrow(Set$Info) == 3) {
     Start_Ind_2 <- which(subway_data[[as.character(Set$Info[1, "Line"])]]$Name == 
                            as.character(Set$Info[1, "Depart"]))
     End_Ind_2 <- which(subway_data[[as.character(Set$Info[1, "Line"])]]$Name == 
@@ -117,7 +118,8 @@ get_pathresult <- function(shortestpath_result) {
       Set$Path3 <- subway_data[["6-A"]][c(Start_Ind3_2:6, 1:End_Ind3_2), 
                                         ]
     }
-  } else if (nrow(Set$Info) == 4) {
+  }
+  if (nrow(Set$Info) == 4) {
     Start_Ind_3 <- which(subway_data[[as.character(Set$Info[1, "Line"])]]$Name == 
                            as.character(Set$Info[1, "Depart"]))
     End_Ind_3 <- which(subway_data[[as.character(Set$Info[1, "Line"])]]$Name == 
