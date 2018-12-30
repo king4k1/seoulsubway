@@ -60,6 +60,6 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   Transfer_1 <- Transfer_1[[Path_1_Shortest]]
   # get shortestpath(time depend)
   Set <- get_pathresult(Transfer_1)
-  # consider line number 2 & 6-A for circulate system.
+  # get_route / consider line number 2 & 6-A for circulate system.
   return(Set)
 }
