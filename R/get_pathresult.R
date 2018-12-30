@@ -4,10 +4,33 @@
 
 get_pathresult <- function(shortestpath_result) {
   data("subway_data", envir = environment())
-  
   Set <- list(Info = shortestpath_result$Info, 
               Count = as.numeric(shortestpath_result["Total"][[1]]["Count"]), 
               Time = as.numeric(shortestpath_result["Total"][[1]]["Time"]))
+  if (nrow(Set$Info) == 1) {
+    Start_Ind_0 <- which(subway_data[[as.character(Set$Info[1, "Line"])]]$Name == 
+                           as.character(Set$Info[1, "Depart"]))
+    End_Ind_0 <- which(subway_data[[as.character(Set$Info[1, "Line"])]]$Name == 
+                           as.character(Set$Info[1, "Arrive"]))
+    Total_Depart_Raw <- nrow(subway_data[[as.character(Set$Info[1, 
+                                                                "Line"])]])
+    Set <- list(Info = Transfer_0, Count = as.numeric(Transfer_0[1, "Count"]), 
+                Time = as.numeric(Transfer_0[1, "Time"]))
+    Set$Path <- subway_data[[as.character(Set$Info[1, "Line"])]][Start_Ind_0:End_Ind_0, ]
+    if (isTRUE(Set$Info[1, "Line"] == 2) & isTRUE(Set$Info[1, "Count"] == 
+                                          (Total_Depart_Raw - Start_Ind_0 + End_Ind_0))) {
+      Set$Path <- subway_data[["2"]][c(Start_Ind_0:Total_Depart_Raw, 
+                                       1:End_Ind_0), ]
+    } else if (isTRUE(Set$Info[1, "Line"] == 2) & isTRUE(Set$Info[1, "Count"] == 
+                                                 (Total_Depart_Raw - End_Ind_0 + Start_Ind_0))) {
+      Set$Path <- subway_data[["2"]][c(End_Ind_0:Total_Depart_Raw, 
+                                       1:Start_Ind_0), ]
+    }
+    if (isTRUE(Set$Info[1, "Line"] == "6-A") & Start_Ind_0 > End_Ind_0) {
+      Set$Path <- subway_data[["6-A"]][c(Start_Ind_0 :6, 
+                                         1:End_Ind_0), ]
+    }
+  }
   if (nrow(Set$Info) == 2) {
     Start_Ind_1 <- which(subway_data[[as.character(Set$Info[1, "Line"])]]$Name == 
                            as.character(Set$Info[1, "Depart"]))

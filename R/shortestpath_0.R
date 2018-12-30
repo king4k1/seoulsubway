@@ -11,24 +11,10 @@ shortestpath_0 <- function(depart, depart_line, arrival, arrival_line) {
                               end = End_Ind_0, line = depart_line)
     Path_Count <- as.numeric(Path_Info["count"])
     Path_Time <- as.numeric(Path_Info["time"])
-    Transfer_0 <- data.frame(Depart = depart, Line = depart_line, Count = Path_Count, 
-                             Time = Path_Time, Arrive = arrival)
+    Transfer_0 <- list(Info = data.frame(Depart = depart, Line = depart_line, Count = Path_Count, 
+                                         Time = Path_Time, Arrive = arrival),
+                       Total = c(Count = Path_Count, Time = Path_Time))
   }
-  Set <- list(Info = Transfer_0, Count = as.numeric(Transfer_0[1, "Count"]), 
-              Time = as.numeric(Transfer_0[1, "Time"]))
-  Set$Path <- subway_data[[depart_line]][Start_Ind_0:End_Ind_0, ]
-  if (isTRUE(depart_line == 2) & isTRUE(as.numeric(Transfer_0[3]) == 
-                                        (Total_Depart_Raw - Start_Ind_0 + End_Ind_0))) {
-    Set$Path <- subway_data[["2"]][c(Start_Ind_0:Total_Depart_Raw, 
-                                             1:End_Ind_0), ]
-  } else if (isTRUE(depart_line == 2) & isTRUE(as.numeric(Transfer_0[3]) == 
-                                               (Total_Depart_Raw - End_Ind_0 + Start_Ind_0))) {
-    Set$Path <- subway_data[["2"]][c(End_Ind_0:Total_Depart_Raw, 
-                                             1:Start_Ind_0), ]
-  }
-  if (isTRUE(depart_line == "6-A") & Start_Ind_0 > End_Ind_0) {
-    Set$Path <- subway_data[["6-A"]][c(Start_Ind_0 :6, 
-                                             1:End_Ind_0), ]
-  }
+  Set <- get_pathresult(Transfer_0)
   return(Set)
 }
