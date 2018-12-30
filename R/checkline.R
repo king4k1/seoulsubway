@@ -61,6 +61,11 @@ checkline <- function(dat, depart_line, arrival_line) {
     if (isTRUE(length(anywrongdat2) == 0) == FALSE) {
       dat <- dat[-anywrongdat2, ]
     }
+    anywrongdat3 <- which(str_detect(dat$Transfer, paste0("K",
+                                                          depart_line)))
+    if (isTRUE(length(anywrongdat3) == 0) == FALSE) {
+      dat <- dat[-anywrongdat3, ]
+    }
   }
   return(dat)
 }
