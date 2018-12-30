@@ -64,7 +64,7 @@ get_pathresult <- function(shortestpath_result) {
                             as.character(Set$Info[2, "Depart"]))
     End_Ind2_2 <- which(subway_data[[as.character(Set$Info[2, "Line"])]]$Name == 
                           as.character(Set$Info[2, "Arrive"]))
-    Start_Ind3_2 <- which(subway_data[[arrival_line]]$Name == as.character(Set$Info[3, 
+    Start_Ind3_2 <- which(subway_data[[as.character(Set$Info[3, "Line"])]]$Name == as.character(Set$Info[3, 
                                                                                     "Depart"]))
     End_Ind3_2 <- which(subway_data[[as.character(Set$Info[3, "Line"])]]$Name == 
                           as.character(Set$Info[3, "Arrive"]))
@@ -132,10 +132,10 @@ get_pathresult <- function(shortestpath_result) {
                             as.character(Set$Info[3, "Depart"]))
     End_Ind3_3 <- which(subway_data[[as.character(Set$Info[3, "Line"])]]$Name == 
                           as.character(Set$Info[3, "Arrive"]))
-    Start_Ind4_3 <- which(subway_data[[arrival_line]]$Name == as.character(Set$Info[4, 
-                                                                                    "Depart"]))
-    End_Ind4_3 <- which(subway_data[[arrival_line]]$Name == as.character(Set$Info[4, 
-                                                                                  "Arrive"]))
+    Start_Ind4_3 <- which(subway_data[[as.character(Set$Info[4, "Line"])]]$Name == 
+                            as.character(Set$Info[4, "Depart"]))
+    End_Ind4_3 <- which(subway_data[[as.character(Set$Info[4, "Line"])]]$Name == 
+                          as.character(Set$Info[4, "Arrive"]))
     Total_Depart_Raw <- nrow(subway_data[[as.character(Set$Info[1, 
                                                                 "Line"])]])
     Total_Transfer1_Raw <- nrow(subway_data[[as.character(Set$Info[2, 
