@@ -1,6 +1,7 @@
 # checkline will check the dataset for select accurate line 
 
 checkline <- function(dat, depart_line, arrival_line) {
+  data("subway_data", envir = environment())
   if (FALSE %in% (names(subway_data) %in% arrival_line)) {
     if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, 
                                                                   depart_line)) == FALSE) {
