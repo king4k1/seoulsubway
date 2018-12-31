@@ -12,14 +12,14 @@
 
 # 이 함수는 shortestpath()함수의 속도를 향상시키기 위함에 목적이 있다.
 
-get_transferinfo <- function(depart, depart_line, arrival, arrival_line, count) {
+get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
   data(subway_data_DT, envir = environment())
   data(transfer_info, envir = environment())
   data(subway_data, envir = environment())
   # load data
   transfer_long <- get_transfercriteria(depart, arrival, penalty = 0.05)
   # set criteria for available transfer station
-  if (count == 1) {
+  if (n == 1) {
     transfer_depart <- transfer_long[str_which(transfer_long$Transfer, 
                                                fixed(depart_line)), ]
     transfer_arrival <- transfer_depart[str_which(transfer_depart$Transfer, 
@@ -30,7 +30,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, count) 
     transfer_arrival <- transfer_arrival[which(transfer_arrival$Name %in% 
                                                  subway_data[[arrival_line]]$Name), ]
   }
-  if (count == 2) {
+  if (n == 2) {
     transfer_arrival <- list()
     transfer_middle <- transfer_long[str_which(transfer_long$Transfer, 
                                                fixed(depart_line)), ]
@@ -89,7 +89,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, count) 
       transfer_arrival[[cut_dup[l]]] <- NULL
     }
   }
-  if (count == 3) {
+  if (n == 3) {
     transfer_arrival <- list()
     transfer_middle_first <- transfer_long[str_which(transfer_long$Transfer, 
                                                      fixed(depart_line)), ]

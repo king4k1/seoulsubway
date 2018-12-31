@@ -57,7 +57,7 @@ get_pathinfo(total=nrow(subway_data[["2"]]), start=10, end=15, line="2")
 get_transfercriteria(depart="먹골", arrival="혜화", penalty=0.05)
 ```
 
-#### `get_transferinfo()`는 두 역 사이의 모든 환승가능한 역을 산출합니다.
+#### `get_transferinfo()`는 두 역 사이의 모든 환승가능한 경우를 산출합니다.
 
 * 이때 count를 통하여 1,2,3번의 환승의 경우에 해당하는 환승 route를 제공합니다. 이 함수는 물론 get_transfercriteria가 매 단계 반복되는 구조로 제작하였습니다.(공간을 제약하는 방식을 사용합니다.)
 
@@ -65,25 +65,26 @@ get_transfercriteria(depart="먹골", arrival="혜화", penalty=0.05)
 
 ```{r, warning=FALSE}
 get_transferinfo(depart="먹골", depart_line="7", 
-                 arrival="혜화", arrival_line="4", count=1)
+                 arrival="혜화", arrival_line="4", n=1)
 
 get_transferinfo(depart="먹골", depart_line="7", 
-                 arrival="혜화", arrival_line="4", count=2)
+                 arrival="혜화", arrival_line="4", n=2)
 
 get_transferinfo(depart="강동", depart_line="5-A", 
-                 arrival="봉화산", arrival_line="6", count=3)
+                 arrival="봉화산", arrival_line="6", n=3)
 ```
+
 
 ### 최단거리 함수 
 
-#### `shortestpath_0()` 는 depart_line과 arrival_line이 같은 경우만 작동합니다.
+#### `shortestpath_0()` 는 depart_line과 arrival_line이 같은 경우 최단거리 경로를 산출합니다..
 
 ```{r}
 shortestpath_0(depart="먹골", depart_line="7", arrival="건대입구", arrival_line="7")
 ```
 
 
-#### `shortestpath_1()` 는 환승을 한번만 하는 경로 중 최단거리 결과를 산출합니다.
+#### `shortestpath_1()` 는 환승을 한번만 하는 경로 중 최단거리 경로를 산출합니다.
 
 * get_transferinfo(..., count=1) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
 
@@ -92,7 +93,7 @@ shortestpath_1(depart="먹골", depart_line="7", arrival="혜화", arrival_line=
 ```
 
 
-#### `shortestpath_2()` 는 환승을 두번 하는 경로 중 최단거리 결과를 산출합니다.
+#### `shortestpath_2()` 는 환승을 두번 하는 경로 중 최단거리 경로를 산출합니다.
 
 * get_transferinfo(..., count=2) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
 
