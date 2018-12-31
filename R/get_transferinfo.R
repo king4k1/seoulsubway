@@ -65,8 +65,8 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
                                          arrival_line = arrival_line)
         # use checkline for erro selection.
         for (k in 1:nrow(transfer_middle_get)) {
-          transfer_arrival[[paste0(i, "-", j, "-", k)]] <- list(first = transfer_middle[i, 
-                                                                                        ], second = transfer_middle_get[k, ])
+          transfer_arrival[[paste0(i, "-", j, "-", k)]] <- list(first = transfer_middle[i, ],
+                                                                second = transfer_middle_get[k, ])
         }
       }
     }
@@ -142,9 +142,9 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
                                              depart_line = transfer_middle2_list[k], arrival_line = arrival_line)
             for (k2 in 1:nrow(transfer_middle_get)) {
               transfer_arrival[[paste0(i, "-", j, "-", j2, "-", 
-                                       k, "-", k2)]] <- list(first = transfer_middle_first[i, 
-                                                                                           ], second = transfer_middle_second[j2, ], third = transfer_middle_get[k2, 
-                                                                                                                                                                 ])
+                                      k, "-", k2)]] <- list(first = transfer_middle_first[i, ],
+                                                            second = transfer_middle_second[j2, ],
+                                                            third = transfer_middle_get[k2, ])
             }
           }
         }

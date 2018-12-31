@@ -12,7 +12,6 @@ get_pathinfo <- function(total, start, end, line) {
   Path_Count <- abs(start - end)
   Path_Time <- sum(subway_data[[line]][start:end, "Time"]) - subway_data[[line]][start, "Time"]
   # (normal case) get index.
-  
   if (line == "2") {
     Circulate <- total - abs(start - end)
     Circulate2 <- abs(start - end)
@@ -26,10 +25,8 @@ get_pathinfo <- function(total, start, end, line) {
     Circulate_Time <- c(Circulate_Time, Circulate2_Time)
     Path_Count <- Circulate[which.min(Circulate_Time)]
     Path_Time <- Circulate_Time[which.min(Circulate_Time)]
-    # consider circulate line(line number 2) => use absolute value & total
-    # - abs
+    # consider circulate line(line number 2) => use absolute value & total - abs
   }
-  
   if (line == "6-A" & start > end) {
       Path_Count <- 6 + end - start 
       Path_Time <- sum(subway_data[[line]][c(end:6,
