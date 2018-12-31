@@ -2,6 +2,7 @@
 
 checkline <- function(dat, depart_line, arrival_line) {
   data("subway_data", envir = environment())
+  # 환승이 여러번 있는 경우, 중간단계에서 arrival_line에 모든 경우를 열어야 할 필요가 있음.
   if (FALSE %in% (names(subway_data) %in% arrival_line)) {
     if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, 
                                                                   depart_line)) == FALSE) {

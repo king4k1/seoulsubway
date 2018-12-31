@@ -9,13 +9,13 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
   Start_Ind_3 <- which(subway_data[[depart_line]]$Name == depart)
   Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
                                     count = 3)
+  # get available transfer station list these results are list format and
+  # get first/second/third transfer station.
   if(length(Transfer_List)==0){
     stop("you can`t get a path from these transfer count number 3 
        or station and line do not match")
   }
   Transfer_3 <- list()
-  # get available transfer station list these results are list format and
-  # get first/second transfer station
   for (i in seq_along(Transfer_List)) {
     Transfer_First <- Transfer_List[[i]]$first
     Transfer_Second <- Transfer_List[[i]]$second
@@ -102,7 +102,7 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
   }
   Transfer_3_Count_Time <- c()
   for (i in seq_along(Transfer_3)) {
-    Transfer_3_Count_Time[i] <- as.numeric(Transfer_3[[i]]["Total"][[1]]["Time"])
+    Transfer_3_Count_Time[i] <- as.numeric(Transfer_3[[i]]$Total["Time"])
   }
   Path_3_Shortest <- which.min(Transfer_3_Count_Time)
   # select shortest path(time depend)

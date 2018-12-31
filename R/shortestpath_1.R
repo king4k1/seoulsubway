@@ -7,8 +7,8 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
                                     count = 1)
   if(nrow(Transfer_List)==0){
-    stop("you can`t get a path from these transfer count number 1 
-       or station and line do not match")
+    stop("you can`t get a path from these transfer count number 1,2,3 
+or station and line do not match, also you should consider branch line(2-A, 2-B, 5-A, 6-A, K2)")
   }
   # get available transfer station list
   Total_Depart_Raw <- nrow(subway_data[[depart_line]])
@@ -54,7 +54,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   }
   Transfer_1_Count_Time <- c()
   for (i in seq_along(Transfer_1)) {
-    Transfer_1_Count_Time[i] <- as.numeric(Transfer_1[[i]]["Total"][[1]]["Time"])
+    Transfer_1_Count_Time[i] <- as.numeric(Transfer_1[[i]]$Total["Time"])
   }
   Path_1_Shortest <- which.min(Transfer_1_Count_Time)
   Transfer_1 <- Transfer_1[[Path_1_Shortest]]
