@@ -41,7 +41,7 @@ Seven variables include riding station, riding line, getting off station, gettin
 
 * `shortestpath_3()` will give you information about the shortest path to the subway when you do transfer only three time.
 
-* `pathplot()` will give you map which include shortestpath informataion. 
+* `path_plot()` will give you map which include shortestpath informataion. 
 
 
 ## Find path for sample data
@@ -111,7 +111,7 @@ shortestpath(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
 
 ### plot map which includes shortestpath info.
 
-`pathplot` will give you a map which includes shortestpath information.
+`path_plot` will give you a map which includes shortestpath information.
 
 It depends on 'nkmap' packages. i suggest to install nkmap in ["subinjo92"](https://github.com/subinjo92/nkmap) 's github.
 
@@ -121,13 +121,13 @@ library(nkmap)
 samplepath <- subway_sample[which(subway_sample$ID=="ID15"),]
 samplepath
 
-pathplot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+path_plot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
              arrival = samplepath$down_Name, arrival_line = samplepath$down_Line, naver_secret, naver_key, kakao_key, zoom =8)
 
 samplepath <- subway_sample[which(subway_sample$ID=="ID30"),]
 samplepath
 
-pathplot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
+path_plot(depart = samplepath$up_Name, depart_line = samplepath$up_Line,
              arrival = samplepath$down_Name, arrival_line = samplepath$down_Line, naver_secret, naver_key, kakao_key, zoom =7)
 ```
 

@@ -59,7 +59,7 @@ shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line 
 
 ```r
 library(nkmap)
-pathplot(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4",
+path_plot(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4",
          naver_secret =naver_secret, naver_key=naver_key, 
          kakao_key =kakao_key, zoom=8)
 ```
@@ -69,14 +69,14 @@ pathplot(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4
 
 ### ex2. 보문(6) -> 서울(4)
 ```r
-pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4",
+path_plot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4",
          naver_secret =naver_secret, naver_key=naver_key, 
          kakao_key =kakao_key, zoom=8)
 ```
 ![](tools/Rplot3.png)
 ### ex3. 보문(6) -> 서울(1)
 ```r
-pathplot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1",
+path_plot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1",
          naver_secret =naver_secret, naver_key=naver_key, 
          kakao_key =kakao_key, zoom=8)
 ```

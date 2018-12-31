@@ -1,10 +1,10 @@
-# pathplot
+# path_plot
 
 # shortestpath 경로 지도 상 표현
 
 # naver, 카카오 key 필요
 
-pathplot <- function(depart, depart_line, arrival, arrival_line, naver_secret, naver_key, kakao_key, zoom =zoom) {
+path_plot <- function(depart, depart_line, arrival, arrival_line, naver_secret, naver_key, kakao_key, zoom =zoom) {
   Info <- shortestpath(depart, depart_line, arrival, arrival_line)$Info
   if (nrow(Info) == 1) {
     result <- shortestpath(depart, depart_line, arrival, arrival_line)
