@@ -13,9 +13,9 @@
 # 이 함수는 shortestpath()함수의 속도를 향상시키기 위함에 목적이 있다.
 
 get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
-  data(subway_data_DT, envir = environment())
-  data(transfer_info, envir = environment())
-  data(subway_data, envir = environment())
+  data("subway_data_DT", envir = environment())
+  data("transfer_info", envir = environment())
+  data("subway_data", envir = environment())
   # load data
   transfer_long <- get_transfercriteria(depart, arrival, penalty = 0.05)
   # set criteria for available transfer station
@@ -49,8 +49,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
         transfer_middle_list <- transfer_middle_list_sub[-ind_null]
       }
       for (j in seq_along(transfer_middle_list)) {
-        transfer_long <- get_transfercriteria(transfer_middle[i, 
-                                                              "Name"], arrival, penalty = 0.05)
+        transfer_long <- get_transfercriteria(transfer_middle[i, "Name"], arrival, penalty = 0.05)
         # set criteria for available transfer station
         transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
                                                        fixed(transfer_middle_list[j])), ]
@@ -70,15 +69,14 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
         }
       }
     }
-    cut_crit <- c()
+    cut_na <- c()
     cut_dup <- c()
     for (k in seq_along(transfer_arrival)) {
-      cut_crit[k] <- is.na(transfer_arrival[[k]]$second[1, 1])
-      cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1, 1] == transfer_arrival[[k]]$second[1, 
-                                                                                             1])
+      cut_na[k] <- is.na(transfer_arrival[[k]]$second[1, 1])
+      cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1, 1] == transfer_arrival[[k]]$second[1, 1])
     }
     # if second transfer station is null(no result) ==> remove one
-    cut_ind <- which(cut_crit)
+    cut_ind <- which(cut_na)
     cut_list <- names(transfer_arrival)[cut_ind]
     cut_ind <- which(cut_dup)
     cut_dup <- names(transfer_arrival)[cut_ind]
@@ -108,13 +106,14 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
         transfer_middle_list <- transfer_middle_list_sub[-ind_null]
       }
       for (j in seq_along(transfer_middle_list)) {
-        transfer_long <- get_transfercriteria(transfer_middle_first[i, 
-                                                                    "Name"], arrival, penalty = 0.05)
+        transfer_long <- get_transfercriteria(transfer_middle_first[i, "Name"],
+                                              arrival, penalty = 0.05)
         transfer_middle_second <- transfer_long[str_which(transfer_long$Transfer, 
                                                           fixed(transfer_middle_list[j])), ]
         
         transfer_middle_second <- checkline(dat = transfer_middle_second, 
-                                            depart_line = transfer_middle_list[j], arrival_line = names(subway_data))
+                                            depart_line = transfer_middle_list[j], 
+                                            arrival_line = names(subway_data))
         for (j2 in 1:nrow(transfer_middle_second)) {
           transfer_middle2_list_sub <- str_remove(transfer_middle_second$Transfer[j2], 
                                                   fixed(transfer_middle_list[j]))
@@ -126,8 +125,8 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
             transfer_middle2_list <- transfer_middle2_list_sub[-ind_null]
           }
           for (k in seq_along(transfer_middle2_list)) {
-            transfer_long <- get_transfercriteria(transfer_middle_second[j2, 
-                                                                         "Name"], arrival, penalty = 0.05)
+            transfer_long <- get_transfercriteria(transfer_middle_second[j2, "Name"], 
+                                                  arrival, penalty = 0.05)
             # set criteria wider for available transfer station(branch line)
             transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
                                                            fixed(transfer_middle2_list[j])), ]
@@ -139,7 +138,8 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
                                                                subway_data[[arrival_line]]$Name), ]
             # find available transfer station(depart, arrival both)
             transfer_middle_get <- checkline(transfer_middle_get, 
-                                             depart_line = transfer_middle2_list[k], arrival_line = arrival_line)
+                                             depart_line = transfer_middle2_list[k], 
+                                             arrival_line = arrival_line)
             for (k2 in 1:nrow(transfer_middle_get)) {
               transfer_arrival[[paste0(i, "-", j, "-", j2, "-", 
                                       k, "-", k2)]] <- list(first = transfer_middle_first[i, ],
@@ -150,18 +150,18 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
         }
       }
     }
-    cut_crit <- c()
+    cut_na <- c()
     cut_dup <- c()
     cut_dup2 <- c()
     for (k in seq_along(transfer_arrival)) {
-      cut_crit[k] <- is.na(transfer_arrival[[k]]$third[1, 1])
+      cut_na[k] <- is.na(transfer_arrival[[k]]$third[1, 1])
       cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1, 1] == 
                              transfer_arrival[[k]]$second[1, 1])
       cut_dup2[k] <- isTRUE(transfer_arrival[[k]]$second[1, 1] == 
                               transfer_arrival[[k]]$third[1, 1])
     }
     # if second transfer station is null(no result) ==> remove one
-    cut_ind <- which(cut_crit)
+    cut_ind <- which(cut_na)
     cut_list <- names(transfer_arrival)[cut_ind]
     cut_ind <- which(cut_dup)
     cut_dup <- names(transfer_arrival)[cut_ind]

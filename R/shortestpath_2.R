@@ -26,7 +26,6 @@ or station and line do not match, also you should consider branch line(2-A, 2-B,
                                                                       "$", "|", "]"))[[1]]
     # process variable for get transfer line
     Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)][1]
-    Transfer_Second_Line <- arrival_line
     Total_Transfer_Raw <- nrow(subway_data[[Transfer_First_Line]])
     Start_Ind2_2 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_First$Name)
     End_Ind2_2 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_Second$Name)

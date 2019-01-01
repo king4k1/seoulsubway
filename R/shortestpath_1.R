@@ -24,8 +24,7 @@ or station and line do not match, also you should consider branch line(2-A, 2-B,
     # get time / count information from get_pathinfo() and manufacture one.
     Path1_Count <- as.numeric(Path1_Info["count"])
     Path1_Time <- as.numeric(Path1_Info["time"])
-    Start_Ind2_1 <- which(subway_data[[arrival_line]]$Name == Transfer_List[i, 
-                                                                            "Name"])
+    Start_Ind2_1 <- which(subway_data[[arrival_line]]$Name == Transfer_List[i,"Name"])
     End_Ind2_1 <- which(subway_data[[arrival_line]]$Name == arrival)
     Path2_Info <- get_pathinfo(total = Total_Transfer_Raw, start = Start_Ind2_1, 
                                end = End_Ind2_1, line = arrival_line)

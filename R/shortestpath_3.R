@@ -30,7 +30,6 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
     # process variable for get transfer line
     Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)][1]
     Transfer_Second_Line <- Transfer_Third_Ind[which(Transfer_Third_Ind%in%Transfer_Second_Ind)][1]
-    Transfer_Third_Line <- arrival_line
     Total_Transfer1_Raw <- nrow(subway_data[[Transfer_First_Line]])
     Total_Transfer2_Raw <- nrow(subway_data[[Transfer_Second_Line]])
     Start_Ind2_3 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_First$Name)
