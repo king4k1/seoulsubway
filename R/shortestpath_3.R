@@ -12,8 +12,8 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
   # get available transfer station list these results are list format and
   # get first/second/third transfer station.
   if(length(Transfer_List)==0){
-    stop("you can`t get a path from these transfer count number 3 
-       or station and line do not match")
+    stop("you can`t get a path from these transfer count number 3.
+also you should consider branch line '2-A', '2-B', '5-A', '6-A', 'K2'")
   }
   Transfer_3 <- list()
   for (i in seq_along(Transfer_List)) {

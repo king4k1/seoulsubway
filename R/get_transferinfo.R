@@ -155,10 +155,8 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
     cut_dup2 <- c()
     for (k in seq_along(transfer_arrival)) {
       cut_na[k] <- is.na(transfer_arrival[[k]]$third[1, 1])
-      cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1, 1] == 
-                             transfer_arrival[[k]]$second[1, 1])
-      cut_dup2[k] <- isTRUE(transfer_arrival[[k]]$second[1, 1] == 
-                              transfer_arrival[[k]]$third[1, 1])
+      cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1, 1] == transfer_arrival[[k]]$second[1, 1])
+      cut_dup2[k] <- isTRUE(transfer_arrival[[k]]$second[1, 1] == transfer_arrival[[k]]$third[1, 1])
     }
     # if second transfer station is null(no result) ==> remove one
     cut_ind <- which(cut_na)

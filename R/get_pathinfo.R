@@ -31,7 +31,7 @@ get_pathinfo <- function(total, start, end, line) {
       Path_Count <- 6 + end - start 
       Path_Time <- sum(subway_data[[line]][c(end:6,
                        1:start), "Time"]) - subway_data[[line]][start, "Time"] + 2 
-      # 6-A -> 6-A 순환구조 환승시간
+      # 6-A -> 6-A circulate line.
   }
   return(data.frame(count = as.numeric(Path_Count), time = as.numeric(Path_Time)))
 }
