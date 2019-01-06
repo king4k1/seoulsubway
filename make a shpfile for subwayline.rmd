@@ -1,0 +1,107 @@
+---
+title: "make a shpfile for subwayline"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### load packages
+```{r}
+library(maptools)
+library(rgdal)
+library(rgeos)
+library(seoulsubway)
+library(raster)
+```
+
+### test ! : from the sp vignette
+```{r}
+l1 <- cbind(c(1, 2, 3), c(3, 2, 2))
+l2 <- cbind(c(1, 2, 3), c(1, 1.5, 1))
+
+Sl1 <- Line(l1)
+Sl2 <- Line(l2)
+
+S1 <- Lines(list(Sl1), ID = "a")
+S2 <- Lines(list(Sl2), ID = "b")
+
+Sl <- SpatialLines(list(S1, S2))
+```
+
+### make it ! : seoul subway line
+```{r}
+data("subway_data")
+head(subway_data[["1-P"]])
+data_1_P <- subway_data[["1-P"]]
+l1 <- cbind(seq(data_1_P[1 ,"lat"], data_1_P[2,"lat"], length =5000), seq(data_1_P[1 ,"long"], data_1_P[2,"long"], length =5000))
+Sl1 <- Line(l1)
+plot(Sl1@coords)
+
+Line <- "1"
+make_linesp <- function(Line){
+  dat <- subway_data[[Line]]
+  Spline <- list()
+if(Line %in% c("2","6-A")){
+  for(i in 1:(nrow(dat)-1)){
+  ll <- cbind(seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000),
+              seq(dat[i,"long"], dat[i+1,"long"], length = 2000))
+  Sl <- Line(ll)
+  a <- paste0(Line,"_",i)
+  S1 <- Lines(list(Sl), ID = a)
+  Spline[[i]] <- S1
+  }
+  n <- nrow(dat)
+  ll <- cbind(seq(dat[n,"lat"], dat[1,"lat"], length = 2000),
+              seq(dat[n,"long"], dat[1,"long"], length = 2000))
+  Sl <- Line(ll)
+  a <- paste0(Line,"_",n)
+  S1 <- Lines(list(Sl), ID = a)
+  Spline[[nrow(dat)]] <- S1 
+}else{  
+  for(i in 1:(nrow(dat)-1)){
+  ll <- cbind(seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000),
+              seq(dat[i,"long"], dat[i+1,"long"], length = 2000))
+  Sl <- Line(ll)
+  a <- paste0(Line,"_",i)
+  S1 <- Lines(list(Sl), ID = a)
+  Spline[[i]] <- S1
+  }
+}
+Splineset <- SpatialLines(Spline)
+df <- data.frame(len = sapply(1:length(Splineset), function(i) gLength(Splineset[i, ])))
+rownames(df) <- sapply(1:length(Splineset), function(i) Splineset@lines[[i]]@ID)
+## SpatialLines to SpatialLinesDataFrame
+Sldf <- SpatialLinesDataFrame(Splineset, data = df)
+return(Sldf)
+}
+
+sp <- make_linesp("4")
+plot(sp)
+```
+
+### combine all line's shp to one shp file
+```{r}
+sp <- list()
+for(i in 1:length(subway_data)){
+  sp[[i]] <- make_linesp(names(subway_data)[i])
+}
+
+subway_shp <- bind(sp[[1]], sp[[2]])
+for(i in 3:21){
+  subway_shp <- bind(subway_shp, sp[[i]])
+}
+
+name <- rownames(sp[[1]]@data)
+for(i in 2:21){
+name <- c(name, rownames(sp[[i]]@data))
+}
+rownames(subway_shp@data) <- name
+
+for(i in 1:21){
+subway_shp@lines[[i]]@ID <- names(subway_data)[i]
+}
+
+a <- fortify(subway_shp)
+writeOGR(subway_shp, layer = 'subway_shp', "D:/seoulsubway/data", driver="ESRI Shapefile")
+```
+
