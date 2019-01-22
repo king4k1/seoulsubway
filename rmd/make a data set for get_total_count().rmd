@@ -30,7 +30,7 @@ seoul_route$승차역명 <- str_replace(seoul_route$승차역명, "이수", "총
 seoul_route$승차호선명 <- str_sub(seoul_route$승차호선명, 1, 1)
 colnames(seoul_route) <- c("Name", "Line")
 ind_2_A <- which(seoul_route$Name %in% c("용답","신답","용두","신설동"))
-ind_2_B <- which(seoul_route$Name %in% c("도림천","양천구청","신정네거리","까치산"))
+ind_2_B <- which(seoul_route$Name %in% c("도림천","양천구청","신정네거리"))
 ind_5_A <- which(seoul_route$Name %in% c("둔촌동","올림픽공원","방이", "오금","개롱","거여","마천"))
 ind_6_A <- which(seoul_route$Name %in% c("역촌","독바위","구산"))
 seoul_route[ind_2_A,]$Line <- "2-A"
@@ -39,10 +39,12 @@ seoul_route[ind_5_A,]$Line <- "5-A"
 seoul_route[ind_6_A,]$Line <- "6-A"
 seoul_route[seoul_route$Name=="신설동"][1]$Line <- "1" # 신설동역 2가지 호선에 대하여 하나는 1호선으로 표기 필요
 head(seoul_route)
-
+seoul_route[which(seoul_route$Name%in%c("불광","연신내")),][c(2,4),"Line"] <- "6-A"
+seoul_route[which(seoul_route$Name%in%c("오금")),"Line"]  <- c("3", "5-A")
+seoul_route[which(seoul_route$Name%in%c("강남")),"Line"]
 seoul_station <- subway_data_DT$Name
 seoul_station <- sort(unique(seoul_station))
-subway_make_list <- data.frame(matrix(0,1,460))
+subway_make_list <- data.frame(matrix(0,1,467))
 colnames(subway_make_list) <- seoul_station
 head(subway_make_list)
 
@@ -96,16 +98,20 @@ get_path(depart="봉화산", depart_line="6",
 ```{r}
 seoul_route <- seoul_route%>%arrange(Name)
 subway_route2 <- list()
-for(i in 1:276){
+for(i in 35:276){
   for(j in (i+1):277){
     subway_route2[[paste0(seoul_route[i,]$Name,"(",seoul_route[i,]$Line,")",
-                            "-",seoul_route[j,]$Name,"(",seoul_route[j,]$Line,")")]] <- get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
-                       arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line)
+                            "-",seoul_route[j,]$Name,"(",seoul_route[j,]$Line,")")]] <- tryCatch(get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
+                       arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line),
+                       error = function(e) {c("no result",0)
+                                 })
   }
   if(i %in% c(10*(1:25),277)){
     save(file="D:/subway_analysis/data/subway_route2.RData",subway_route2, seoul_route)
   }
 }
+get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
+                       arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line)
 
 ```
 
@@ -113,35 +119,51 @@ for(i in 1:276){
 ## handling for complete data set
 
 ```{r, eval= FALSE}
-find_null <- rep(0,38225)
-for(i in 1:38225){
+find_null <- rep(0,37497)
+null_set <- c()
+for(i in 1:37497){
+  if(is.null(nrow(subway_route2[[i]]))==TRUE){
+    null_set[i] <- (i)
+  }else{
   find_null[i] <- nrow(subway_route2[[i]])
+  }
 }
 
-null_set <- find_null[which(find_null==1)]
-null_set_list <- rep(0,313)
-for(i in 1:313){
-null_set_list[i] <- isTRUE(subway_route2[[which(find_null==1)[i]]][1,1]=="no result")
-}
-null_index <- which(find_null==1)[null_set_list==1]
-null_route_name <-names(subway_route2)[null_index]
+k <- which(is.na(null_set)==FALSE)
+
+null_route_name <-names(subway_route2)[k]
 null_route <- as.data.frame(null_route_name)
 
-for(i in 1:46){
-  subway_route2[[null_route_name[i]]] <- subway_route[[null_route_name[i]]]
-}
 null_route <- separate(null_route, null_route_name, c("depart","depart_line","arrival", "arrival_line"), sep="[(a)]")
 null_route$arrival <- str_remove(null_route$arrival, "-")
 
 ind<- which(null_route$arrival%in%c("마곡", "김포공항","송정","방화"))
 ind2<- which(null_route$arrival%in%c("도림천","신정네거리","양천구청"))
+ind3 <- which(null_route$depart%in%c("불광","연신내","응암"))
+ind4 <- which(null_route$depart%in%c("녹번","지축"))
+ind5 <- which(null_route$arrival%in%c("지축"))
+ind6 <- which(null_route$depart%in%c("양평"))
 get_path("구파발","3", "신도림","2")
 
 rbind(get_path("부천시청","7", "영등포구청","5"), get_path("양평", "5","송정","5"))
 
-for(i in 1:20){
-subway_route2[[null_route_name[i]]] <- get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i], arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i])
+for(i in ind4){
+subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i],arrival="응암",arrival_line="6"), get_path( depart = "응암", depart_line="6", arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i]))
 }
+
+for(i in ind5){
+subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i],"구파발","3"),data.frame(Path="지축",ind="57"))
+}
+
+for(i in ind6){
+subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i],"영등포구청","5"),get_path(depart = "영등포구청", depart_line = "5", arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i]))
+
+}
+
+for(i in ind3){
+subway_route2[[null_route_name[i]]] <- get_path(depart = null_route$depart[i], depart_line = "6-A", arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i])
+}
+
 for(i in ind){
 subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i], arrival="영등포구청", arrival_line ="5"), get_path("양평", "5",null_route$arrival[i],"5")) 
 }
@@ -151,7 +173,7 @@ subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart
 }
 
 subway_route <- subway_route2
-#save(file="C:/Users/82104/Desktop/subway_route.RData",subway_route)
+#save(file="C:/Users/82104/Desktop/subway_route.RData",subway_route2)
 #save(file="C:/Users/82104/Desktop/seoul_route.RData", seoul_route)
 
 ```

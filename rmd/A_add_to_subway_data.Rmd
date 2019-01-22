@@ -1,0 +1,91 @@
+---
+title: "Untitled"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(data.table)
+library(seoulsubway)
+
+```
+
+```{r}
+a <- data.table::fread(file.choose(), encoding = "UTF-8")
+
+
+subway_A <- a%>%filter(호선=="A")
+subway_A <- subway_A  %>% arrange(외부코드)
+data("subway_data")
+subway_A$Transfer <- 0
+subway_A$Dist <- 0
+subway_A$Time <- 0
+colnames(subway_A) <- colnames(subway_data[["9"]][5,])
+magok <- subway_data[["9"]][5,]
+magok$Line <- "A"
+
+subway_A <- rbind(subway_A[1:4,], magok, subway_A[5:12,])
+
+library(geosphere)
+d <- rep(0, 1, nrow(subway_A))
+for (j in 2:nrow(subway_A)) {
+    d[j] <- distHaversine(as.numeric(subway_A[j - 1, c("long","lat")]), 
+                          as.numeric(subway_A[j, c("long","lat")]))
+}
+subway_A$Dist <- d 
+subway_A$Time <- round(subway_A$Dist/566,2)
+
+data("transfer_station")
+setdiff(subway_A$Name, transfer_station$Name)
+# 서울, 공덕, 홍대입구, 디지털미디어시티, 김포공항 
+# 9호선 마곡나루 추가
+
+transfer_station[which(transfer_station$Name=="서울"),"Transfer"] <- "1|4|A|K2"
+subway_data[["1"]][Name=="서울","Transfer"][[1]] <- "4|A|K2"
+subway_data[["4"]][Name=="서울","Transfer"][[1]] <- "1|A|K2"
+subway_data[["K2"]][Name=="서울","Transfer"][[1]] <- "1|4|A"
+subway_A[Name=="서울","Transfer"][[1]] <- "1|4|K2"
+
+transfer_station[which(transfer_station$Name=="공덕"),"Transfer"] <- "5|6|A|K"
+subway_data[["5"]][Name=="공덕","Transfer"][[1]] <- "6|A|K"
+subway_data[["6"]][Name=="공덕","Transfer"][[1]] <- "5|A|K"
+subway_data[["K"]][Name=="공덕","Transfer"][[1]] <- "5|6|A"
+subway_A[Name=="공덕","Transfer"][[1]] <- "5|6|K"
+
+transfer_station[which(transfer_station$Name=="홍대입구"),"Transfer"] <- "2|A|K"
+subway_data[["2"]][Name=="홍대입구","Transfer"][[1]] <- "A|K"
+subway_data[["K"]][Name=="홍대입구","Transfer"][[1]] <- "2|A"
+subway_A[Name=="홍대입구","Transfer"][[1]] <- "2|K"
+
+transfer_station[which(transfer_station$Name=="디지털미디어시티"),"Transfer"] <- "6|A|K"
+subway_data[["6"]][Name=="디지털미디어시티","Transfer"][[1]] <- "A|K"
+subway_data[["K"]][Name=="디지털미디어시티","Transfer"][[1]] <- "6|A"
+subway_A[Name=="디지털미디어시티","Transfer"][[1]] <- "6|K"
+
+transfer_station[which(transfer_station$Name=="김포공항"),"Transfer"] <- "5|9|A"
+subway_data[["5"]][Name=="김포공항","Transfer"][[1]] <- "9|A"
+subway_data[["9"]][Name=="김포공항","Transfer"][[1]] <- "5|A"
+subway_A[Name=="김포공항","Transfer"][[1]] <- "5|9"
+
+subway_data[["9"]][Name=="마곡나루","Transfer"][[1]] <- "A"
+subway_A[Name=="마곡나루","Transfer"][[1]] <- "9"
+
+# 마곡나루 추가 
+transfer_station
+magok_t <- subway_data[["9"]][Name=="마곡나루",c("Name", "lat", "long", "Transfer")]
+magok_t$Transfer <- "9|A"
+transfer_station <- rbind(transfer_station, magok_t)
+subway_A
+
+subway_data[["A"]] <- subway_A
+
+#save(file="data/subway_data.RData", subway_data)
+#save(file="data/transfer_station.RData", transfer_station)
+#save(file="data/subway_data_DT.RData", subway_data_DT)
+data(subway_data_DT)
+
+subway_data_DT <- rbind(subway_data_DT, subway_A[,c("Name","Line","lat","long","Transfer","Dist","Time")])
+
+
+```
