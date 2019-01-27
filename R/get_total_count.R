@@ -6,7 +6,7 @@ get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, ar
   data("seoul_route")
   seoul_station <- subway_data_DT$Name
   seoul_station <- sort(unique(seoul_station))
-  total <- data.frame(matrix(0,1,460))
+  total <- data.frame(matrix(0,1,467))
   colnames(total) <- seoul_station
   depart <- dat[,depart_name]
   depart_line <- dat[,depart_line_name]
