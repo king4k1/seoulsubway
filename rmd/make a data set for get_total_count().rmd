@@ -12,6 +12,13 @@ editor_options:
 library(seoulsubway)
 library(data.table)
 data("subway_data_DT")
+data("subway_data")
+subway_data[["1-P"]]
+subway_data[["1-P"]][3,"Name"][[1]] <- "쌍용"
+subway_data_DT[which(subway_data_DT$Name=="쌍용"),"Name"][[1]] <- c("쌍용", "독산")
+
+save(file="D:/seoulsubway/subway_data.RData", subway_data)
+save(file="D:/seoulsubway/subway_data_DT.RData", subway_data_DT)
 ```
 
 ## get station_name vector for construct matrix
@@ -44,7 +51,7 @@ seoul_route[which(seoul_route$Name%in%c("오금")),"Line"]  <- c("3", "5-A")
 seoul_route[which(seoul_route$Name%in%c("강남")),"Line"]
 seoul_station <- subway_data_DT$Name
 seoul_station <- sort(unique(seoul_station))
-subway_make_list <- data.frame(matrix(0,1,467))
+subway_make_list <- data.frame(matrix(0,1,468))
 colnames(subway_make_list) <- seoul_station
 head(subway_make_list)
 
@@ -98,8 +105,8 @@ get_path(depart="봉화산", depart_line="6",
 ```{r}
 seoul_route <- seoul_route%>%arrange(Name)
 subway_route2 <- list()
-for(i in 35:276){
-  for(j in (i+1):277){
+for(i in 1:277){
+  for(j in i:277){
     subway_route2[[paste0(seoul_route[i,]$Name,"(",seoul_route[i,]$Line,")",
                             "-",seoul_route[j,]$Name,"(",seoul_route[j,]$Line,")")]] <- tryCatch(get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
                        arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line),
@@ -110,6 +117,7 @@ for(i in 35:276){
     save(file="D:/subway_analysis/data/subway_route2.RData",subway_route2, seoul_route)
   }
 }
+
 get_path(depart=seoul_route[i,]$Name, depart_line=seoul_route[i,]$Line,
                        arrival=seoul_route[j,]$Name, arrival_line=seoul_route[j,]$Line)
 
@@ -148,7 +156,7 @@ get_path("구파발","3", "신도림","2")
 rbind(get_path("부천시청","7", "영등포구청","5"), get_path("양평", "5","송정","5"))
 
 for(i in ind4){
-subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i],arrival="응암",arrival_line="6"), get_path( depart = "응암", depart_line="6", arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i]))
+subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i],arrival="응암",arrival_line="6"), get_path( depart = "새절", depart_line="6", arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i]))
 }
 
 for(i in ind5){
@@ -156,7 +164,7 @@ subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart
 }
 
 for(i in ind6){
-subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i],"영등포구청","5"),get_path(depart = "영등포구청", depart_line = "5", arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i]))
+subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i],"영등포구청","5"),get_path(depart = "양평", depart_line = "5", arrival=null_route$arrival[i], arrival_line =null_route$arrival_line[i]))
 
 }
 
@@ -169,7 +177,7 @@ subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart
 }
 
 for(i in ind2){
-subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i], arrival="신도림", arrival_line ="2"), get_path("신도림", "2-B",null_route$arrival[i],"2-B")) 
+subway_route2[[null_route_name[i]]] <- rbind(get_path(depart = null_route$depart[i], depart_line = null_route$depart_line[i], arrival="신도림", arrival_line ="2"), get_path("도림천", "2-B",null_route$arrival[i],"2-B")) 
 }
 
 subway_route <- subway_route2
@@ -228,6 +236,7 @@ for(i in 1:277){
     save(file="D:/subway_route2.RData",subway_route2)
   }
 }
+
 
 
 ```

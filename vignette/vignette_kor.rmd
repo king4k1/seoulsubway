@@ -51,13 +51,25 @@ get_pathinfo(total=nrow(subway_data[["2"]]), start=10, end=15, line="2")
 
 #### `get_transfercriteria()`는 두 역 사이의 위경도를 기준으로 모든 환승가능한 역을 산출합니다. 
 
-* 이때 penalty를 통하여 좀 더 넓은 기준을 주어 선택할 수 있으며 이는 분기점의 경우 위경도를 기준으로 산출하였을 시 환승가능한 역이 나오지 않는 경우를 대비하여 argument로 두었습니다.
+```{r, echo=FALSE, out.width=150}
+knitr::include_graphics("penalty1.png")
+```
+
+* 위 그림과 같이 penalty를 통하여 좀 더 넓은 기준을 주어 선택합니다.
+
+* 이는 분기점의 경우 위경도를 기준으로 산출하였을 시 환승가능한 역이 나오지 않는 경우를 대비하여 argument로 두었습니다.
 
 ```{r}
 get_transfercriteria(depart="먹골", arrival="혜화", penalty=0.05)
 ```
 
 #### `get_transferinfo()`는 두 역 사이의 모든 환승가능한 경우를 산출합니다.
+
+```{r, echo=FALSE, out.width=150}
+knitr::include_graphics("penalty2.png")
+```
+
+* 2번 환승하는 경우 `get_transferinfo()` 함수가 작동하는 원리는 위 그림과 같습니다.
 
 * 이때 count를 통하여 1,2,3번의 환승의 경우에 해당하는 환승 route를 제공합니다. 이 함수는 물론 get_transfercriteria가 매 단계 반복되는 구조로 제작하였습니다.(공간을 제약하는 방식을 사용합니다.)
 
