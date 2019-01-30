@@ -28,7 +28,8 @@ get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, ar
     total[which(seoul_station%in%result$station)] <- 
       total[which(seoul_station%in%result$station)] + 1
   }
-  
+  names(subway_route)
+  subway_route[["1"]]
   total_gather <- total%>%gather(key = "station", value = "count")
   time.finished <- Sys.time() # Store finished time
   time.elapsed  <- time.finished - time.started # Calculate elapsed time
