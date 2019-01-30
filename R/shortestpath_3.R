@@ -13,7 +13,7 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
   # get first/second/third transfer station.
   if(length(Transfer_List)==0){
     stop("you can`t get a path from these transfer count number 3.
-also you should consider branch line '2-A', '2-B', '5-A', '6-A', 'K2'")
+also you should consider branch line '2_A', '2_B', '5_A', '6_A', 'K_A'")
   }
   Transfer_3 <- list()
   for (i in seq_along(Transfer_List)) {
@@ -107,6 +107,6 @@ also you should consider branch line '2-A', '2-B', '5-A', '6-A', 'K2'")
   # select shortest path(time depend)
   Transfer_3 <- Transfer_3[[Path_3_Shortest]]
   Set <- get_pathresult(Transfer_3)
-  # get_route / consider line number 2 & 6-A for circulate system.
+  # get_route / consider line number 2 & 6_A for circulate system.
   return(Set)
 }

@@ -6,21 +6,13 @@ checkline <- function(dat, depart_line, arrival_line) {
   if (FALSE %in% (names(subway_data) %in% arrival_line)) {
     if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, 
                                                                   depart_line)) == FALSE) {
-      anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, "-")))
+      anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, "_")))
       if (isTRUE(length(anywrongdat) == 0) == FALSE) {
         dat <- dat[-anywrongdat, ]
       }
-      anywrongdat2 <- which(str_detect(dat$Transfer, paste0(arrival_line, "-")))
+      anywrongdat2 <- which(str_detect(dat$Transfer, paste0(arrival_line, "_")))
       if (isTRUE(length(anywrongdat2) == 0) == FALSE) {
         dat <- dat[-anywrongdat2, ]
-      }
-      anywrongdat3 <- which(str_detect(dat$Transfer, paste0(depart_line, "2")))
-      if (isTRUE(length(anywrongdat3) == 0) == FALSE) {
-        dat <- dat[-anywrongdat3, ]
-      }
-      anywrongdat4 <- which(str_detect(dat$Transfer, paste0(arrival_line, "2")))
-      if (isTRUE(length(anywrongdat4) == 0) == FALSE) {
-        dat <- dat[-anywrongdat4, ]
       }
     }
     # for consider a case of branch line
@@ -34,26 +26,10 @@ checkline <- function(dat, depart_line, arrival_line) {
         dat <- dat[anydat2, ]
       }
     }
-    anywrongdat3 <- which(str_detect(dat$Transfer, paste0("K", depart_line)))
-    if (isTRUE(length(anywrongdat3) == 0) == FALSE) {
-      dat <- dat[-anywrongdat3, ]
-    }
-    anywrongdat4 <- which(str_detect(dat$Transfer, paste0("K", arrival_line)))
-    if (isTRUE(length(anywrongdat4) == 0) == FALSE) {
-      dat <- dat[-anywrongdat4, ]
-    }
   }else{
-    anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, "-")))
+    anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, "_")))
     if (isTRUE(length(anywrongdat) == 0) == FALSE) {
       dat <- dat[-anywrongdat, ]
-    }
-    anywrongdat2 <- which(str_detect(dat$Transfer, paste0(depart_line, "2")))
-    if (isTRUE(length(anywrongdat2) == 0) == FALSE) {
-      dat <- dat[-anywrongdat2, ]
-    }
-    anywrongdat3 <- which(str_detect(dat$Transfer, paste0("K", depart_line)))
-    if (isTRUE(length(anywrongdat3) == 0) == FALSE) {
-      dat <- dat[-anywrongdat3, ]
     }
   }
   return(dat)

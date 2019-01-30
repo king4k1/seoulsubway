@@ -82,7 +82,7 @@ get_transferinfo(depart="먹골", depart_line="7",
 get_transferinfo(depart="먹골", depart_line="7", 
                  arrival="혜화", arrival_line="4", n=2)
 
-get_transferinfo(depart="강동", depart_line="5-A", 
+get_transferinfo(depart="강동", depart_line="5_A", 
                  arrival="봉화산", arrival_line="6", n=3)
 ```
 
@@ -119,7 +119,7 @@ shortestpath_2(depart="먹골", depart_line="7", arrival="혜화", arrival_line=
 * get_transferinfo(..., count=3) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
 
 ```{r, warning=FALSE}
-shortestpath_3(depart="강동", depart_line="5-A", 
+shortestpath_3(depart="강동", depart_line="5_A", 
                arrival="봉화산", arrival_line="6")
 ```
 
@@ -131,7 +131,7 @@ shortestpath_3(depart="강동", depart_line="5-A",
 * 만약 환승을 2번까지 하여도 나오지 않는 경로에 대하여는 `shortestpath_3()`이 작동한 결과를 산출합니다.
 
 ```{r, warning=FALSE}
-shortestpath(depart="강동", depart_line="5-A", 
+shortestpath(depart="강동", depart_line="5_A", 
                arrival="봉화산", arrival_line="6")
 ```
 

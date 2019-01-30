@@ -8,7 +8,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
                                     n = 1)
   if(nrow(Transfer_List)==0){
     stop("you can`t get a path from these transfer count number 1.
-also you should consider branch line '2-A', '2-B', '5-A', '6-A', 'K2'")
+also you should consider branch line '2_A', '2_B', '5_A', '6_A', 'K_A'")
   }
   # get available transfer station list
   Total_Depart_Raw <- nrow(subway_data[[depart_line]])
@@ -59,6 +59,6 @@ also you should consider branch line '2-A', '2-B', '5-A', '6-A', 'K2'")
   Transfer_1 <- Transfer_1[[Path_1_Shortest]]
   # get shortestpath(time depend)
   Set <- get_pathresult(Transfer_1)
-  # get_route / consider line number 2 & 6-A for circulate system.
+  # get_route / consider line number 2 & 6_A for circulate system.
   return(Set)
 }
