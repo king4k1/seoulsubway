@@ -43,24 +43,24 @@ make_linesp <- function(Line){
   Spline <- list()
 if(Line %in% c("2","6-A")){
   for(i in 1:(nrow(dat)-1)){
-  ll <- cbind(seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000),
-              seq(dat[i,"long"], dat[i+1,"long"], length = 2000))
+  ll <- cbind(seq(dat[i,"long"], dat[i+1,"long"], length = 2000),
+              seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000))
   Sl <- Line(ll)
   a <- paste0(Line,"_",i)
   S1 <- Lines(list(Sl), ID = a)
   Spline[[i]] <- S1
   }
   n <- nrow(dat)
-  ll <- cbind(seq(dat[n,"lat"], dat[1,"lat"], length = 2000),
-              seq(dat[n,"long"], dat[1,"long"], length = 2000))
+  ll <- cbind(seq(dat[n,"long"], dat[1,"long"], length = 2000),
+              seq(dat[n,"lat"], dat[1,"lat"], length = 2000))
   Sl <- Line(ll)
   a <- paste0(Line,"_",n)
   S1 <- Lines(list(Sl), ID = a)
   Spline[[nrow(dat)]] <- S1 
 }else{  
   for(i in 1:(nrow(dat)-1)){
-  ll <- cbind(seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000),
-              seq(dat[i,"long"], dat[i+1,"long"], length = 2000))
+  ll <- cbind(seq(dat[i,"long"], dat[i+1,"long"], length = 2000),
+              seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000))
   Sl <- Line(ll)
   a <- paste0(Line,"_",i)
   S1 <- Lines(list(Sl), ID = a)

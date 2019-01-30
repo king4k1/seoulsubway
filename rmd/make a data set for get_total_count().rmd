@@ -13,13 +13,10 @@ library(seoulsubway)
 library(data.table)
 data("subway_data_DT")
 data("subway_data")
-subway_data[["1-P"]]
-subway_data[["1-P"]][3,"Name"][[1]] <- "쌍용"
-subway_data_DT[which(subway_data_DT$Name=="쌍용"),"Name"][[1]] <- c("쌍용", "독산")
 
-save(file="D:/seoulsubway/subway_data.RData", subway_data)
-save(file="D:/seoulsubway/subway_data_DT.RData", subway_data_DT)
-save(file="D:/seoulsubway/seoul_station.RData", seoul_station)
+#save(file="D:/seoulsubway/subway_data.RData", subway_data)
+#save(file="D:/seoulsubway/subway_data_DT.RData", subway_data_DT)
+#save(file="D:/seoulsubway/seoul_station.RData", seoul_station)
 ```
 
 ## get station_name vector for construct matrix

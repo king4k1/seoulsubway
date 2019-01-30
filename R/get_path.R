@@ -12,22 +12,18 @@ get_path <- function(depart, depart_line, arrival, arrival_line){
   if(result$Time!=300 & nrow(result$Info)==1){
     station <- result$Path
     station <- station$Name
-    ind <- which(seoul_station%in%station)
   }
   if(result$Time!=300 & nrow(result$Info)==2){
     station <- rbind(result$Path1, result$Path2)
     station <- station[-which(duplicated(station$Name)),]$Name
-    ind <- which(seoul_station%in%station)
   }
   if(result$Time!=300 & nrow(result$Info)==3){
     station <- rbind(result$Path1, result$Path2, result$Path3)
     station <- station[-which(duplicated(station$Name)),]$Name
-    ind <- which(seoul_station%in%station)
   }
   if(result$Time!=300 & nrow(result$Info)==4){
     station <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
     station <- station[-which(duplicated(station$Name)),]$Name
-    ind <- which(seoul_station%in%station)
   }
-  return(data.frame(station, ind))
+  return(data.frame(station))
 }
