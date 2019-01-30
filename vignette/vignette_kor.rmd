@@ -162,6 +162,7 @@ subway_route[["가락시장(8)-강남(2)"]]
 
 ```{r}
 total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", depart_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
+
 ```
 
 * 산출된 결과를 5000개의 경로에 대한 정보를 total_count에 저장한 후 500count 이상을 기록한 지하철역만을 산출하여 그림으로 그려보았습니다. 이러한 방식으로 다음단계의 분석이 가능할 것 같습니다.
