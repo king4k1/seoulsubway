@@ -28,8 +28,10 @@ shortestpath <- function(depart, depart_line, arrival, arrival_line) {
     Total <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
                                      arrival = arrival, arrival_line = arrival_line), error = function(e) {
                                        Total = list(Time = 300)
-                                       message("you can`t get a path if station and line do not match.
-also you should consider branch line '2_A','2_B','5_A','6_A' and 'K_A'
+                                       message("If the station and the line do not match, the route can not be obtained.
+also you should consider branch line '1_A','1_B','2_A','2_B','5_A','6_A' and 'K_A'
+* Geumcheon-gu Office to Kwang Myung Station : '1_A' 
+* Byeongjeom to Seodongtan Station : '1_B'
 * Seongsu to Sinseol-dong Station : '2_A' \n* Sindorim to Kkachisan Station : '2_B'
 * Gangdong to Macheon Station : '5_A' \n* Eungam to Gusan(also include Eungam) Station : '6_A'
 * Gajwa to Seoul Station : 'K_A'")
