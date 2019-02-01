@@ -1,23 +1,18 @@
 # get_total_count
 
-get_total_count <- function(dat, depart_name, depart_line_name, arrival_name, arrival_line_name){
+get_total_count <- function(dat, depart_name, arrival_name){
   data("subway_route")
   data("seoul_station")
   total <- data.frame(matrix(0,1,468))
   colnames(total) <- seoul_station
   depart <- dat[,depart_name]
-  depart_line <- dat[,depart_line_name]
   arrival <- dat[,arrival_name]
-  arrival_line <- dat[,arrival_line_name]
-  
   time.started <- Sys.time()
   cat(paste('Started at : ', time.started, ' / ...ing...', sep = ''))
   
   for(i in 1:nrow(dat)){
-    get <- paste0(depart[i], "(", depart_line[i], ")", "-", 
-                  arrival[i], "(", arrival_line[i], ")")
-    get_2 <- paste0(arrival[i], "(", arrival_line[i], ")", "-",
-                    depart[i], "(", depart_line[i], ")")
+    get <- paste0(depart[i], "-", arrival[i])
+    get_2 <- paste0(arrival[i], "-", depart[i])
     result <- subway_route[[get]]
     if(is.null(result)){
       result <- subway_route[[get_2]]  

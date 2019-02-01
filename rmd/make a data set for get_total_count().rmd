@@ -137,11 +137,10 @@ for(i in 1:38226){
 }
 
 k <- which(is.na(null_set)==FALSE)
-
 null_route_name <-names(subway_route2)[k]
 null_route <- as.data.frame(null_route_name)
 
-null_route <- separate(null_route, null_route_name, c("depart","depart_line","arrival", "arrival_line"), sep="[(a)]")
+null_route <- tidyr::separate(null_route, null_route_name, c("depart","depart_line","arrival", "arrival_line"), sep="[(a)]")
 null_route$arrival <- str_remove(null_route$arrival, "-")
 
 ind<- which(null_route$arrival%in%c("마곡", "김포공항","송정","방화"))
@@ -271,4 +270,8 @@ for(i in 1:277){
   }
 }
 
+
+for(i in 1:9621){
+  subway_route_sna[[ind[i]]] <- NULL
+}
 ```
