@@ -992,14 +992,14 @@ subway_route[[<span class="st">&quot;혜화(4)-먹골(7)&quot;</span>]]</code></
 ##             arrival = arrival, arrival_line = arrival_line), 
 ##             error = function(e) {
 ##                 Total = list(Time = 300)
-##                 message(&quot;you can`t get a path if station and line do not match.\nalso you should consider branch line '2_A','2_B','5_A','6_A' and 'K_A'\n* Seongsu to Sinseol-dong Station : '2_A' \n* Sindorim to Kkachisan Station : '2_B'\n* Gangdong to Macheon Station : '5_A' \n* Eungam to Gusan(also include Eungam) Station : '6_A'\n* Gajwa to Seoul Station : 'K_A'&quot;)
+##                 message(&quot;If the station and the line do not match, the route can not be obtained.\nalso you should consider branch line '1_P','1_A','1_B','2_A','2_B','5_A','6_A' and 'K_A'\n* Guro to Shin Chang Station : '1_P'\n* Geumcheon-gu Office to Kwang Myung Station : '1_A' \n* Byeongjeom to Seodongtan Station : '1_B'\n* Seongsu to Sinseol-dong Station : '2_A' \n* Sindorim to Kkachisan Station : '2_B'\n* Gangdong to Macheon Station : '5_A' \n* Eungam to Gusan(also include Eungam) Station : '6_A'\n* Gajwa to Seoul Station : 'K_A'&quot;)
 ##             })
 ##     }
 ##     return(Total)
 ## }
 ## &lt;environment: namespace:seoulsubway&gt;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">shortestpath</span>(<span class="dt">depart=</span><span class="st">&quot;강동&quot;</span>, <span class="dt">depart_line=</span><span class="st">&quot;5_A&quot;</span>, 
-               <span class="dt">arrival=</span><span class="st">&quot;봉화산&quot;</span>, <span class="dt">arrival_line=</span><span class="st">&quot;6&quot;</span>)</code></pre></div>
+             <span class="dt">arrival=</span><span class="st">&quot;봉화산&quot;</span>, <span class="dt">arrival_line=</span><span class="st">&quot;6&quot;</span>)</code></pre></div>
 <pre><code>## $Info
 ##     Depart Line Count  Time   Arrive
 ## 1     강동  5_A     0  0.00     강동
@@ -1064,6 +1064,22 @@ subway_route[[<span class="st">&quot;혜화(4)-먹골(7)&quot;</span>]]</code></
 ## 31        7 890.60 1.57
 ## 32        0 874.97 1.55
 ## 33        0 667.91 1.18</code></pre>
+<ul>
+<li>잘못된 경로에 대하여 다음과 같은 메시지를 남깁니다.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">shortestpath</span>(<span class="dt">depart=</span><span class="st">&quot;혜화&quot;</span>, <span class="dt">depart_line=</span><span class="st">&quot;2&quot;</span>,
+             <span class="dt">arrival =</span> <span class="st">&quot;먹골&quot;</span>, <span class="dt">arrival_line =</span><span class="st">&quot;7&quot;</span>)</code></pre></div>
+<pre><code>## If the station and the line do not match, the route can not be obtained.
+## also you should consider branch line '1_P','1_A','1_B','2_A','2_B','5_A','6_A' and 'K_A'
+## * Guro to Shin Chang Station : '1_P'
+## * Geumcheon-gu Office to Kwang Myung Station : '1_A' 
+## * Byeongjeom to Seodongtan Station : '1_B'
+## * Seongsu to Sinseol-dong Station : '2_A' 
+## * Sindorim to Kkachisan Station : '2_B'
+## * Gangdong to Macheon Station : '5_A' 
+## * Eungam to Gusan(also include Eungam) Station : '6_A'
+## * Gajwa to Seoul Station : 'K_A'</code></pre>
+<pre><code>## NULL</code></pre>
 </div>
 </div>
 <div id="---" class="section level3">
@@ -1118,7 +1134,7 @@ subway_route[[<span class="st">&quot;혜화(4)-먹골(7)&quot;</span>]]</code></
 <li><p><code>subway_sample</code> 을 이용하여 5000개의 경로에 대한 누적결과를 산출하는데 5~6분 정도의 시간이 소요되는 것을 확인하였습니다.</p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">total_count &lt;-<span class="st"> </span><span class="kw">get_total_count</span>(<span class="dt">dat=</span>subway_sample, <span class="dt">depart_name =</span> <span class="st">&quot;up_Name&quot;</span>, <span class="dt">depart_line_name =</span> <span class="st">&quot;up_Line&quot;</span>, <span class="dt">arrival_name =</span> <span class="st">&quot;down_Name&quot;</span>, <span class="dt">arrival_line_name =</span> <span class="st">&quot;down_Line&quot;</span>)</code></pre></div>
-<pre><code>## Started at : 2019-02-01 12:29:20 / ...ing...Finished..! / elapsed time : 5.48851370016734</code></pre>
+<pre><code>## Started at : 2019-02-01 12:55:21 / ...ing...Finished..! / elapsed time : 5.2312998175621</code></pre>
 <ul>
 <li>산출된 결과를 5000개의 경로에 대한 정보를 total_count에 저장한 후 500count 이상을 기록한 지하철역만을 산출하여 그림으로 그려보았습니다. 이러한 방식으로 다음단계의 분석이 가능할 것 같습니다.</li>
 </ul>
