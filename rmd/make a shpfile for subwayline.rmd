@@ -31,8 +31,8 @@ Sl <- SpatialLines(list(S1, S2))
 ### make it ! : seoul subway line
 ```{r}
 data("subway_data")
-head(subway_data[["1-P"]])
-data_1_P <- subway_data[["1-P"]]
+head(subway_data[["1_P"]])
+data_1_P <- subway_data[["1_P"]]
 l1 <- cbind(seq(data_1_P[1 ,"lat"], data_1_P[2,"lat"], length =5000), seq(data_1_P[1 ,"long"], data_1_P[2,"long"], length =5000))
 Sl1 <- Line(l1)
 plot(Sl1@coords)
@@ -41,7 +41,7 @@ Line <- "1"
 make_linesp <- function(Line){
   dat <- subway_data[[Line]]
   Spline <- list()
-if(Line %in% c("2","6-A")){
+if(Line %in% c("2","6_A")){
   for(i in 1:(nrow(dat)-1)){
   ll <- cbind(seq(dat[i,"long"], dat[i+1,"long"], length = 2000),
               seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000))
@@ -75,7 +75,7 @@ Sldf <- SpatialLinesDataFrame(Splineset, data = df)
 return(Sldf)
 }
 
-sp <- make_linesp("4")
+sp <- make_linesp("2")
 plot(sp)
 ```
 
@@ -87,21 +87,60 @@ for(i in 1:length(subway_data)){
 }
 
 subway_shp <- bind(sp[[1]], sp[[2]])
-for(i in 3:21){
+for(i in 3:22){
   subway_shp <- bind(subway_shp, sp[[i]])
 }
 
 name <- rownames(sp[[1]]@data)
-for(i in 2:21){
+for(i in 2:22){
 name <- c(name, rownames(sp[[i]]@data))
 }
 rownames(subway_shp@data) <- name
 
-for(i in 1:21){
+for(i in 1:22){
 subway_shp@lines[[i]]@ID <- names(subway_data)[i]
 }
 
-a <- fortify(subway_shp)
-writeOGR(subway_shp, layer = 'subway_shp', "D:/seoulsubway/data", driver="ESRI Shapefile")
+make_ds_sna <- function(line){
+  n <- nrow(subway_data[[line]])
+  adj <- data.frame(matrix(0,n-1,3))
+  colnames(adj) <- c("출발역", "도착역", "호선")
+  if(isTRUE(line!="2")){
+    for(i in 1:(n-1)){
+    adj[i,] <- c(subway_data[[line]][i,"ExCode"], 
+                 subway_data[[line]][i+1,"ExCode"], line)
+    }
+  }
+  subway_data[["1"]]
+  if(line=="6_A"){
+    for(i in 1:(n-1)){
+    adj[i,] <- c(subway_data[[line]][i,"ExCode"], 
+                 subway_data[[line]][i+1,"ExCode"], line)
+    }
+    adj <- rbind(adj, data.frame("출발역"="615", "도착역" ="610",
+                                 "호선"="6_A"))
+  }
+  if(line=="2"){
+    for(i in 1:(n-1)){
+    adj[i,] <- c(subway_data[[line]][i,"ExCode"], 
+                 subway_data[[line]][i+1,"ExCode"], line)
+    }
+    adj <- rbind(adj, data.frame("출발역"="243", "도착역" ="201",
+                                   "호선"="2"))
+  }
+  return(adj)
+}
+
+mat <- make_ds_sna("1") 
+for(i in 2:22){
+  mat <- rbind(mat, make_ds_sna(names(subway_data)[i]))
+}
+
+mat$Name <- paste0(mat$호선,"_", mat$출발역, "_", mat$도착역)
+head(mat)
+rownames(subway_shp@data) <- mat$Name
+subway_shp@data
+subway_shp@data$name  <- mat$Name
+writeOGR(subway_shp, layer = 'subway_shp', "D:/seoulsubway/SNA", driver="ESRI Shapefile")
 ```
 
