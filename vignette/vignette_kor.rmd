@@ -95,7 +95,6 @@ subway_route[["먹골(7)-혜화(4)"]]
 * 6_A(응암순환)의 경우 단일방향으로의 이동만 가능한 것을 고려하였습니다.
 
 ```{r, warning=FALSE}
-eval(get_pathinfo)
 get_pathinfo(total=nrow(subway_data[["2"]]), start=10, end=15, line="2")
 
 # 위 결과는 2호선 내 10번째 역과 15번째 역 사이의 소요시간과 이동회수를 산출하였습니다.
@@ -120,7 +119,6 @@ knitr::include_graphics("penalty1.png")
 * penalty는 환승역의 경우 우회하는 경로에 대한 정보를 포함하기 위하여 존재합니다.
 
 ```{r}
-eval(get_transfercriteria)
 get_transfercriteria(depart="먹골", arrival="혜화", penalty=0.05)
 ```
 
@@ -147,7 +145,6 @@ knitr::include_graphics("penalty2.png")
 
 * 함수 내부에 `checkline()` 이라는 함수를 두어 각 단계별 depart_line과 arrival_line을 기준으로 환승가능한 역에 대한 정확한 정보만을 선택하는 과정을 두었습니다.
 ```{r}
-eval(get_transferinfo)
 # 단계에 대한 설명은 공간을 제약하여 환승경유지를 산출하고, 환승경로가 동일한 역 혹은 결측값으로 나오는 경우는 제외한 정보를 포함하는 결과만을 산출함.
 ```
 
@@ -189,7 +186,6 @@ get_transferinfo(depart="강동", depart_line="5_A",
 #### `shortestpath_0(depart, depart_line, arrival, arrival_line)` 
 
 ```{r}
-eval(shortestpath_0)
 shortestpath_0(depart="먹골", depart_line="7", arrival="건대입구", arrival_line="7")
 ```
 
@@ -199,7 +195,6 @@ shortestpath_0(depart="먹골", depart_line="7", arrival="건대입구", arrival
 * get_transferinfo(..., count=1) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
 
 ```{r}
-eval(shortestpath_1)
 shortestpath_1(depart="먹골", depart_line="7", arrival="혜화", arrival_line="4")
 ```
 
@@ -230,7 +225,6 @@ shortestpath_3(depart="강동", depart_line="5_A",
 * 효율적인 함수 구성을 위하여 환승을 2번까지 하여도 나오지 않는 경로에 대하여만 `shortestpath_3()`이 작동한 결과를 산출합니다.
 
 ```{r, warning=FALSE}
-eval(shortestpath)
 shortestpath(depart="강동", depart_line="5_A", 
              arrival="봉화산", arrival_line="6")
 ```
@@ -268,7 +262,7 @@ subway_route[["가락시장(8)-강남(2)"]]
 
 * `subway_route`의 38226가지 경우는 277X277행렬의 하삼각행렬으로써 만약 경로가 없다면 상삼각행렬의 해당하는 경로를 산출하는 "도착역(도착호선)-출발역(출발호선)" 의 경우를 산출합니다.
 
-* `subway_sample` 을 이용하여 5000개의 경로에 대한 누적결과를 산출하는데 5~6분 정도의 시간이 소요되는 것을 확인하였습니다. 
+* `subway_sample` 을 이용하여 5000개의 경로에 대한 누적결과를 산출하는데 2~3분 정도의 시간이 소요되는 것을 확인하였습니다. 
 
 ```{r}
 total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", 
