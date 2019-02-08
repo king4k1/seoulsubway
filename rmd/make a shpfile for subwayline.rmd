@@ -80,6 +80,8 @@ plot(sp)
 ```
 
 ### combine all line's shp to one shp file
+
+* set rownames as station's ExCode's format
 ```{r}
 sp <- list()
 for(i in 1:length(subway_data)){
@@ -101,34 +103,31 @@ for(i in 1:22){
 subway_shp@lines[[i]]@ID <- names(subway_data)[i]
 }
 
-make_ds_sna <- function(line){
-  n <- nrow(subway_data[[line]])
-  adj <- data.frame(matrix(0,n-1,3))
-  colnames(adj) <- c("출발역", "도착역", "호선")
-  if(isTRUE(line!="2")){
-    for(i in 1:(n-1)){
-    adj[i,] <- c(subway_data[[line]][i,"ExCode"], 
-                 subway_data[[line]][i+1,"ExCode"], line)
+make_ds_sna <- function(line) {
+    n <- nrow(subway_data[[line]])
+    adj <- data.frame(matrix(0, n - 1, 3))
+    colnames(adj) <- c("출발역", "도착역", "호선")
+    if (isTRUE(line != "2")) {
+        for (i in 1:(n - 1)) {
+            adj[i, ] <- c(subway_data[[line]][i, "ExCode"], subway_data[[line]][i + 
+                1, "ExCode"], line)
+        }
     }
-  }
-  subway_data[["1"]]
-  if(line=="6_A"){
-    for(i in 1:(n-1)){
-    adj[i,] <- c(subway_data[[line]][i,"ExCode"], 
-                 subway_data[[line]][i+1,"ExCode"], line)
+    if (line == "6_A") {
+        for (i in 1:(n - 1)) {
+            adj[i, ] <- c(subway_data[[line]][i, "ExCode"], subway_data[[line]][i + 
+                1, "ExCode"], line)
+        }
+        adj <- rbind(adj, data.frame(출발역 = "615", 도착역 = "610", 호선 = "6_A"))
     }
-    adj <- rbind(adj, data.frame("출발역"="615", "도착역" ="610",
-                                 "호선"="6_A"))
-  }
-  if(line=="2"){
-    for(i in 1:(n-1)){
-    adj[i,] <- c(subway_data[[line]][i,"ExCode"], 
-                 subway_data[[line]][i+1,"ExCode"], line)
+    if (line == "2") {
+        for (i in 1:(n - 1)) {
+            adj[i, ] <- c(subway_data[[line]][i, "ExCode"], subway_data[[line]][i + 
+                1, "ExCode"], line)
+        }
+        adj <- rbind(adj, data.frame(출발역 = "243", 도착역 = "201", 호선 = "2"))
     }
-    adj <- rbind(adj, data.frame("출발역"="243", "도착역" ="201",
-                                   "호선"="2"))
-  }
-  return(adj)
+    return(adj)
 }
 
 mat <- make_ds_sna("1") 
