@@ -39,28 +39,28 @@ plot(Sl1@coords)
 
 Line <- "1"
 make_linesp <- function(Line){
-  dat <- subway_data[[Line]]
+  line_data <- subway_data[[Line]]
   Spline <- list()
 if(Line %in% c("2","6_A")){
-  for(i in 1:(nrow(dat)-1)){
-  ll <- cbind(seq(dat[i,"long"], dat[i+1,"long"], length = 2000),
-              seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000))
+  for(i in 1:(nrow(line_data)-1)){
+  ll <- cbind(seq(line_data[i,"long"], line_data[i+1,"long"], length = 2000),
+              seq(line_data[i,"lat"], line_data[i+1,"lat"], length = 2000))
   Sl <- Line(ll)
   a <- paste0(Line,"_",i)
   S1 <- Lines(list(Sl), ID = a)
   Spline[[i]] <- S1
   }
-  n <- nrow(dat)
-  ll <- cbind(seq(dat[n,"long"], dat[1,"long"], length = 2000),
-              seq(dat[n,"lat"], dat[1,"lat"], length = 2000))
+  n <- nrow(line_data)
+  ll <- cbind(seq(line_data[n,"long"], line_data[1,"long"], length = 2000),
+              seq(line_data[n,"lat"], line_data[1,"lat"], length = 2000))
   Sl <- Line(ll)
   a <- paste0(Line,"_",n)
   S1 <- Lines(list(Sl), ID = a)
-  Spline[[nrow(dat)]] <- S1 
+  Spline[[nrow(line_data)]] <- S1 
 }else{  
-  for(i in 1:(nrow(dat)-1)){
-  ll <- cbind(seq(dat[i,"long"], dat[i+1,"long"], length = 2000),
-              seq(dat[i,"lat"], dat[i+1,"lat"], length = 2000))
+  for(i in 1:(nrow(line_data)-1)){
+  ll <- cbind(seq(line_data[i,"long"], line_data[i+1,"long"], length = 2000),
+              seq(line_data[i,"lat"], line_data[i+1,"lat"], length = 2000))
   Sl <- Line(ll)
   a <- paste0(Line,"_",i)
   S1 <- Lines(list(Sl), ID = a)
@@ -140,6 +140,6 @@ head(mat)
 rownames(subway_shp@data) <- mat$Name
 subway_shp@data
 subway_shp@data$name  <- mat$Name
-writeOGR(subway_shp, layer = 'subway_shp', "D:/seoulsubway/SNA", driver="ESRI Shapefile")
+writeOGR(subway_shp, layer = 'subway_shp', "/SNA", driver="ESRI Shapefile")
 ```
 
