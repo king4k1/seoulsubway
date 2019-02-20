@@ -1,0 +1,143 @@
+---
+title: "update transfer_info"
+author: "Kwangmin Son"
+date: "2019년 2월 20일"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(seoulsubway)
+library(data.table)
+library(lubridate)
+```
+
+# preprocessing
+```{r}
+data("transfer_info")
+transfer_infoset <- fread(file="transfer_infoset.csv")
+head(transfer_infoset)
+head(transfer_info)
+arrow <- str_sub(transfer_infoset$환승노선,2,2)[1]
+
+transfer_infoset <- transfer_infoset %>% 
+  separate(환승노선, c('Transfer_Line', 'Transfer_Line2'), sep=arrow) %>%
+  as_tibble
+
+# 호선명 통일화 
+transfer_infoset <- 
+  transfer_infoset[-which(transfer_infoset$Transfer_Line2%in%
+                            c("경춘선", "인천1호선")),]
+
+transfer_infoset$Transfer_Line2 <- 
+  str_remove(transfer_infoset$Transfer_Line2, "[(]")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_remove(transfer_infoset$Transfer_Line2, "[)]")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, '호선마천', "_A")
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "호선상일동", "_B")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "공항철도", "A")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "우이경전철", "UI")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "경의중앙선", "K")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "신분당선", "S")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "분당선", "B")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "8호선모란,가락시장", "8")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "8호선잠실,암사", "8")
+
+transfer_infoset$Transfer_Line2 <- 
+  str_remove(transfer_infoset$Transfer_Line2, "호선")
+
+transfer_infoset$Transfer_Line2[31] <- "2_B"
+transfer_infoset$Transfer_Line2[90] <- "5_A"
+
+transfer_infoset$Transfer_Line2 <- 
+  str_replace(transfer_infoset$Transfer_Line2, "경부선", "1_P")
+
+transfer_infoset$Transfer_Line2 <- 
+  ifelse(transfer_infoset$Transfer_Line2%in%c("국철","경원선","경인선"),
+       "1",transfer_infoset$Transfer_Line2)
+
+# 잘못된 정보 제거 
+transfer_infoset <- 
+  transfer_infoset[-which(transfer_infoset$환승역명=="옥수"),]
+
+transfer_infoset <- 
+  transfer_infoset[-which(transfer_infoset$환승역명=="청량리"),]
+
+transfer_infoset <- transfer_infoset %>% 
+  select(환승역명, Transfer_Line, `환승거리(m)`,
+             `환승 소요시간(초)`, Transfer_Line2) %>% 
+  rename(Transfer_Name = 환승역명,
+         Transfer_Dist = `환승거리(m)`,
+         Transfer_Time = `환승 소요시간(초)`)
+
+# 시간 정보 통일
+tr_minute <- ifelse(str_count(transfer_infoset$Transfer_Time)>=5, 
+                    str_sub(transfer_infoset$Transfer_Time, 1, 1), "0")
+tr_second <- round(as.numeric(str_sub(transfer_infoset$Transfer_Time, -3, -2))/60, 2)
+
+transfer_infoset$Transfer_Time <- as.numeric(tr_minute) + as.numeric(tr_second)
+
+# 역명 통일
+transfer_infoset$Transfer_Name <- str_remove(transfer_infoset$Transfer_Name, " ")
+transfer_infoset$Transfer_Name <- str_replace(transfer_infoset$Transfer_Name, "서울역", "서울")
+transfer_infoset$Transfer_Name <- str_replace(transfer_infoset$Transfer_Name, "이수", "총신대입구")
+transfer_infoset$Transfer_Name <- str_replace(transfer_infoset$Transfer_Name, "역사문화공원", "동대문역사문화공원")
+transfer_infoset$Transfer_Name <- str_replace(transfer_infoset$Transfer_Name, "동대문동대문역사문화공원", "동대문역사문화공원")
+
+# 재확인 후 수정사항 변경
+transfer_infoset[which(transfer_infoset$Transfer_Name=="성수"),"Transfer_Line2"][[1]] <- "2_A"
+transfer_infoset[which(transfer_infoset$Transfer_Name == "연신내"),]$Transfer_Line <- c("3", "6_A")
+transfer_infoset[which(transfer_infoset$Transfer_Name == "연신내"),]$Transfer_Line2 <- c("6_A", "3")
+transfer_infoset[which(transfer_infoset$Transfer_Name == "불광"),]$Transfer_Line <- c("3", "6_A")
+transfer_infoset[which(transfer_infoset$Transfer_Name == "불광"),]$Transfer_Line2 <- c("6_A", "3")
+transfer_infoset[which(transfer_infoset$Transfer_Name == "올림픽공원")[3],]$Transfer_Line2 <- "5_A"
+transfer_infoset <- transfer_infoset[-132,]
+transfer_infoset[which(transfer_infoset$Transfer_Name == "올림픽공원")[1],]$Transfer_Line <- "5_A"
+
+transfer_infoset$Set_Name <- '2018edit'
+transfer_info$Set_Name <- '2017edit'
+
+transfer_infoset <- transfer_infoset %>%
+  mutate_all(as.character) %>%
+  as.data.table
+
+transfer_info_edit <- full_join(transfer_infoset, transfer_info)
+transfer_info_edit
+
+transfer_info_edit_prec <- transfer_info_edit %>%
+  select(Transfer_Name, Transfer_Line, Transfer_Line2)
+
+transfer_info_edit_prec<- transfer_info_edit_prec[-which(duplicated(transfer_info_edit_prec)),]
+
+transfer_info_2 <- transfer_info_edit[setdiff(1:285, which(duplicated(transfer_info_edit_prec))),]
+
+transfer_info_2[which(transfer_info_2$Transfer_Name=="고속터미널"),]
+transfer_info[which(transfer_info$Transfer_Name=="고속터미널"),]
+rownames(transfer_info_2) <- NULL
+transfer_info_2 <- transfer_info_2 %>% 
+  select(-Set_Name)
+transfer_info <- transfer_info_2
+transfer_info <- as.data.table(transfer_info)
+save(file="data/transfer_info.RData", transfer_info)
+mean(as.numeric(transfer_info_2$Transfer_Time))
+
+```
