@@ -5,7 +5,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   data("subway_data", envir = environment())
   data("transfer_info", envir = environment())
   Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
-                                    n = 1)
+                                    transfer_count = 1)
   if(nrow(Transfer_List)==0){
     stop("you can`t get a path from these transfer count number 1.
 also you should consider branch line '2_A', '2_B', '5_A', '6_A', 'K_A'")

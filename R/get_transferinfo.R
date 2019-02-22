@@ -12,14 +12,14 @@
 
 # 이 함수는 shortestpath()함수의 속도를 향상시키기 위함에 목적이 있다.
 
-get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
+get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfer_count) {
   data("subway_data_DT", envir = environment())
   data("transfer_info", envir = environment())
   data("subway_data", envir = environment())
   # load data
   transfer_long <- get_transfercriteria(depart, arrival, penalty = 0.05)
   # set criteria for available transfer station
-  if (n == 1) {
+  if (transfer_count == 1) {
     transfer_depart <- transfer_long[str_which(transfer_long$Transfer, 
                                                fixed(depart_line)), ]
     transfer_arrival <- transfer_depart[str_which(transfer_depart$Transfer, 
@@ -30,7 +30,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
     transfer_arrival <- transfer_arrival[which(transfer_arrival$Name %in% 
                                                  subway_data[[arrival_line]]$Name), ]
   }
-  if (n == 2) {
+  if (transfer_count == 2) {
     transfer_arrival <- list()
     transfer_middle <- transfer_long[str_which(transfer_long$Transfer, 
                                                fixed(depart_line)), ]
@@ -62,6 +62,18 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
         # find available transfer station(depart, arrival both)
         transfer_middle_get <- checkline(transfer_middle_get, depart_line = transfer_middle_list[j], 
                                          arrival_line = arrival_line)
+        if(nrow(transfer_middle_get)==0){
+          transfer_long <- get_transfercriteria(transfer_middle_second[j2, "Name"], 
+                                                arrival, penalty = 0.1)
+          transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
+                                                         fixed(transfer_middle2_list[j])), ]
+          transfer_middle_get <- transfer_middle_get[str_which(transfer_middle_get$Transfer, 
+                                                               fixed(arrival_line)), ]
+          transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in% 
+                                                             subway_data[[transfer_middle2_list[j]]]$Name), ]
+          transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in% 
+                                                             subway_data[[arrival_line]]$Name), ]
+        }
         # use checkline for erro selection.
         for (k in 1:nrow(transfer_middle_get)) {
           transfer_arrival[[paste0(i, "-", j, "-", k)]] <- list(first = transfer_middle[i, ],
@@ -87,12 +99,13 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
       transfer_arrival[[cut_dup[l]]] <- NULL
     }
   }
-  if (n == 3) {
+  if (transfer_count == 3) {
     transfer_arrival <- list()
     transfer_middle_first <- transfer_long[str_which(transfer_long$Transfer, 
                                                      fixed(depart_line)), ]
-    # set available transfer station for waypoint.(== first transfer
-    # station)
+    
+    # set available transfer station for waypoint.
+    # (== first transfer station)
     transfer_middle_first <- checkline(dat = transfer_middle_first, 
                                        depart_line = depart_line, arrival_line = names(subway_data))
     for (i in 1:nrow(transfer_middle_first)) {
@@ -136,6 +149,18 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, n) {
                                                                subway_data[[transfer_middle2_list[j]]]$Name), ]
             transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in% 
                                                                subway_data[[arrival_line]]$Name), ]
+            if(nrow(transfer_middle_get)==0){
+              transfer_long <- get_transfercriteria(transfer_middle_second[j2, "Name"], 
+                                                    arrival, penalty = 0.1)
+              transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
+                                                             fixed(transfer_middle2_list[j])), ]
+              transfer_middle_get <- transfer_middle_get[str_which(transfer_middle_get$Transfer, 
+                                                                   fixed(arrival_line)), ]
+              transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in% 
+                                                                 subway_data[[transfer_middle2_list[j]]]$Name), ]
+              transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in% 
+                                                                 subway_data[[arrival_line]]$Name), ]
+            }
             # find available transfer station(depart, arrival both)
             transfer_middle_get <- checkline(transfer_middle_get, 
                                              depart_line = transfer_middle2_list[k], 

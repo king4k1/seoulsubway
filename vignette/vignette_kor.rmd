@@ -122,7 +122,7 @@ knitr::include_graphics("penalty1.png")
 get_transfercriteria(depart="먹골", arrival="혜화", penalty=0.05)
 ```
 
-#### `get_transferinfo(depart, depart_line, arrival, arrival_line, n)`
+#### `get_transferinfo(depart, depart_line, arrival, arrival_line, transfer_count)`
 * arguments 
 
   * depart : 출발역
@@ -150,13 +150,13 @@ knitr::include_graphics("penalty2.png")
 
 ```{r, warning=FALSE}
 get_transferinfo(depart="먹골", depart_line="7", 
-                 arrival="혜화", arrival_line="4", n=1)
+                 arrival="혜화", arrival_line="4", transfer_count=1)
 
 get_transferinfo(depart="먹골", depart_line="7", 
-                 arrival="혜화", arrival_line="4", n=2)
+                 arrival="혜화", arrival_line="4", transfer_count=2)
 
 get_transferinfo(depart="강동", depart_line="5_A", 
-                 arrival="봉화산", arrival_line="6", n=3)
+                 arrival="봉화산", arrival_line="6", transfer_count=3)
 ```
 
 
@@ -192,7 +192,7 @@ shortestpath_0(depart="먹골", depart_line="7", arrival="건대입구", arrival
 
 #### `shortestpath_1(depart, depart_line, arrival, arrival_line)` 
 
-* get_transferinfo(..., count=1) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
+* get_transferinfo(..., transfer_count=1) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
 
 ```{r}
 shortestpath_1(depart="먹골", depart_line="7", arrival="혜화", arrival_line="4")
@@ -201,7 +201,7 @@ shortestpath_1(depart="먹골", depart_line="7", arrival="혜화", arrival_line=
 
 #### `shortestpath_2(depart, depart_line, arrival, arrival_line)`
 
-* get_transferinfo(..., count=2) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
+* get_transferinfo(..., transfer_count=2) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
 
 ```{r, warning=FALSE}
 shortestpath_2(depart="먹골", depart_line="7", arrival="혜화", arrival_line="4")
@@ -210,7 +210,7 @@ shortestpath_2(depart="먹골", depart_line="7", arrival="혜화", arrival_line=
 
 #### `shortestpath_3(depart, depart_line, arrival, arrival_line)` 
 
-* get_transferinfo(..., count=3) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
+* get_transferinfo(..., transfer_count=3) 을 통하여 산출된 경로리스트를 후보군으로 최단경로를 선택합니다.
 
 ```{r, warning=FALSE}
 shortestpath_3(depart="강동", depart_line="5_A", 

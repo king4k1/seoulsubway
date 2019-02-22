@@ -27,10 +27,10 @@ checkline <- function(dat, depart_line, arrival_line) {
       }
     }
   }else{
-    anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, "_")))
-    if (isTRUE(length(anywrongdat) == 0) == FALSE) {
-      dat <- dat[-anywrongdat, ]
-    }
+    anywrongdat_list <- str_remove(dat$Transfer, paste0(depart_line, "_", "A"))
+    anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
+    anyrightdat <- str_which(anywrongdat_list, depart_line)
+    dat <- dat[anyrightdat, ]
   }
   return(dat)
 }

@@ -8,7 +8,7 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
   Total_End_Raw <- nrow(subway_data[[arrival_line]])
   Start_Ind_2 <- which(subway_data[[depart_line]]$Name == depart)
   Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
-                                    n = 2)
+                                    transfer_count = 2)
   # get available transfer station list these results are list format and
   # include first/second transfer station.
   if(length(Transfer_List)==0){

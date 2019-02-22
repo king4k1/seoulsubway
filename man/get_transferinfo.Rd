@@ -2,7 +2,7 @@
 \alias{get_transferinfo}
 \title{get_transferinfo}
 \usage{
-get_transferinfo(depart, depart_line, arrival, arrival_line, n)
+get_transferinfo(depart, depart_line, arrival, arrival_line, transfer_count)
 }
 \description{
 Prints available transfer station when you move from A to B in subway line
@@ -11,7 +11,7 @@ criteria is informed in get_transfercriteria
 you can choose 1,2,3 in 'n' argument
 }
 \examples{
-get_transferinfo(depart="", depart_line="", arrival="", arrival_line="", n=1)
+get_transferinfo(depart="", depart_line="", arrival="", arrival_line="", transfer_count=1)
 
-get_transferinfo(depart="", depart_line="", arrival="", arrival_line="", n=2)
+get_transferinfo(depart="", depart_line="", arrival="", arrival_line="", transfer_count=2)
 }
