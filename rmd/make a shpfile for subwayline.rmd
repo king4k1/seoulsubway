@@ -43,24 +43,36 @@ make_linesp <- function(Line){
   Spline <- list()
 if(Line %in% c("2","6_A")){
   for(i in 1:(nrow(line_data)-1)){
-  ll <- cbind(seq(line_data[i,"long"], line_data[i+1,"long"], length = 2000),
-              seq(line_data[i,"lat"], line_data[i+1,"lat"], length = 2000))
+  ll <- cbind(c(as.numeric(line_data[i,"long"]),
+                as.numeric(line_data[i+1,"long"])),
+              c(as.numeric(line_data[i,"lat"]),
+                as.numeric(line_data[i+1,"lat"])))
+
+  ll2 <- cbind(c(as.numeric(line_data[i,"long"]),
+                 as.numeric(line_data[i+1,"long"])),
+               c(as.numeric(line_data[i,"lat"]),
+                 as.numeric(line_data[i+1,"lat"])))
+  
   Sl <- Line(ll)
   a <- paste0(Line,"_",i)
   S1 <- Lines(list(Sl), ID = a)
   Spline[[i]] <- S1
   }
   n <- nrow(line_data)
-  ll <- cbind(seq(line_data[n,"long"], line_data[1,"long"], length = 2000),
-              seq(line_data[n,"lat"], line_data[1,"lat"], length = 2000))
+  ll <- cbind(c(as.numeric(line_data[n,"long"]),
+                as.numeric(line_data[1,"long"])),
+              c(as.numeric(line_data[n,"lat"]),
+                as.numeric(line_data[1,"lat"])))
   Sl <- Line(ll)
   a <- paste0(Line,"_",n)
   S1 <- Lines(list(Sl), ID = a)
   Spline[[nrow(line_data)]] <- S1 
 }else{  
   for(i in 1:(nrow(line_data)-1)){
-  ll <- cbind(seq(line_data[i,"long"], line_data[i+1,"long"], length = 2000),
-              seq(line_data[i,"lat"], line_data[i+1,"lat"], length = 2000))
+  ll <- cbind(c(as.numeric(line_data[i,"long"]),
+                         as.numeric(line_data[i+1,"long"])),
+              c(as.numeric(line_data[i,"lat"]),
+                as.numeric(line_data[i+1,"lat"])))
   Sl <- Line(ll)
   a <- paste0(Line,"_",i)
   S1 <- Lines(list(Sl), ID = a)
@@ -140,6 +152,8 @@ head(mat)
 rownames(subway_shp@data) <- mat$Name
 subway_shp@data
 subway_shp@data$name  <- mat$Name
-writeOGR(subway_shp, layer = 'subway_shp', "/SNA", driver="ESRI Shapefile")
+
+plot(subway_shp)
+writeOGR(subway_shp, layer = 'subway_shp', "D:/subway_analysis/SNA", driver="ESRI Shapefile")
 ```
 
