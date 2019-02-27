@@ -291,41 +291,41 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
 ### if shortestpath_3 does not work than, shortestpath_4 will work 
 ### for 3 nearest transfer available stations
 ### it depend on shortestpath_3..
-shortestpath_4 <- function(depart, depart_line, arrival, arrival_line){
+shortestpath_4 <- function(depart, depart_line, arrival, arrival_line) {
   data("subway_data")
   arr_line <- subway_data[[arrival_line]]
-  index <- which(arr_line$Name==arrival)
+  index <- which(arr_line$Name == arrival)
   tr_arr_line <- which(arr_line$Transfer != 0)
   nn_rank <- rank(abs(index - tr_arr_line))
   nn_list <- tr_arr_line[nn_rank <= 3]
   nn_list_nm <- arr_line$Name[nn_list]
   nn_list_line <- arr_line$Transfer[nn_list]
   result <- result2 <- result_which <- list()
-  for(i in seq_along(nn_list_nm)){
+  for (i in seq_along(nn_list_nm)) {
     multi_linecase <- nn_list_line[i]
     multi_linecase <- str_split(multi_linecase, pattern = "|")[[1]]
-    multi_linecase <- multi_linecase[multi_linecase!=""]
-    multi_linecase <- multi_linecase[multi_linecase!="|"]
-    for(j in seq_along(multi_linecase))
-      result[[paste0(i,"-",j)]] <- tryCatch(shortestpath_3(depart, depart_line,
-                                                           arrival= nn_list_nm[i],
-                                                           arrival_line= multi_linecase[j]),
-                                            error = function(e) {
-                                              result[[paste0(i,"-",j)]] = list(Time = 300)})
-    result_which[[paste0(i,"-",j)]] <- result[[paste0(i,"-",j)]]$Time
-    result2[[paste0(i,"-",j)]] <- tryCatch(shortestpath_1(depart= nn_list_nm[i],
-                                                          depart_line= multi_linecase[j],
-                                                          arrival, arrival_line),
-                                           error = function(e){
-                                           })
+    multi_linecase <- multi_linecase[multi_linecase != ""]
+    multi_linecase <- multi_linecase[multi_linecase != "|"]
+    for (j in seq_along(multi_linecase)){
+     result[[paste0(i, "-", j)]] <- 
+       tryCatch(shortestpath_3(depart, depart_line, 
+                               arrival = nn_list_nm[i], 
+                               arrival_line = multi_linecase[j]), 
+                error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)})
+    result_which[[paste0(i, "-", j)]] <- result[[paste0(i, "-", j)]]$Time
+    result2[[paste0(i, "-", j)]] <- 
+      tryCatch(shortestpath_1(depart = nn_list_nm[i], 
+                              depart_line = multi_linecase[j],
+                              arrival, arrival_line), 
+               error = function(e) {})
+    }
   }
   shortest_index <- names(result_which)[which.min(result_which)]
   result[[shortest_index]]$Info <- rbind(result[[shortest_index]]$Info, 
-                                         result2[[shortest_index]]$Info[2,])
-  result[[shortest_index]]$Count <-
-    result[[shortest_index]]$Count + result2[[shortest_index]]$Count 
-  result[[shortest_index]]$Time <-
-    result[[shortest_index]]$Time + result2[[shortest_index]]$Time 
+                                         result2[[shortest_index]]$Info[2, ])
+  result[[shortest_index]]$Count <- result[[shortest_index]]$Count + 
+    result2[[shortest_index]]$Count
+  result[[shortest_index]]$Time <- result[[shortest_index]]$Time + result2[[shortest_index]]$Time
   result[[shortest_index]]$Path4 <- result2[[shortest_index]]$Path2
   result <- result[[shortest_index]]
   if(is.null(result)){      
@@ -343,34 +343,96 @@ also you should consider branch line '1_P','1_A','1_B','2_A','2_B','5_A','6_A' a
 
 # shortestpath
 shortestpath <- function(depart, depart_line, arrival, arrival_line) {
-  if(depart_line == arrival_line){
-  Zero <- shortestpath_0(depart = depart, depart_line = depart_line, 
-                                  arrival = arrival, arrival_line = arrival_line)
-  Total <- list(Zero)
-  Short_Path_Ind <- 1
+  if (depart_line == arrival_line) {
+    Zero <- shortestpath_0(depart = depart, depart_line = depart_line, 
+                           arrival = arrival, arrival_line = arrival_line)
+    Total <- list(Zero)
+    Short_Path_Ind <- 1
   }
-  if(depart_line != arrival_line){
-  One <- tryCatch(shortestpath_1(depart = depart, depart_line = depart_line, 
-                                 arrival = arrival, arrival_line = arrival_line), 
-                  error = function(e) {One = list(Time = 300)})
-  Two <- tryCatch(shortestpath_2(depart = depart, depart_line = depart_line, 
-                                 arrival = arrival, arrival_line = arrival_line), 
-                  error = function(e) {Two = list(Time = 300)})
-  Three <-tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
-                                  arrival = arrival, arrival_line = arrival_line),
-                   error = function(e) {Total = list(Time = 300)})
-  # use tryCatch() for consider error case get results of Three case, and
-  # select shortest path
-  Total <- list(One, Two, Three)
-  Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time,
-                                Total[[3]]$Time))
+  if (depart_line != arrival_line) {
+    One <- tryCatch(shortestpath_1(depart = depart, depart_line = depart_line, 
+                                   arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                     One = list(Time = 300)
+                                   })
+    Two <- tryCatch(shortestpath_2(depart = depart, depart_line = depart_line, 
+                                   arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                     Two = list(Time = 300)
+                                   })
+    Three <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
+                                     arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                       Total = list(Time = 300)
+                                     })
+    # use tryCatch() for consider error case get results of Three case, and
+    # select shortest path
+    Total <- list(One, Two, Three)
+    Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time, 
+                                  Total[[3]]$Time))
   }
   # if shortest path(by three transfer) is null -> consider four transfer
   Total <- Total[[Short_Path_Ind]]
-  if(Total$Time == 300){
+  if (Total$Time == 300) {
     Total <- shortestpath_4(depart = depart, depart_line = depart_line, 
                             arrival = arrival, arrival_line = arrival_line)
   }
   return(Total)
 }
 
+
+## shortestpath_simple
+### it needs only depart, arrival line.
+### but it spend many time..
+shortestpath_simple <- function(depart, arrival) {
+  data("subway_data_DT")
+  shortestpath_internal <- function(depart, depart_line, arrival, arrival_line) {
+    if (depart_line == arrival_line) {
+      Zero <- shortestpath_0(depart = depart, depart_line = depart_line, 
+                             arrival = arrival, arrival_line = arrival_line)
+      Total <- list(Zero)
+      Short_Path_Ind <- 1
+    }
+    if (depart_line != arrival_line) {
+      One <- tryCatch(shortestpath_1(depart = depart, depart_line = depart_line, 
+                                     arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                       One = list(Time = 300)
+                                     })
+      Two <- tryCatch(shortestpath_2(depart = depart, depart_line = depart_line, 
+                                     arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                       Two = list(Time = 300)
+                                     })
+      Three <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
+                                       arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                         Total = list(Time = 300)
+                                       })
+      # use tryCatch() for consider error case get results of Three case, and
+      # select shortest path
+      Total <- list(One, Two, Three)
+      Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time, 
+                                    Total[[3]]$Time))
+    }
+    # if shortest path(by three transfer) is null -> consider four transfer
+    Total <- Total[[Short_Path_Ind]]
+    if (Total$Time == 300) {
+      Total <- shortestpath_4(depart = depart, depart_line = depart_line, 
+                              arrival = arrival, arrival_line = arrival_line)
+    }
+    return(Total)
+  }
+  depart_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
+                                             c(depart)), "Line"]
+  arrival_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
+                                              c(arrival)), "Line"]
+  result <- shortest_index <- list()
+  for (i in seq_along(depart_line_list)) {
+    for (j in seq_along(arrival_line_list)) {
+      result[[paste0(i, "-", j)]] <-
+        tryCatch(shortestpath_internal(depart, depart_line = depart_line_list[i],
+                                       arrival, arrival_line = arrival_line_list[j]), 
+                 error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)
+                 })
+      shortest_index[[paste0(i, "-", j)]] <-
+        result[[paste0(i, "-", j)]]$Time
+    }
+  }
+  result_return <- result[[names(result)[which.min(shortest_index)]]]
+  return(result_return)
+}
