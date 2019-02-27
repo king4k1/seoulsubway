@@ -25,5 +25,10 @@ get_path <- function(depart, depart_line, arrival, arrival_line){
     station <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
     station <- station[-which(duplicated(station$Name)),]$Name
   }
+  if(result$Time!=300 & nrow(result$Info)==5){
+    station <- rbind(result$Path1, result$Path2, 
+                     result$Path3, result$Path4, result$Path5)
+    station <- station[-which(duplicated(station$Name)),]$Name
+  }  
   return(data.frame(station))
 }
