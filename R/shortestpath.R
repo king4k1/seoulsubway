@@ -358,18 +358,17 @@ shortestpath <- function(depart, depart_line, arrival, arrival_line) {
                                    arrival = arrival, arrival_line = arrival_line), error = function(e) {
                                      Two = list(Time = 300)
                                    })
-    Three <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
-                                     arrival = arrival, arrival_line = arrival_line), error = function(e) {
-                                       Total = list(Time = 300)
-                                     })
-    # use tryCatch() for consider error case get results of Three case, and
+    # use tryCatch() for consider error case get results of thw case, and
     # select shortest path
-    Total <- list(One, Two, Three)
-    Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time, 
-                                  Total[[3]]$Time))
+    Total <- list(One, Two)
+    Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time))
+  }
+  Total <- Total[[Short_Path_Ind]]
+  if (Total$Time == 300) {
+    Total <- shortestpath_3(depart = depart, depart_line = depart_line, 
+                            arrival = arrival, arrival_line = arrival_line)
   }
   # if shortest path(by three transfer) is null -> consider four transfer
-  Total <- Total[[Short_Path_Ind]]
   if (Total$Time == 300) {
     Total <- shortestpath_4(depart = depart, depart_line = depart_line, 
                             arrival = arrival, arrival_line = arrival_line)
@@ -425,8 +424,8 @@ shortestpath_simple <- function(depart, arrival) {
   for (i in seq_along(depart_line_list)) {
     for (j in seq_along(arrival_line_list)) {
       result[[paste0(i, "-", j)]] <-
-        tryCatch(shortestpath_internal(depart, depart_line = depart_line_list[i],
-                                       arrival, arrival_line = arrival_line_list[j]), 
+        tryCatch(shortestpath(depart, depart_line = depart_line_list[i],
+                              arrival, arrival_line = arrival_line_list[j]), 
                  error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)
                  })
       shortest_index[[paste0(i, "-", j)]] <-
