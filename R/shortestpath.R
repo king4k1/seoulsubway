@@ -342,7 +342,7 @@ also you should consider branch line '1_P','1_A','1_B','2_A','2_B','5_A','6_A' a
 }
 
 # shortestpath_inner
-shortestpath_inner <- function(depart, depart_line, arrival, arrival_line) {
+shortestpath_all <- function(depart, depart_line, arrival, arrival_line) {
   if (depart_line == arrival_line) {
     Zero <- shortestpath_0(depart = depart, depart_line = depart_line, 
                            arrival = arrival, arrival_line = arrival_line)
@@ -377,9 +377,9 @@ shortestpath_inner <- function(depart, depart_line, arrival, arrival_line) {
 }
 
 
-## shortestpath_simple
+## shortestpath
 ### it needs only depart, arrival line.
-### but it spend many time..
+### but it spend many time when shortestpath_3 dosen't work..
 shortestpath <- function(depart, arrival) {
   data("subway_data_DT")
   depart_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
@@ -390,7 +390,7 @@ shortestpath <- function(depart, arrival) {
   for (i in seq_along(depart_line_list)) {
     for (j in seq_along(arrival_line_list)) {
       result[[paste0(i, "-", j)]] <-
-        tryCatch(shortestpath_inner(depart, depart_line = depart_line_list[i],
+        tryCatch(shortestpath_all(depart, depart_line = depart_line_list[i],
                               arrival, arrival_line = arrival_line_list[j]), 
                  error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)
                  })
