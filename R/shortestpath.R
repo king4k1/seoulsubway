@@ -341,8 +341,8 @@ also you should consider branch line '1_P','1_A','1_B','2_A','2_B','5_A','6_A' a
   return(result)
 }
 
-# shortestpath
-shortestpath <- function(depart, depart_line, arrival, arrival_line) {
+# shortestpath_inner
+shortestpath_inner <- function(depart, depart_line, arrival, arrival_line) {
   if (depart_line == arrival_line) {
     Zero <- shortestpath_0(depart = depart, depart_line = depart_line, 
                            arrival = arrival, arrival_line = arrival_line)
@@ -380,42 +380,8 @@ shortestpath <- function(depart, depart_line, arrival, arrival_line) {
 ## shortestpath_simple
 ### it needs only depart, arrival line.
 ### but it spend many time..
-shortestpath_simple <- function(depart, arrival) {
+shortestpath <- function(depart, arrival) {
   data("subway_data_DT")
-  shortestpath_internal <- function(depart, depart_line, arrival, arrival_line) {
-    if (depart_line == arrival_line) {
-      Zero <- shortestpath_0(depart = depart, depart_line = depart_line, 
-                             arrival = arrival, arrival_line = arrival_line)
-      Total <- list(Zero)
-      Short_Path_Ind <- 1
-    }
-    if (depart_line != arrival_line) {
-      One <- tryCatch(shortestpath_1(depart = depart, depart_line = depart_line, 
-                                     arrival = arrival, arrival_line = arrival_line), error = function(e) {
-                                       One = list(Time = 300)
-                                     })
-      Two <- tryCatch(shortestpath_2(depart = depart, depart_line = depart_line, 
-                                     arrival = arrival, arrival_line = arrival_line), error = function(e) {
-                                       Two = list(Time = 300)
-                                     })
-      Three <- tryCatch(shortestpath_3(depart = depart, depart_line = depart_line, 
-                                       arrival = arrival, arrival_line = arrival_line), error = function(e) {
-                                         Total = list(Time = 300)
-                                       })
-      # use tryCatch() for consider error case get results of Three case, and
-      # select shortest path
-      Total <- list(One, Two, Three)
-      Short_Path_Ind <- which.min(c(Total[[1]]$Time, Total[[2]]$Time, 
-                                    Total[[3]]$Time))
-    }
-    # if shortest path(by three transfer) is null -> consider four transfer
-    Total <- Total[[Short_Path_Ind]]
-    if (Total$Time == 300) {
-      Total <- shortestpath_4(depart = depart, depart_line = depart_line, 
-                              arrival = arrival, arrival_line = arrival_line)
-    }
-    return(Total)
-  }
   depart_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
                                              c(depart)), "Line"]
   arrival_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
@@ -424,7 +390,7 @@ shortestpath_simple <- function(depart, arrival) {
   for (i in seq_along(depart_line_list)) {
     for (j in seq_along(arrival_line_list)) {
       result[[paste0(i, "-", j)]] <-
-        tryCatch(shortestpath(depart, depart_line = depart_line_list[i],
+        tryCatch(shortestpath_inner(depart, depart_line = depart_line_list[i],
                               arrival, arrival_line = arrival_line_list[j]), 
                  error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)
                  })
