@@ -63,15 +63,15 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
         transfer_middle_get <- checkline(transfer_middle_get, depart_line = transfer_middle_list[j], 
                                          arrival_line = arrival_line)
         if(nrow(transfer_middle_get)==0){
-          transfer_long <- get_transfercriteria(transfer_middle_second[j2, "Name"], 
-                                                arrival, penalty = 0.1)
+          transfer_long <-get_transfercriteria(transfer_middle[i, "Name"], arrival,
+                                               penalty = 0.1)
           transfer_middle_get <- transfer_long[str_which(transfer_long$Transfer, 
-                                                         fixed(transfer_middle2_list[j])), ]
+                                                         fixed(transfer_middle_list[j])), ]
           transfer_middle_get <- transfer_middle_get[str_which(transfer_middle_get$Transfer, 
                                                                fixed(arrival_line)), ]
           transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in% 
-                                                             subway_data[[transfer_middle2_list[j]]]$Name), ]
-          transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in% 
+                                                             subway_data[[transfer_middle_list[j]]]$Name), ]
+          transfer_middle_get <- transfer_middle_get[which(transfer_middle_get$Name %in%
                                                              subway_data[[arrival_line]]$Name), ]
         }
         # use checkline for erro selection.
