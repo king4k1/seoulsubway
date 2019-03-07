@@ -16,10 +16,16 @@ checkline <- function(dat, depart_line, arrival_line) {
       anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
       anyrightdat <- str_which(anywrongdat_list, depart_line)
       dat <- dat[anyrightdat, ]
+      anywrongdat_list <- str_remove(dat$Transfer, paste0(arrival_line, "_", "A"))
+      anywrongdat_list <- str_remove(anywrongdat_list, paste0(arrival_line, "_", "P"))
+      anywrongdat_list <- str_remove(anywrongdat_list, paste0(arrival_line, "_", "B"))
+      anyrightdat <- str_which(anywrongdat_list, arrival_line)
+      dat <- dat[anyrightdat,]
     }
   }else{
     anywrongdat_list <- str_remove(dat$Transfer, paste0(depart_line, "_", "A"))
     anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
+    anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "P"))
     anyrightdat <- str_which(anywrongdat_list, depart_line)
     dat <- dat[anyrightdat, ]
   }
