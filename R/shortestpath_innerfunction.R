@@ -11,25 +11,11 @@ checkline <- function(dat, depart_line, arrival_line) {
   if (FALSE %in% (names(subway_data) %in% arrival_line)) {
     if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, 
                                                                   depart_line)) == FALSE) {
-      anywrongdat <- which(str_detect(dat$Transfer, paste0(depart_line, "_")))
-      if (isTRUE(length(anywrongdat) == 0) == FALSE) {
-        dat <- dat[-anywrongdat, ]
-      }
-      anywrongdat2 <- which(str_detect(dat$Transfer, paste0(arrival_line, "_")))
-      if (isTRUE(length(anywrongdat2) == 0) == FALSE) {
-        dat <- dat[-anywrongdat2, ]
-      }
-    }
-    # for consider a case of branch line
-    if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, depart_line))) {
-      anydat <- which(str_detect(dat$Transfer, fixed(paste0(depart_line, "|", arrival_line))))
-      if (isTRUE(length(anydat) == 0) == FALSE) {
-        dat <- dat[anydat, ]
-      }
-      anydat2 <- which(str_detect(dat$Transfer, fixed(paste0(arrival_line, "|", depart_line))))
-      if (isTRUE(length(anydat2) == 0) == FALSE) {
-        dat <- dat[anydat2, ]
-      }
+      anywrongdat_list <- str_remove(dat$Transfer, paste0(depart_line, "_", "A"))
+      anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "P"))
+      anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
+      anyrightdat <- str_which(anywrongdat_list, depart_line)
+      dat <- dat[anyrightdat, ]
     }
   }else{
     anywrongdat_list <- str_remove(dat$Transfer, paste0(depart_line, "_", "A"))
@@ -39,7 +25,7 @@ checkline <- function(dat, depart_line, arrival_line) {
   }
   return(dat)
 }
-
+checkline(transfer_middle, depart_line, arrival_line )
 
 # 보조함수(get_pathinfo)
 
@@ -89,6 +75,7 @@ get_transfercriteria <- function(depart, arrival, penalty) {
   data(subway_data, envir = environment())
   data(transfer_info, envir = environment())
   data(transfer_station, envir = environment())
+  
   # load data
   depart_info <- subway_data_DT[which(subway_data_DT$Name == depart)[1], ]
   arrival_info <- subway_data_DT[which(subway_data_DT$Name == arrival)[1], ]
