@@ -25,7 +25,6 @@ checkline <- function(dat, depart_line, arrival_line) {
   }
   return(dat)
 }
-checkline(transfer_middle, depart_line, arrival_line )
 
 # 보조함수(get_pathinfo)
 
