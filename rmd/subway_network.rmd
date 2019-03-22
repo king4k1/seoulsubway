@@ -310,6 +310,36 @@ subwayline[["K"]] <- subwayline[["K"]][c(which(key_list[[16]]$Name=="지평"):wh
 subwayline[["K-A"]]$Transfer <- c("K", 0, 0)
 subwayline[["K"]]$Transfer <- c(rep(0, 18), 7, 0, 1, 0, "2|5|B", 0, 3, 0, 0, 4, 1, 6, 5, 
                                 0, 2, "K-A", 6, 0, 0, 0, 0, 0, 3, rep(0,12))
+
+
+
+
+### 청량리 노선추가
+
+data(transfer_station)
+subway_data[["B"]]
+subway_data[["1"]]
+subway_data_DT[which(subway_data_DT$Name=="청량리"),"Transfer"] <- c("K|B", "1|B")
+cheongryang <- subway_data[["K"]][22,]
+cheongryang$Line <- "B"
+cheongryang$Transfer <- "1|K"
+subway_data_DT[which(subway_data_DT$Name=="왕십리"),]
+subway_data[["K"]][22,]
+subway_data[["B"]][1,"Dist"] <- geosphere::distHaversine(c(127.0377,37.56153), c(127.0468,37.58018))
+subway_data[["B"]][1,"Time"] <- subway_data[["B"]][1,"Dist"]/566
+cheongryang$Dist <- 0
+cheongryang$Time <- 0
+subway_data[["1"]][25,"Transfer"] <- "B|K"
+subway_data[["K"]][22,"Transfer"] <- "1|B"
+subway_data[["B"]] <- rbind(cheongryang, subway_data[["B"]])
+subway_data_DT <- rbind(subway_data_DT, cheongryang[,colnames(subway_data_DT)])
+transfer_station$Transfer[72] <- "1|B|K"
+transfer_station
+subway_data_DT[which(subway_data_DT$Name=="청량리"),]
+save(file="data/subway_data_DT.RData", subway_data_DT)
+save(file="data/subway_data.RData", subway_data)
+save(file="data/transfer_station.RData", transfer_station)
+
 ```
 
 ### 1.2 역간 거리계산
