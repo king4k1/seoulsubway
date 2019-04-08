@@ -387,11 +387,11 @@ shortestpath <- function(depart, arrival) {
   arrival_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
                                               c(arrival)), "Line"]
   result <- shortest_index <- list()
-  for (i in seq_along(depart_line_list)) {
-    for (j in seq_along(arrival_line_list)) {
+  for (i in seq_along(depart_line_list$Line)) {
+    for (j in seq_along(arrival_line_list$Line)) {
       result[[paste0(i, "-", j)]] <-
-        tryCatch(shortestpath_all(depart, depart_line = depart_line_list[i],
-                              arrival, arrival_line = arrival_line_list[j]), 
+        tryCatch(shortestpath_all(depart, depart_line = depart_line_list$Line[i],
+                              arrival, arrival_line = arrival_line_list$Line[j]), 
                  error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)
                  })
       shortest_index[[paste0(i, "-", j)]] <-
@@ -401,3 +401,5 @@ shortestpath <- function(depart, arrival) {
   result_return <- result[[names(result)[which.min(shortest_index)]]]
   return(result_return)
 }
+
+
