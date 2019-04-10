@@ -4,7 +4,6 @@
 
 # 지하철 노선형태로 네트워크를 구축하므로 중도 노선명이 잘못하여 입력되는 경우가 존재함.
 # checkline will check the dataset for select accurate line 
-
 checkline <- function(dat, depart_line, arrival_line) {
   data("subway_data", envir = environment())
   # in multi transfer case, we should consider every possible line 

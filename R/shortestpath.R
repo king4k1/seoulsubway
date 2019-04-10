@@ -383,15 +383,15 @@ shortestpath_all <- function(depart, depart_line, arrival, arrival_line) {
 shortestpath <- function(depart, arrival) {
   data("subway_data_DT")
   depart_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
-                                             c(depart)), "Line"]
+                                             c(depart)), ]$Line
   arrival_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
-                                              c(arrival)), "Line"]
+                                              c(arrival)), ]$Line
   result <- shortest_index <- list()
-  for (i in seq_along(depart_line_list$Line)) {
-    for (j in seq_along(arrival_line_list$Line)) {
+  for (i in seq_along(depart_line_list)) {
+    for (j in seq_along(arrival_line_list)) {
       result[[paste0(i, "-", j)]] <-
-        tryCatch(shortestpath_all(depart, depart_line = depart_line_list$Line[i],
-                              arrival, arrival_line = arrival_line_list$Line[j]), 
+        tryCatch(shortestpath_all(depart, depart_line = depart_line_list[i],
+                              arrival, arrival_line = arrival_line_list[j]), 
                  error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)
                  })
       shortest_index[[paste0(i, "-", j)]] <-
