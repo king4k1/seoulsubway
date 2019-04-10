@@ -44,7 +44,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
     # get time / count information from get_pathinfo() and manufacture one.
     Path1_Count <- as.numeric(Path1_Info["count"])
     Path1_Time <- as.numeric(Path1_Info["time"])
-    Start_Ind2_1 <- which(subway_data[[arrival_line]]$Name == Transfer_List[i,"Name"])
+    Start_Ind2_1 <- which(subway_data[[arrival_line]]$Name == Transfer_List[i,]$Name)
     End_Ind2_1 <- which(subway_data[[arrival_line]]$Name == arrival)
     Path2_Info <- get_pathinfo(total = Total_Transfer_Raw, start = Start_Ind2_1, 
                                end = End_Ind2_1, line = arrival_line)
@@ -53,7 +53,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
     # get transfer time from transfer_info data set; no result can get
     # 2.35(average spend time for transfer)
     Transfer_Time_List <- transfer_info[which(transfer_info$Transfer_Name == 
-                                                Transfer_List[i, "Name"]), ]
+                                                Transfer_List[i,]$Name), ]
     Transfer_Time_T <- Transfer_Time_List[which(Transfer_Time_List$Transfer_Line == 
                                                   depart_line), ]
     Transfer_Time <- Transfer_Time_T[which(Transfer_Time_T$Transfer_Line2 == 
@@ -63,11 +63,11 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
     } else {
       Transfer_Time <- 2.35
     }
-    Transfer_1[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_List[i, "Name"]),
+    Transfer_1[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_List[i,]$Name),
                                               Line = c(depart_line, arrival_line),
                                               Count = c(as.character(Path1_Count), as.character(Path2_Count)),
                                               Time = c(as.character(Path1_Time), as.character(Path2_Time)),
-                                              Arrive = c(Transfer_List[i, "Name"], arrival)), 
+                                              Arrive = c(Transfer_List[i,]$Name, arrival)), 
                             Total = c(Count = Path1_Count + Path2_Count,
                                       Time = Path1_Time + Path2_Time + Transfer_Time + 3))
   }
