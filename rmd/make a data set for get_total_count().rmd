@@ -73,28 +73,42 @@ if(result$Time==300){
 if(result$Time!=300 & nrow(result$Info)==1){
   Path <- result$Path
   Path <- Path$Name
-  ind <- which(seoul_station%in%Path)
 }
 if(result$Time!=300 & nrow(result$Info)==2){
   Path <- rbind(result$Path1, result$Path2)
   Path <- Path[-which(duplicated(Path$Name)),]$Name
-  ind <- which(seoul_station%in%Path)
 }
 if(result$Time!=300 & nrow(result$Info)==3){
   Path <- rbind(result$Path1, result$Path2, result$Path3)
   Path <- Path[-which(duplicated(Path$Name)),]$Name
-  ind <- which(seoul_station%in%Path)
 }
 if(result$Time!=300 & nrow(result$Info)==4){
   Path <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
   Path <- Path[-which(duplicated(Path$Name)),]$Name
-  ind <- which(seoul_station%in%Path)
 }
-return(data.frame(Path, ind))
+return(data.frame(station=Path))
 }
 
-get_path(depart="봉화산", depart_line="6",
+result <- get_path(depart="봉화산", depart_line="6",
                        arrival="강동", arrival_line="5-A")
+
+change_ds_sna <- function(input){
+  n <- nrow(input)
+  if(n!=1){
+  dat <- data.frame(matrix(0,n-1,2))
+  colnames(dat) <- c("from","to")
+  for(i in 1:(n-1)){
+    dat[i,] <- c(as.character(input$station[i]),
+                 as.character(input$station[i+1]))
+  }
+  }
+  if(n==1){
+    dat <- data.frame("from"=input$station, "to"=input$station)
+  }
+  return(dat)
+}
+
+change_ds_sna(result)
 ```
 
 

@@ -1,0 +1,125 @@
+---
+title: "Untitled"
+author: "Kwangmin Son"
+date: "2019년 4월 20일"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(seoulsubway)
+library(data.table)
+load(file="1804_ver/subway_route_1812.RData")
+data("subway_route")
+```
+
+```{r}
+subway_route_1812[[1]]
+
+get_path<- function(depart, arrival){
+result <- subway_route_1812[[paste0(depart, "-", arrival)]]
+
+if(result$Time==300){
+  Path <- "no result"
+  ind <- 0
+  result$Info <- data.frame(matrix(0,5,5))
+}
+if(result$Time!=300 & nrow(result$Info)==1){
+  Path <- result$Path
+  Path <- Path$Name
+}
+if(result$Time!=300 & nrow(result$Info)==2){
+  Path <- rbind(result$Path1, result$Path2)
+  Path <- Path[-which(duplicated(Path$Name)),]$Name
+}
+if(result$Time!=300 & nrow(result$Info)==3){
+  Path <- rbind(result$Path1, result$Path2, result$Path3)
+  Path <- Path[-which(duplicated(Path$Name)),]$Name
+}
+if(result$Time!=300 & nrow(result$Info)==4){
+  Path <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
+  Path <- Path[-which(duplicated(Path$Name)),]$Name
+}
+return(data.frame(station=Path))
+}
+
+change_ds_sna <- function(input){
+  n <- nrow(input)
+  if(n!=1){
+  dat <- data.frame(matrix(0,n-1,2))
+  colnames(dat) <- c("from","to")
+  for(i in 1:(n-1)){
+    dat[i,] <- c(as.character(input$station[i]),
+                 as.character(input$station[i+1]))
+  }
+  }
+  if(n==1){
+    dat <- data.frame("from"=input$station, "to"=input$station)
+  }
+  return(dat)
+}
+
+
+index_name <- names(subway_route_1812)
+
+result <- get_path(str_split(index_name[1], pattern="-")[[1]][1],
+                   str_split(index_name[1], pattern="-")[[1]][2])
+change_ds_sna(result)
+
+subway_route_1812_handle <- list()
+for(i in 1:length(index_name)){
+  depart <- str_split(index_name[i], pattern="-")[[1]][1]
+  arrival <- str_split(index_name[i], pattern="-")[[1]][2]
+  result <- get_path(depart, arrival)
+  raw_result <- subway_route_1812[[paste0(depart, "-", arrival)]]
+  subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Time <- raw_result$Time
+  subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Count <- raw_result$Count
+  subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Path <- change_ds_sna(result)  
+}
+for(i in 1:length(index_name)){
+  depart <- str_split(index_name[i], pattern="-")[[1]][1]
+  arrival <- str_split(index_name[i], pattern="-")[[1]][2]
+  raw_result <- subway_route_1812[[paste0(depart, "-", arrival)]]
+  subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Time <- raw_result$Time
+  subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Count <- raw_result$Count
+}
+
+index<-c()
+for(i in (i+1):29161){
+  index[i] <- subway_route_1812_handle[[i]]$Time
+}
+
+index_name[c(5971, 6066, 6081, 9671, 9765, 9780)]
+i <- 1
+for(i in 1:6){
+depart <- str_split(index_name[c(5971, 6066, 6081, 9671, 9765, 9780)][i], pattern="-")[[1]][1]
+arrival <- str_split(index_name[c(5971, 6066, 6081, 9671, 9765, 9780)][i], pattern="-")[[1]][2]
+result_i <- subway_route[[paste0(depart, "-", arrival)]]
+result_i <- data.frame(station=result_i[which(!duplicated(result_i$station)),])
+subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Time <- c(58, 68, 64, 54, 58, 56)[i]
+subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Count <- c(24, 18, 17, 15, 17, 16)[i]
+subway_route_1812_handle[[paste0(depart, "-", arrival)]]$Path  <- change_ds_sna(result_i)
+}
+
+subway_route_1812_handle
+get_shortestpath <- function(depart, arrival){
+  data(subway_route_1812_handle)
+  result <- subway_route_1812_handle[[paste0(depart, "-", arrival)]]
+    if(is.null(result)){
+      result_inv <- subway_route_1812_handle[[paste0(arrival, "-", depart)]]
+      ord_f <- result_inv$Path$from
+      result_inv$Path$from <- result_inv$Path$to
+      result_inv$Path$to <- ord_f
+      dat_inv_change <- result_inv$Path
+      for(i in 1:nrow(dat_inv_change)){
+        dat_inv_change[i,] <- result_inv$Path[(nrow(result_inv$Path)+1-i),]
+      }
+      result_inv$Path <- dat_inv_change
+    }
+  result_inv
+}
+
+#save(file="data/subway_route_1812_handle.RData", subway_route_1812_handle)
+```
+
