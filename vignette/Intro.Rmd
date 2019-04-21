@@ -20,19 +20,12 @@ editor_options:
 library(seoulsubway)
 library(knitr)
 library(kableExtra)
-
-setwd("D:/workspace/seoulsubway/Thesis/code")
 load(file="../data/shortestpath_db.RData")
 data("subway_data")
 data("subway_data_DT")
 pdf.options(family = "Korea1deb")
 ```
 
-```{r include=FALSE}
-knitr::opts_chunk$set(fig.path = 'figures/', echo = FALSE, warning = FALSE, message = FALSE, fig.pos = 'H')
-API_key <- 'AIzaSyCvFJzO8nrvmospv--Mhi9XypO7PvBcZcw'
-register_google(key = API_key)
-```
 
 ## 1. 현황 및 분석목적
 
