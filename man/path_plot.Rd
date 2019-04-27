@@ -1,14 +1,12 @@
-\name{path_plot}
-\alias{path_plot}
-\title{path_plot}
+\name{shortestpath_plot}
+\alias{shortestpath_plot}
+\title{shortestpath_plot}
 \usage{
-path_plot(depart, depart_line, arrival, arrival_line, naver_secret, 
-          naver_key, kakao_key, zoom=4)
+shortestpath_plot(depart, arrival, google_key, zoom =zoom)
 }
 \description{
 Prints shortestpath(time depend) plot for subway in Seoul
 }
 \examples{
-path_plot(depart = "", depart_line = "", arrival = "",
-          arrival_line = "", kakao_key=kakao_key,
-          naver_key=naver_key, naver_secret=naver_secret, zoom=6)}
+shortestpath_plot(depart, arrival, google_key, zoom =zoom)
+}
