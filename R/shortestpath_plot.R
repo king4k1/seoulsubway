@@ -17,7 +17,7 @@ shortestpath_plot <- function(depart, arrival, google_key, zoom =zoom) {
     Path <- rbind(result$Path1, result$Path2)
     meanX <- mean(Path$lat)
     meanY <- mean(Path$long)
-    g <- ggmap(get_map(c(meanY, meanX), zoom = zoom, maptype = 'toner-lite', source = "stamen"))
+    g <- ggmap(get_map(c(meanY, meanX), zoom = zoom, maptype = 'toner-line', source = "stamen"))
     g2 <- g + geom_path(data = Path , aes(x = long, y = lat, col = Line), size=3) +
       geom_point(data = Path , aes(x = long, y = lat), col="black", size=4) + 
       geom_label(data = Path%>% filter(!duplicated(Name)),
@@ -29,7 +29,7 @@ shortestpath_plot <- function(depart, arrival, google_key, zoom =zoom) {
     Path <- rbind(result$Path1, result$Path2, result$Path3)
     meanX <- mean(Path$lat)
     meanY <- mean(Path$long)
-    g <- ggmap(get_map(c(meanY, meanX), zoom = zoom, maptype = 'toner-lite', source = "stamen"))
+    g <- ggmap(get_map(c(meanY, meanX), zoom = zoom, maptype = 'toner-line', source = "stamen"))
     g2 <- g + geom_path(data = Path , aes(x = long, y = lat, col = Line), size=3) +
       geom_point(data = Path , aes(x = long, y = lat), col="black", size=4) + 
       geom_label(data = Path%>% filter(!duplicated(Name)),
