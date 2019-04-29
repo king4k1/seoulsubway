@@ -81,7 +81,7 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   Set <- get_pathresult(Transfer_1)
   # get_route / consider line number 2 & 6_A for circulate system.
   return(Set)
-  }
+}
 
 # shortestpath_2
 ## when using transfer 2 time.
@@ -173,7 +173,7 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
   Set <- get_pathresult(Transfer_2)
   # get_route / consider line number 2 & 6-A for circulate system.
   return(Set)
-  }
+}
 
 # shortestpath_3
 ## when using transfer 3 time.
@@ -286,7 +286,7 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
   Set <- get_pathresult(Transfer_3)
   # get_route / consider line number 2 & 6_A for circulate system.
   return(Set)
-  }
+}
 
 ### if shortestpath_3 does not work than, shortestpath_4 will work 
 ### for 3 nearest transfer available stations
