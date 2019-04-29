@@ -1,9 +1,7 @@
 # get_path from shortestpath
 
 get_path <- function(depart, arrival){
-  data("seoul_station", envir = environment())
   result <- shortestpath(depart, arrival)
-  
   if(result$Time==300){
     station <- "no result"
     ind <- 0
