@@ -49,7 +49,7 @@ ggplot(subway_count, aes(x=Time, y=N, col=down_Name)) + geom_line(position = 'ji
 총 13개의 노선(1-9호선과 신분당선, 분당선, 경의중앙선, 우이신설선)이 포함되어 있습니다.
 
 
-### ex1. 먹골(7) -> 혜화(4)
+### ex1. 먹골 -> 혜화
 ```r
 shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4")
 ```
@@ -58,35 +58,30 @@ shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line 
 
 
 ```r
-library(nkmap)
-path_plot(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4",
-         naver_secret =naver_secret, naver_key=naver_key, 
-         kakao_key =kakao_key, zoom=8)
+shortestpath_plot(depart = "먹골", arrival = "혜화", google_key = private_key, zoom = 13)
 ```
 
 ![](tools/Rplot2.png)
 
+### ex2. 태릉입구 -> 혜화
+```r
+shortestpath_plot(depart = "태릉입구", arrival = "혜화", google_key = private_key, zoom = 13)
 
-### ex2. 보문(6) -> 서울(4)
-```r
-path_plot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "4",
-         naver_secret =naver_secret, naver_key=naver_key, 
-         kakao_key =kakao_key, zoom=8)
-```
-![](tools/Rplot3.png)
-### ex3. 보문(6) -> 서울(1)
-```r
-path_plot(depart="보문", depart_line="6", arrival = "서울", arrival_line = "1",
-         naver_secret =naver_secret, naver_key=naver_key, 
-         kakao_key =kakao_key, zoom=8)
 ```
 ![](tools/Rplot6BS.png)
+
+### ex3. 보문 -> 서울
+```r
+shortestpath_plot(depart = "보문", arrival = "서울", google_key = private_key, zoom = 13)
+
+```
+![](tools/Rplot3.png)
 
 ### `get_total_count()` 함수는 모든 경로에 따른 역별 누적 경유회수 출력합니다.
 
 * `get_path()` 함수를 통해서 제작한 277X277 경로 매트릭스 "subway_route" 에서의 binary한 결과를 이용하여 역별 총 누적 회수를 계산한다.
 
-* 5000건의 subway_sample 데이터를 통하여 지하철의 혼잡정도를 확인하자.
+* 5000건의 subway_sample 데이터를 통하여 지하철의 혼잡도를 확인하자.
 
 ```r
 total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", depart_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
