@@ -92,6 +92,15 @@ ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geo
 ![](tools/total_count.png)
 
 
-* 위 결과를 보면 동대문역사문화공원이 가장 지하철 경유회수가 많은 역임을 알 수 있다.
+### `congestion_plot()` 함수를 통하여 서울지도 내 지하철 혼잡도 시각화가 가능합니다.
 
-* 위에 나열된 방식으로 `seoulsubway` 패키지를 통하여 트랜잭션 데이터를 분석할 수 있다.
+* 필요한 데이터셋 모양은 다음과 같습니다. vignette/Intro.pdf 를 참고하세요.
+
+* 지도 상 시각화를 위하여, 구글 API key가 별도로 필요합니다. ?register_google을 참고하세요.
+
+```r
+congestion_plot(data=data_str_example, 
+                center=c(126.97796919, 37.566535), zoom=11,
+                google_key = API_key)
+```
+

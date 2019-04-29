@@ -1,7 +1,7 @@
 ---
 title: "Introduction to seoulsubway"
 author: |
-  | KM Son
+  | KM Son, JA Bang
   | Department of Statistics, SKKU
 date: \today
 output: 
@@ -20,12 +20,22 @@ editor_options:
 library(seoulsubway)
 library(knitr)
 library(kableExtra)
-load(file="../data/shortestpath_db.RData")
+load(file="../Thesis/data/shortestpath_db.RData")
 data("subway_data")
 data("subway_data_DT")
 pdf.options(family = "Korea1deb")
 ```
 
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.path = 'figures/', echo = FALSE, warning = FALSE, message = FALSE, fig.pos = 'H')
+API_key <- 'AIzaSyCvFJzO8nrvmospv--Mhi9XypO7PvBcZcw'
+register_google(key = API_key)
+```
+## 0. Contact.
+
+* KM_Son email : kinh4k@@g.skku.edu
+
+* JA_Bang email : juna0033@@g.skku.edu
 
 ## 1. 현황 및 분석목적
 
@@ -130,11 +140,120 @@ knitr::include_graphics("penalty2.png")
 
 ### 2.4 최단경로 함수 예시
 
-* 서울역에서 혜화역으로 이동 시 최단경로 함수 예시
+* 종로3가역에서 혜화역으로의 최단경로 함수 결과
 
-```{r, echo=TRUE, fig.pos = 'H'}
-seoulsubway::shortestpath(depart = "서울", arrival = "혜화")
+```{r out.width="70%", echo=TRUE, fig.pos = 'H', fig.align='center'}
+shortestpath(depart = "종로3가", arrival = "혜화")
 ```
+
+최단경로 함수의 결과는 크게 Info, Count, Time, 그리고 Path로 구성된다. Info는 이동경로에 대한 요약 정보이다. Count와 Time은 경유역 수와 소요시간에 대한 정보이며, Path는 경유하는 지하철 역에 대한 정보를 제공한다.
+
+
+* 종로3가역에서 혜화역으로의 최단경로 시각화
+
+```{r out.width="60%", fig.pos = 'H', fig.align='center', fig.cap="Shortest Path from Jongno 3-ga to Hyehwa on Seoul Map"}
+shortestpath_plot(depart = "종로3가",  arrival = "혜화", google_key = API_key, zoom = 15)
+```
+
+위 최단경로 함수 결과 중 `Path`를 지도 위 시각화하여 이동 경로 중 경유하는 역들과 환승 역을 확인할 수 있다.
+
+
+## 3. 활용 데이터 소개 
+
+### 3.1 이용객 개별 승하차 데이터 소개
+
+* 데이터는 `서울교통공사`을 통해 제공받음.
+
+2018년 벚꽃축제는 2018년 4월 5일부터 13일까지 총 8일동안 진행되었다. 따라서 2018년 4월 7일의 `이용객 개별 승하차 데이터`를 이용하였다. 데이터의 구조는 다음과 같다.
+
+```{r, fig.width = 7 , fig.height = 5 , fig.align ="center", fig.pos = 'H'}
+load(file = '../Thesis/data/sample_subway_data_0407.RData')
+sample_subway_data_0407 %>% 
+  mutate(ID = paste0('#', 1:10)) %>% 
+  head() %>% 
+  kable(format="latex", caption = '2019년 04년 07일의 이용객 개별 승하차 데이터 예시') %>%
+  kable_styling(font_size = 7, latex_options = c("striped", "hold_position"))
+```
+
+분석 시 `ID`, `운행일자`, `요일`, `승차호선명`, `승차역명`, `하차호선명`, `하차역명`, `시간대` 그리고 `승객수` 변수만을 고려하며, `시간대`는 하차 시간대를 의미한다.  `이용객 개별 승하차 데이터`는 1-8호선과 241개의 지하철 역으로 구성되며, 1호선의 경우는 서울교통공사 소속인 `서울 - 청량리` 구간만 포함한다. 
+
+### 3.2 시각화를 위한 데이터셋 정의
+
+`출발역 -> 도착역`의 한정된 정보만 제공되는 데이터를 이용하여 분석목적에 적합한 형태로 재정의하는 과정이 필요하다. 최종적으로 사용할 데이터셋의 형태는 `Table 3`과 같으며, 시간대별 구간의 혼잡도와 위치정보를 포함한다. 
+
+```{r, eval = FALSE}
+subway_0407_final <- subway_0407_route %>% 
+  filter(time =="07") %>% 
+  dplyr::select(-ride_on, -ride_off) %>% 
+  right_join(shortestpath_db_longlat, by="set") %>% 
+  dplyr::select(-set) %>% 
+  group_by(from, from_lat, from_long, to, to_lat, to_long) %>% 
+  summarise(sum_count = sum(count, na.rm = TRUE)) %>% 
+  ungroup %>% mutate(time= "07") %>% 
+  dplyr::select(time, starts_with("from"), starts_with("to"), sum_count) %>%
+  filter(from!=to)
+```
+
+```{r, echo=FALSE, fig.align ="center", fig.pos = 'H'}
+subway_0407_final <- readRDS(file = '../Thesis/data/subway_0407_final.RDS')
+subway_0407_final %>% head() %>% 
+  mutate(from_lat = round(as.numeric(from_lat), 2),
+         to_lat = round(as.numeric(to_lat), 2), 
+         from_long= round(as.numeric(from_long), 2),
+         to_long = round(as.numeric(to_long), 2)) %>% 
+  kable(format="latex", caption = '최종 데이터셋 예시 (07시)') %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+다음은 위와 같은 형태의 데이터셋을 구축하기 위한 과정이다.
+
+### 3.2.1 최단경로 데이터베이스 제작
+
+우선 이동 간 경유하는 모든 구간에 대한 정보를 포함한 새로운 데이터 구조를 정의한다. 예를 들어서 종로3가역에서 출발하여 혜화역에 도착하는 경우, `종로3가-종로5가`, `종로5가-동대문` 그리고 동대문에서 환승 후, `동대문-혜화`로 3개의 구간을 경유할 것이다. 이와 같은 방식으로 모든 지하철 경로의 이동 정보를 포함한 데이터베이스를 제작하였다. 또한 시각화를 위하여 데이터베이스 내 지하철 역 위치정보를 포함하였다. 
+ 
+```{r, echo=FALSE, fig.align ="center", fig.pos = 'H'}
+shortestpath_db_longlat <- subway_data_DT %>% 
+  filter(!duplicated(Name)) %>% 
+  dplyr::select(Name, lat, long) %>% 
+  rename(from=Name, from_lat=lat, from_long=long) %>%
+  right_join(shortestpath_db)
+
+shortestpath_db_longlat <- subway_data_DT %>% 
+  filter(!duplicated(Name)) %>% 
+  dplyr::select(Name, lat, long) %>% 
+  rename(to=Name, to_lat=lat, to_long=long) %>%
+  right_join(shortestpath_db_longlat) %>% 
+  dplyr::select(set, starts_with("from"), starts_with("to"))
+
+shortestpath_db_longlat %>% 
+  mutate(from_lat = round(as.numeric(from_lat), 2),
+         to_lat = round(as.numeric(to_lat), 2), 
+         from_long= round(as.numeric(from_long), 2),
+         to_long = round(as.numeric(to_long), 2)) %>%
+  filter(set == "종로3가-혜화") %>% 
+  kable(format="latex",
+        caption = paste("최단경로 데이터베이스 예시", '(종로3가역->혜화역)')) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+\newpage 
+
+### 3.2.2 경로별 승하차 인원에 대한 데이터베이스
+
+아래 `Table 5`은 이용객 개별 승하차 데이터를 이용한 모든 승차역-하차역 경로에 대한 이용객 수의 합계이다. 
+
+```{r, echo=FALSE, fig.align ="center", fig.pos = 'H'}
+subway_0407_route <- readRDS(file="../Thesis/data/subway_0407_route.RDS")
+
+subway_0407_route %>% 
+  filter(set=="종로3가-혜화") %>% 
+  dplyr::select(date, day, time, set, count) %>% 
+  head() %>% 
+  kable(format="latex", caption = '시간대별 경로 데이터베이스 예시 (종로3가역->혜화역)') %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+이를 `set` 변수를 기준으로 최단경로 데이터베이스와 결합하여 최종적으로 사용될 시간대별 구간의 합을 구하였다. 여기서 구간이란 이웃한 두 역 사이로 정의되며, 지하철 네트워크 내에는 총 748개의 구간이 존재한다.
 
 ### 참고 
 
