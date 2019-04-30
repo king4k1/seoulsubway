@@ -1,10 +1,10 @@
-congestion_plot <- function(data, center, zoom, google_key){
+congestion_plot <- function(input_data, center, zoom, google_key){
   register_google(key = google_key)
-  from_set <- data %>%
+  from_set <- input_data %>%
     mutate(set = paste0(from, "-", to)) %>% 
     dplyr::select(date, time, set, from, from_long, from_lat, sum_count)
   from_set$key <- "from"
-  to_set <- data %>%
+  to_set <- input_data %>%
     mutate(set = paste0(from, "-", to)) %>% 
     dplyr::select(date, time, set, to, to_long, to_lat, sum_count)
   to_set$key <- "to"  

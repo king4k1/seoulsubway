@@ -99,7 +99,7 @@ ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geo
 * 지도 상 시각화를 위하여, 구글 API key가 별도로 필요합니다. ?register_google을 참고하세요.
 
 ```r
-congestion_plot(data=data_str_example, 
+congestion_plot(input_data=data_str_example, 
                 center=c(126.97796919, 37.566535), zoom=11,
                 google_key = API_key)
 ```
