@@ -105,10 +105,10 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
     Transfer_First <- Transfer_List[[i]]$first
     Transfer_Second <- Transfer_List[[i]]$second
     End_Ind_2 <- which(subway_data[[depart_line]]$Name == Transfer_First$Name)
-    Transfer_First_Ind <- str_split(Transfer_First$Transfer, paste0("[", 
-                                                                    "$", "|", "]"))[[1]]
-    Transfer_Second_Ind <- str_split(Transfer_Second$Transfer, paste0("[", 
-                                                                      "$", "|", "]"))[[1]]
+    Transfer_First_Ind <- Transfer_First$Transfer %>% 
+      str_split(paste0("[", "$", "|", "]"))[[1]]
+    Transfer_Second_Ind <- Transfer_Second$Transfer %>% 
+      str_split(paste0("[", "$", "|", "]"))[[1]]
     # process variable for get transfer line
     Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)][1]
     Total_Transfer_Raw <- nrow(subway_data[[Transfer_First_Line]])
@@ -198,12 +198,12 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
     Transfer_Second <- Transfer_List[[i]]$second
     Transfer_Third <- Transfer_List[[i]]$third
     End_Ind_3 <- which(subway_data[[depart_line]]$Name == Transfer_First$Name)
-    Transfer_First_Ind <- str_split(Transfer_First$Transfer, paste0("[", 
-                                                                    "$", "|", "]"))[[1]]
-    Transfer_Second_Ind <- str_split(Transfer_Second$Transfer, paste0("[", 
-                                                                      "$", "|", "]"))[[1]]
-    Transfer_Third_Ind <- str_split(Transfer_Third$Transfer, paste0("[", 
-                                                                    "$", "|", "]"))[[1]]    
+    Transfer_First_Ind <- Transfer_First$Transfer %>% 
+      str_split(paste0("[", "$", "|", "]"))[[1]]
+    Transfer_Second_Ind <- Transfer_Second$Transfer %>% 
+      str_split(paste0("[", "$", "|", "]"))[[1]]
+    Transfer_Third_Ind <- Transfer_Third$Transfer %>% 
+      str_split(paste0("[", "$", "|", "]"))[[1]]    
     # process variable for get transfer line
     Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)][1]
     Transfer_Second_Line <- Transfer_Third_Ind[which(Transfer_Third_Ind%in%Transfer_Second_Ind)][1]
@@ -351,11 +351,13 @@ shortestpath_all <- function(depart, depart_line, arrival, arrival_line) {
   }
   if (depart_line != arrival_line) {
     One <- tryCatch(shortestpath_1(depart = depart, depart_line = depart_line, 
-                                   arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                   arrival = arrival, arrival_line = arrival_line), 
+                    error = function(e) {
                                      One = list(Time = 300)
                                    })
     Two <- tryCatch(shortestpath_2(depart = depart, depart_line = depart_line, 
-                                   arrival = arrival, arrival_line = arrival_line), error = function(e) {
+                                   arrival = arrival, arrival_line = arrival_line), 
+                    error = function(e) {
                                      Two = list(Time = 300)
                                    })
     # use tryCatch() for consider error case get results of thw case, and
@@ -392,7 +394,8 @@ shortestpath <- function(depart, arrival) {
       result[[paste0(i, "-", j)]] <-
         tryCatch(shortestpath_all(depart, depart_line = depart_line_list[i],
                               arrival, arrival_line = arrival_line_list[j]), 
-                 error = function(e) {result[[paste0(i, "-", j)]] = list(Time = 300)
+                 error = function(e) {
+                   result[[paste0(i, "-", j)]] = list(Time = 300)
                  })
       shortest_index[[paste0(i, "-", j)]] <-
         result[[paste0(i, "-", j)]]$Time
