@@ -3,8 +3,7 @@
 get_path <- function(depart, arrival){
   result <- shortestpath(depart, arrival)
   if(result$Time==300){
-    station <- "no result"
-    ind <- 0
+    station <- "no_result"
     result$Info <- data.frame(matrix(0,5,5))
   }
   if(result$Time!=300 & nrow(result$Info)==1){
