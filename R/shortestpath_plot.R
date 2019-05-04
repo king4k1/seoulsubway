@@ -1,5 +1,4 @@
-shortestpath_plot <- function (depart, arrival, google_key, zoom = zoom) 
-{
+shortestpath_plot <- function (depart, arrival, google_key, zoom = zoom){
   register_google(key = google_key)
   result <- shortestpath(depart, arrival)
   Info <- result$Info
@@ -12,15 +11,14 @@ shortestpath_plot <- function (depart, arrival, google_key, zoom = zoom)
   }
   meanX <- mean(as.numeric(Path$long))
   meanY <- mean(as.numeric(Path$lat))
-  g <- ggmap(get_map(c(meanX, meanY), zoom = zoom, maptype = "toner-lite", 
-                     source = "stamen")) + geom_path(data = Path, aes(x = as.numeric(long), 
-                                                                      y = as.numeric(lat),
-                                                                      col = Line)) +
+  g <- ggmap(get_map(c(meanX, meanY), zoom = zoom,
+                     maptype = "toner-lite", source = "stamen")) + 
+    geom_path(data = Path, aes(x = as.numeric(long), 
+                               y = as.numeric(lat), col = Line)) +
     geom_label(data = Path %>% filter(!duplicated(Name)), 
                aes(x = as.numeric(long), 
                    y = as.numeric(lat), label = Name),
-               fill = "black", col = "white", 
-               alpha = 0.5)
+               fill = "black", col = "white", alpha = 0.5)
   return(g)
 }
 
