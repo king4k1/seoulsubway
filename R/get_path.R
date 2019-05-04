@@ -2,30 +2,16 @@
 
 get_path <- function(depart, arrival){
   result <- shortestpath(depart, arrival)
-  if(result$Time==300){
-    station <- "no_result"
-    result$Info <- data.frame(matrix(0,5,5))
+  station <- "no_result"
+  index <- result %>% names %>% str_which("Path")
+  if(result$Time!=300){
+    for(i in 2:length(index)){
+      Path <- rbind(Path, result[[index[i]]])
+    }
+    station <- Path$Name %>% unique()
   }
-  if(result$Time!=300 & nrow(result$Info)==1){
-    station <- result$Path
-    station <- station$Name
-  }
-  if(result$Time!=300 & nrow(result$Info)==2){
-    station <- rbind(result$Path1, result$Path2)
-    station <- station[-which(duplicated(station$Name)),]$Name
-  }
-  if(result$Time!=300 & nrow(result$Info)==3){
-    station <- rbind(result$Path1, result$Path2, result$Path3)
-    station <- station[-which(duplicated(station$Name)),]$Name
-  }
-  if(result$Time!=300 & nrow(result$Info)==4){
-    station <- rbind(result$Path1, result$Path2, result$Path3, result$Path4)
-    station <- station[-which(duplicated(station$Name)),]$Name
-  }
-  if(result$Time!=300 & nrow(result$Info)==5){
-    station <- rbind(result$Path1, result$Path2, 
-                     result$Path3, result$Path4, result$Path5)
-    station <- station[-which(duplicated(station$Name)),]$Name
-  }  
-  return(data.frame(station))
+  n_row <- length(station)
+  station_1 <- station[1:(n_row-1)]
+  station_2 <- station[2:n_row]
+  return(data.frame(from=station_1, to=station_2))
 }
