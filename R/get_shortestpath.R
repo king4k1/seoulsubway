@@ -16,6 +16,7 @@ get_shortestpath <- function(depart, arrival){
       dat_inv_change[i,] <- result_inv$Path[(nrow(result_inv$Path)+1-i),]
     }
     result_inv$Path <- dat_inv_change
+    result <- result_inv
   }
-  result_inv
+  result
 }

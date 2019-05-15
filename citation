@@ -1,18 +1,15 @@
-공공데이터포털
+데이터 출처
 
-  * 지하철 승하차 인원수 `시간대별 승하차 인원 통계`
+  * "서울시 역코드로 지하철역 위치 조회" (공공데이터포털)
 
-  * 최단경로 OPEN API `서울특별시 대중교통 환승 버스 지하철 환승경로 조회정보`
+  * `환승역, 환승거리 및 소요시간 정보(서울교통공사 17.10 기준)` (공공데이터포털)
 
-  * "서울시 역코드로 지하철역 위치 조회" 
 
-  * `환승역, 환승거리 및 소요시간 정보(서울교통공사 17.10 기준)`
+참고문헌 
+
+  1. 서울지하철공사.  "지하철 표정속도" http://www.seoulmetro.co.kr/kr/page.do?menuIdx=513 (2018).
+
+  2. 이세중. "“환승할 때 뛰지 마세요”…서울지하철 열차 시간표 조정(KBS NEWS)" http://news.kbs.co.kr/news/view.do?ncd=3501669 (2017).
   
-인용 
-1> Haversine 함수. 
-Sinnott, R.W, "Virtues of the Haversine", Sky and Telescope, Vol. 68, Issue 2, pp.158, 1984.
-
-2> 서울메트로. "지하철 표정속도는 34km/h이다." http://www.seoulmetro.co.kr/kr/page.do?menuIdx=513
-
-3> 이세중. “환승할 때 뛰지 마세요”…서울지하철 열차 시간표 조정(KBS NEWS)2017.06.20
-http://news.kbs.co.kr/news/view.do?ncd=3501669
+  3. Sinnott, (1984). Virtues of the Haversine. Sky Telesc., 68(2): 159.
+  
