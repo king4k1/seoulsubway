@@ -41,9 +41,6 @@ get_pathinfo <- function(total, start, end, line) {
     stop("you can`t get a path from these transfer count number")
   }
   Path_Count <- abs(start - end)
-  if(start<end){
-    Path_Time <- sum(subway_data[[line]][start:end,]$Time) - subway_data[[line]][end,]$Time
-  }
   Path_Time <- sum(subway_data[[line]][start:end,]$Time) - subway_data[[line]][start,]$Time
   # (normal case) get index.
   if (line == "2") {
@@ -68,7 +65,7 @@ get_pathinfo <- function(total, start, end, line) {
       subway_data[[line]][start,"Time", with=FALSE] + 3 
     # 6-A -> 6-A circulate line.
   }
-  return(data.frame(count = as.numeric(Path_Count), time = as.numeric(Path_Time)))
+  return(data.frame(count = as.numeric(Path_Count), time = as.numeric(Path_Time) %>% round(2)))
 }
 
 # 보조함수(get_transfercriteria)
@@ -265,7 +262,9 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
 
 get_pathresult <- function(shortestpath_result) {
   data("subway_data", envir = environment())
-  Set <- list(Info = shortestpath_result$Info)
+  Set <- list(Info = shortestpath_result$Info,
+              Count = shortestpath_result$Total['Count'] %>% as.numeric %>% round(2),
+              Time = shortestpath_result$Total['Time'] %>% as.numeric %>% round(2))
   if (nrow(Set$Info) == 1) {
     Start_Ind_0 <- which(subway_data[[as.character(Set$Info$Line[1])]]$Name == 
                            as.character(Set$Info$Depart[1]))

@@ -24,7 +24,8 @@ shortestpath_0 <- function(depart, depart_line, arrival, arrival_line) {
 shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
   data("subway_data", envir = environment())
   data("transfer_info", envir = environment())
-  Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
+  Transfer_List <- get_transferinfo(depart, depart_line,
+                                    arrival, arrival_line, 
                                     transfer_count = 1)
   if(nrow(Transfer_List)==0){
     stop("you can`t get a path from these transfer count number 1.
@@ -61,8 +62,8 @@ shortestpath_1 <- function(depart, depart_line, arrival, arrival_line) {
                                               Count = c(Path1_Info$count, Path2_Info$count),
                                               Time = c(Path1_Info$time, Path2_Info$time),
                                               Arrive = c(Transfer_List[i,]$Name, arrival)), 
-                            Total = c(Count = Path1_Count + Path2_Count,
-                                      Time = Path1_Time + Path2_Time + Transfer_Time + 3))
+                            Total = c(Count = Path1_Info$count + Path2_Info$count,
+                                      Time = Path1_Info$time + Path2_Info$time + Transfer_Time + 3))
   }
   Transfer_1_Count_Time <- c()
   for (i in seq_along(Transfer_1)) {
@@ -85,7 +86,8 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
   Total_Depart_Raw <- nrow(subway_data[[depart_line]])
   Total_End_Raw <- nrow(subway_data[[arrival_line]])
   Start_Ind_2 <- which(subway_data[[depart_line]]$Name == depart)
-  Transfer_List <- get_transferinfo(depart, depart_line, arrival, arrival_line, 
+  Transfer_List <- get_transferinfo(depart, depart_line,
+                                    arrival, arrival_line, 
                                     transfer_count = 2)
   # get available transfer station list these results are list format and
   # include first/second transfer station.
@@ -98,63 +100,52 @@ shortestpath_2 <- function(depart, depart_line, arrival, arrival_line) {
     Transfer_First <- Transfer_List[[i]]$first
     Transfer_Second <- Transfer_List[[i]]$second
     End_Ind_2 <- which(subway_data[[depart_line]]$Name == Transfer_First$Name)
-    Transfer_First_Ind <- Transfer_First$Transfer %>% 
-      str_split(paste0("[", "$", "|", "]"))[[1]]
-    Transfer_Second_Ind <- Transfer_Second$Transfer %>% 
-      str_split(paste0("[", "$", "|", "]"))[[1]]
+    Transfer_First_Ind <- str_split(Transfer_First$Transfe, pattern = paste0("[", "$", "|", "]")) %>% unlist
+    Transfer_Second_Ind <- str_split(Transfer_Second$Transfe, pattern = paste0("[", "$", "|", "]")) %>% unlist
     # process variable for get transfer line
     Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)][1]
-    Total_Transfer_Raw <- nrow(subway_data[[Transfer_First_Line]])
-    Start_Ind2_2 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_First$Name)
-    End_Ind2_2 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_Second$Name)
-    Start_Ind3_2 <- which(subway_data[[arrival_line]]$Name == Transfer_Second$Name)
-    End_Ind3_2 <- which(subway_data[[arrival_line]]$Name == arrival)
-    # get information about each path way
-    Path1_Info <- get_pathinfo(total = Total_Depart_Raw, start = Start_Ind_2, 
-                               end = End_Ind_2, line = depart_line)
-    Path1_Count <- as.numeric(Path1_Info["count"])
-    Path1_Time <- as.numeric(Path1_Info["time"])
-    Path2_Info <- get_pathinfo(total = Total_Transfer_Raw, start = Start_Ind2_2, 
-                               end = End_Ind2_2, line = Transfer_First_Line)
-    Path2_Count <- as.numeric(Path2_Info["count"])
-    Path2_Time <- as.numeric(Path2_Info["time"])
-    Path3_Info <- get_pathinfo(total = Total_End_Raw, start = Start_Ind3_2, 
-                               end = End_Ind3_2, line = arrival_line)
-    Path3_Count <- as.numeric(Path3_Info["count"])
-    Path3_Time <- as.numeric(Path3_Info["time"])
-    # get transfer time each / ex) depart -> transfer
-    Transfer_Time1_List <- transfer_info[which(transfer_info$Transfer_Name == 
-                                                 Transfer_First$Name), ]
-    Transfer_Time1_T <- Transfer_Time1_List[which(Transfer_Time1_List$Transfer_Line == 
-                                                    depart_line), ]
-    Transfer_Time1 <- Transfer_Time1_T[which(Transfer_Time1_T$Transfer_Line2 == 
-                                               Transfer_First_Line), ]
-    Transfer_Time2_List <- transfer_info[which(transfer_info$Transfer_Name == 
-                                                 Transfer_Second$Name), ]
-    Transfer_Time2_T <- Transfer_Time2_List[which(Transfer_Time2_List$Transfer_Line == 
-                                                    arrival_line), ]
-    Transfer_Time2 <- Transfer_Time2_T[which(Transfer_Time2_T$Transfer_Line2 == 
-                                               arrival_line), ]
-    if (nrow(Transfer_Time1) >= 1) {
-      Transfer_Time1 <- as.numeric(Transfer_Time1$Transfer_Time)
-    } else {
-      Transfer_Time1 <- 2.35
+    if(!(is.na(Transfer_First_Line))){
+      Total_Transfer_Raw <- nrow(subway_data[[Transfer_First_Line]])
+      Start_Ind2_2 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_First$Name)
+      End_Ind2_2 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_Second$Name)
+      Start_Ind3_2 <- which(subway_data[[arrival_line]]$Name == Transfer_Second$Name)
+      End_Ind3_2 <- which(subway_data[[arrival_line]]$Name == arrival)
+      # get information about each path way
+      Path1_Info <- get_pathinfo(total = Total_Depart_Raw, start = Start_Ind_2, 
+                                 end = End_Ind_2, line = depart_line)
+      Path2_Info <- get_pathinfo(total = Total_Transfer_Raw, start = Start_Ind2_2, 
+                                 end = End_Ind2_2, line = Transfer_First_Line)
+      Path3_Info <- get_pathinfo(total = Total_End_Raw, start = Start_Ind3_2, 
+                                 end = End_Ind3_2, line = arrival_line)
+      # get transfer time each / ex) depart -> transfer
+      Transfer_Time1 <- transfer_info %>% 
+        filter(Transfer_Name == Transfer_First$Name) %>% 
+        filter(Transfer_Line == depart_line & Transfer_Line2 == Transfer_First_Line)
+      Transfer_Time2 <- transfer_info %>% 
+        filter(Transfer_Name == Transfer_Second$Name) %>% 
+        filter(Transfer_Line == Transfer_First_Line & Transfer_Line2 == arrival_line)
+      if (nrow(Transfer_Time1) >= 1) {
+        Transfer_Time1 <- as.numeric(Transfer_Time1$Transfer_Time)
+      } else {
+        Transfer_Time1 <- 2.35
+      }
+      # if no results about transfer_info data -> print 2.35(citation)
+      if (nrow(Transfer_Time2) >= 1) {
+        Transfer_Time2 <- as.numeric(Transfer_Time2$Transfer_Time)
+      } else {
+        Transfer_Time2 <- 2.35
+      }
+      Transfer_2[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_First$Name, Transfer_Second$Name),
+                                                Line = c(depart_line, Transfer_First_Line, arrival_line), 
+                                                Count = c(Path1_Info$count, Path2_Info$count, Path3_Info$count), 
+                                                Time = c(Path1_Info$time, Path2_Info$time, Path3_Info$time),
+                                                Arrive = c(Transfer_First$Name, Transfer_Second$Name, arrival)),
+                              Total = c(Count = sum(Path1_Info$count + Path2_Info$count + Path3_Info$count), 
+                                        Time = sum(Path1_Info$time + Path2_Info$time + Path3_Info$time) +
+                                          Transfer_Time1 + Transfer_Time2 + 6))
+    }else{
+      Transfer_3[[i]] <- list(Total = c(Time = 300))
     }
-    # if no results about transfer_info data -> print 2.35(citation)
-    if (nrow(Transfer_Time2) >= 1) {
-      Transfer_Time2 <- as.numeric(Transfer_Time2$Transfer_Time)
-    } else {
-      Transfer_Time2 <- 2.35
-    }
-    Transfer_2[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_First$Name, Transfer_Second$Name),
-                                              Line = c(depart_line, Transfer_First_Line, arrival_line), 
-                                              Count = c(as.numeric(Path1_Count), as.numeric(Path2_Count),
-                                                        as.numeric(Path3_Count)), 
-                                              Time = c(as.numeric(Path1_Time), as.numeric(Path2_Time), as.numeric(Path3_Time)),
-                                              Arrive = c(Transfer_First$Name, Transfer_Second$Name, arrival)),
-                            Total = c(Count = sum(Path1_Count + Path2_Count + Path3_Count), 
-                                      Time = sum(Path1_Time + Path2_Time + Path3_Time) + Transfer_Time1 + Transfer_Time2 + 6))
-    
   }
   Transfer_2_Count_Time <- c()
   for (i in seq_along(Transfer_2)) {
@@ -191,83 +182,67 @@ shortestpath_3 <- function(depart, depart_line, arrival, arrival_line) {
     Transfer_Second <- Transfer_List[[i]]$second
     Transfer_Third <- Transfer_List[[i]]$third
     End_Ind_3 <- which(subway_data[[depart_line]]$Name == Transfer_First$Name)
-    Transfer_First_Ind <- Transfer_First$Transfer %>% 
-      str_split(paste0("[", "$", "|", "]"))[[1]]
-    Transfer_Second_Ind <- Transfer_Second$Transfer %>% 
-      str_split(paste0("[", "$", "|", "]"))[[1]]
-    Transfer_Third_Ind <- Transfer_Third$Transfer %>% 
-      str_split(paste0("[", "$", "|", "]"))[[1]]    
+    Transfer_First_Ind <- str_split(Transfer_First$Transfe, pattern = paste0("[", "$", "|", "]")) %>% unlist
+    Transfer_Second_Ind <- str_split(Transfer_Second$Transfe, pattern = paste0("[", "$", "|", "]")) %>% unlist
+    Transfer_Third_Ind <- str_split(Transfer_Third$Transfe, pattern = paste0("[", "$", "|", "]")) %>% unlist
     # process variable for get transfer line
     Transfer_First_Line <- Transfer_Second_Ind[which(Transfer_Second_Ind%in%Transfer_First_Ind)][1]
     Transfer_Second_Line <- Transfer_Third_Ind[which(Transfer_Third_Ind%in%Transfer_Second_Ind)][1]
-    Total_Transfer1_Raw <- nrow(subway_data[[Transfer_First_Line]])
-    Total_Transfer2_Raw <- nrow(subway_data[[Transfer_Second_Line]])
-    Start_Ind2_3 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_First$Name)
-    End_Ind2_3 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_Second$Name)
-    Start_Ind3_3 <- which(subway_data[[Transfer_Second_Line]]$Name == Transfer_Second$Name)
-    End_Ind3_3 <- which(subway_data[[Transfer_Second_Line]]$Name == Transfer_Third$Name)
-    Start_Ind4_3 <- which(subway_data[[arrival_line]]$Name == Transfer_Third$Name)
-    End_Ind4_3 <- which(subway_data[[arrival_line]]$Name == arrival)
-    # get information about each path way
-    Path1_Info <- get_pathinfo(total = Total_Depart_Raw, start = Start_Ind_3, 
-                               end = End_Ind_3, line = depart_line)
-    Path1_Count <- as.numeric(Path1_Info["count"])
-    Path1_Time <- as.numeric(Path1_Info["time"])
-    Path2_Info <- get_pathinfo(total = Total_Transfer1_Raw, start = Start_Ind2_3, 
-                               end = End_Ind2_3, line = Transfer_First_Line)
-    Path2_Count <- as.numeric(Path2_Info["count"])
-    Path2_Time <- as.numeric(Path2_Info["time"])
-    Path3_Info <- get_pathinfo(total = Total_Transfer2_Raw, start = Start_Ind3_3, 
-                               end = End_Ind3_3, line = Transfer_Second_Line)
-    Path3_Count <- as.numeric(Path3_Info["count"])
-    Path3_Time <- as.numeric(Path3_Info["time"])
-    Path4_Info <- get_pathinfo(total = Total_End_raw, start = Start_Ind4_3, 
-                               end = End_Ind4_3, line = arrival_line)
-    Path4_Count <- as.numeric(Path4_Info["count"])
-    Path4_Time <- as.numeric(Path4_Info["time"])    
-    # get transfer time{ex) depart -> transfer} each
-    Transfer_Time1_List <- transfer_info[which(transfer_info$Transfer_Name == 
-                                                 Transfer_First$Name), ]
-    Transfer_Time1_T <- Transfer_Time1_List[which(Transfer_Time1_List$Transfer_Line == 
-                                                    depart_line), ]
-    Transfer_Time1 <- Transfer_Time1_T[which(Transfer_Time1_T$Transfer_Line2 == 
-                                               Transfer_First_Line), ]
-    Transfer_Time2_List <- transfer_info[which(transfer_info$Transfer_Name == 
-                                                 Transfer_Second$Name), ]
-    Transfer_Time2_T <- Transfer_Time2_List[which(Transfer_Time2_List$Transfer_Line == 
-                                                    Transfer_First_Line), ]
-    Transfer_Time2 <- Transfer_Time2_T[which(Transfer_Time2_T$Transfer_Line2 == 
-                                               Transfer_Second_Line), ]
-    Transfer_Time3_List <- transfer_info[which(transfer_info$Transfer_Name == 
-                                                 Transfer_Third$Name), ]    
-    Transfer_Time3_T <- Transfer_Time3_List[which(Transfer_Time3_List$Transfer_Line == 
-                                                    Transfer_Second_Line), ]
-    Transfer_Time3 <- Transfer_Time3_T[which(Transfer_Time3_T$Transfer_Line2 == 
-                                               arrival_line), ]
-    if (nrow(Transfer_Time1) >= 1) {
-      Transfer_Time1 <- as.numeric(Transfer_Time1$Transfer_Time)
-    } else {
-      Transfer_Time1 <- 2.35
+    if(!(is.na(Transfer_First_Line)) & !(is.na(Transfer_Second_Line))){
+      Total_Transfer1_Raw <- nrow(subway_data[[Transfer_First_Line]])
+      Total_Transfer2_Raw <- nrow(subway_data[[Transfer_Second_Line]])
+      Start_Ind2_3 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_First$Name)
+      End_Ind2_3 <- which(subway_data[[Transfer_First_Line]]$Name == Transfer_Second$Name)
+      Start_Ind3_3 <- which(subway_data[[Transfer_Second_Line]]$Name == Transfer_Second$Name)
+      End_Ind3_3 <- which(subway_data[[Transfer_Second_Line]]$Name == Transfer_Third$Name)
+      Start_Ind4_3 <- which(subway_data[[arrival_line]]$Name == Transfer_Third$Name)
+      End_Ind4_3 <- which(subway_data[[arrival_line]]$Name == arrival)
+      # get information about each path way
+      Path1_Info <- get_pathinfo(total = Total_Depart_Raw, start = Start_Ind_3, 
+                                 end = End_Ind_3, line = depart_line)
+      Path2_Info <- get_pathinfo(total = Total_Transfer1_Raw, start = Start_Ind2_3, 
+                                 end = End_Ind2_3, line = Transfer_First_Line)
+      Path3_Info <- get_pathinfo(total = Total_Transfer2_Raw, start = Start_Ind3_3, 
+                                 end = End_Ind3_3, line = Transfer_Second_Line)
+      Path4_Info <- get_pathinfo(total = Total_End_raw, start = Start_Ind4_3, 
+                                 end = End_Ind4_3, line = arrival_line)
+      # get transfer time{ex) depart -> transfer} each
+      Transfer_Time1 <- transfer_info %>% 
+        filter(Transfer_Name == Transfer_First$Name) %>% 
+        filter(Transfer_Line == depart_line & Transfer_Line2 ==  Transfer_First_Line)
+      Transfer_Time2 <- transfer_info %>% 
+        filter(Transfer_Name == Transfer_Second$Name) %>% 
+        filter(Transfer_Line == Transfer_First_Line & Transfer_Line2 == Transfer_Second_Line)
+      Transfer_Time3 <- transfer_info %>% 
+        filter(Transfer_Name == Transfer_Third$Name) %>% 
+        filter(Transfer_Line == Transfer_Second_Line & Transfer_Line2 == arrival_line)
+      if (nrow(Transfer_Time1) >= 1) {
+        Transfer_Time1 <- as.numeric(Transfer_Time1$Transfer_Time)
+      } else {
+        Transfer_Time1 <- 2.35
+      }
+      # if no results about transfer_info data -> print 2.35(citation)
+      if (nrow(Transfer_Time2) >= 1) {
+        Transfer_Time2 <- as.numeric(Transfer_Time2$Transfer_Time)
+      } else {
+        Transfer_Time2 <- 2.35
+      }
+      if (nrow(Transfer_Time3) >= 1) {
+        Transfer_Time3 <- as.numeric(Transfer_Time3$Transfer_Time)
+      } else {
+        Transfer_Time3 <- 2.35
+      }
+      Transfer_3[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_First$Name, Transfer_Second$Name, Transfer_Third$Name),
+                                                Line = c(depart_line, Transfer_First_Line, Transfer_Second_Line, arrival_line), 
+                                                Count = c(Path1_Info$count, Path2_Info$count, Path3_Info$count, Path4_Info$count),
+                                                Time = c(Path1_Info$time, Path2_Info$time, Path3_Info$time, Path4_Info$time),
+                                                Arrive = c(Transfer_First$Name, Transfer_Second$Name, Transfer_Third$Name, arrival)),
+                              Total = c(Count = sum(Path1_Info$count + Path2_Info$count + Path3_Info$count + Path4_Info$count), 
+                                        Time = sum(Path1_Info$time + Path2_Info$time + Path3_Info$time + Path4_Info$time) +
+                                          Transfer_Time1 + Transfer_Time2 + Transfer_Time3 + 9))
+    }else{
+      Transfer_3[[i]] <- list(Total = c(Time = 300))
     }
-    # if no results about transfer_info data -> print 2.35(citation)
-    if (nrow(Transfer_Time2) >= 1) {
-      Transfer_Time2 <- as.numeric(Transfer_Time2$Transfer_Time)
-    } else {
-      Transfer_Time2 <- 2.35
-    }
-    if (nrow(Transfer_Time3) >= 1) {
-      Transfer_Time3 <- as.numeric(Transfer_Time3$Transfer_Time)
-    } else {
-      Transfer_Time3 <- 2.35
-    }
-    Transfer_3[[i]] <- list(Info = data.frame(Depart = c(depart, Transfer_First$Name, Transfer_Second$Name, Transfer_Third$Name),
-                                              Line = c(depart_line, Transfer_First_Line, Transfer_Second_Line, arrival_line), 
-                                              Count = c(as.numeric(Path1_Count), as.numeric(Path2_Count), as.numeric(Path3_Count), as.numeric(Path4_Count)),
-                                              Time = c(as.numeric(Path1_Time), as.numeric(Path2_Time), as.numeric(Path3_Time), as.numeric(Path4_Time)),
-                                              Arrive = c(Transfer_First$Name, Transfer_Second$Name, Transfer_Third$Name, arrival)),
-                            Total = c(Count = sum(Path1_Count + Path2_Count + Path3_Count + Path4_Count), 
-                                      Time = sum(Path1_Time + Path2_Time + Path3_Time + Path4_Time) + Transfer_Time1 + Transfer_Time2 + Transfer_Time3 + 9))
-    
   }
   Transfer_3_Count_Time <- c()
   for (i in seq_along(Transfer_3)) {
