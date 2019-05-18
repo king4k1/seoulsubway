@@ -111,7 +111,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
   data("transfer_info", envir = environment())
   data("subway_data", envir = environment())
   # load data
-  transfer_list <- get_transfercriteria(depart, arrival, penalty = 0.05)
+  transfer_list <- get_transfercriteria(depart, arrival, penalty = 0.07)
   # set criteria for available transfer station
   if (transfer_count == 1) {
     transfer_depart <- transfer_list %>% filter(str_detect(Transfer, fixed(depart_line)))
@@ -125,10 +125,10 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
   }
   if (transfer_count == 2) {
     transfer_arrival <- list()
-    transfer_middle <- transfer_list %>% filter(str_detect(Transfer, fixed(depart_line)))
+    transfer_middle <- transfer_list %>% 
+      filter(str_detect(Transfer, fixed(depart_line))) %>% 
+      checkline(depart_line = depart_line, arrival_line = names(subway_data))
     # set available transfer station for waypoint.(== first transfer station)
-    transfer_middle <- checkline(dat = transfer_middle, depart_line = depart_line, 
-                                 arrival_line = names(subway_data))
     transfer_middle_list_sub <- str_remove(transfer_middle$Transfer, fixed(depart_line))
     for (i in 1:nrow(transfer_middle)) {
       transfer_middle_list <- unlist(str_split(transfer_middle_list_sub[i], pattern = fixed("|")))    
@@ -139,16 +139,15 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
       for (j in seq_along(transfer_middle_list)) {
         transfer_long <- get_transfercriteria(transfer_middle$Name[i], arrival, penalty = 0.05)
         # set criteria for available transfer station
-        transfer_middle_get <- transfer_long %>% filter(str_detect(Transfer, transfer_middle_list[j]))
-        transfer_middle_get <- transfer_middle_get %>% filter(str_detect(Transfer, fixed(arrival_line)))
+        transfer_middle_get <- transfer_long %>% 
+          filter(str_detect(Transfer, transfer_middle_list[j])) %>% 
+          filter(str_detect(Transfer, fixed(arrival_line)))
         if(nrow(transfer_middle_get)!=0){
           transfer_middle_get <- transfer_middle_get %>% 
             filter(Name %in% subway_data[[transfer_middle_list[j]]]$Name) %>%
-            filter(Name %in% subway_data[[arrival_line]]$Name)
-          # find available transfer station(depart, arrival both)
-          transfer_middle_get <- checkline(transfer_middle_get, depart_line = transfer_middle_list[j], 
-                                           arrival_line = arrival_line)
-        }
+            filter(Name %in% subway_data[[arrival_line]]$Name) %>% 
+            checkline(depart_line = transfer_middle_list[j], arrival_line = arrival_line)
+        } 
         # use checkline for erro selection.
         for (k in 1:nrow(transfer_middle_get)) {
           transfer_arrival[[paste0(i, "-", j, "-", k)]] <- list(first = transfer_middle[i, ],
@@ -174,14 +173,12 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
   }
   if (transfer_count == 3) {
     transfer_arrival <- list()
-    transfer_middle_first <- transfer_list %>% filter(str_detect(Transfer, fixed(depart_line)))
-    # set available transfer station for waypoint.
-    # (== first transfer station)
-    transfer_middle_first <- checkline(dat = transfer_middle_first, 
-                                       depart_line = depart_line, 
-                                       arrival_line = names(subway_data))
+    transfer_middle_first <- transfer_list %>% 
+      filter(str_detect(Transfer, fixed(depart_line))) %>% 
+      checkline(depart_line = depart_line, arrival_line = names(subway_data))
+    transfer_middle_list_sub <- str_remove(transfer_middle_first$Transfer, fixed(depart_line))
     for (i in 1:nrow(transfer_middle_first)) {
-      transfer_middle_list <- unlist(str_split(transfer_middle_list_sub[i], pattern = fixed("|")))    
+      transfer_middle_list <- str_split(transfer_middle_list_sub[i], pattern = fixed("|")) %>% unlist()  
       index <- which(transfer_middle_list=="")
       if(length(index)!=0){
         transfer_middle_list <- transfer_middle_list[-index]
@@ -202,24 +199,15 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
           for (k in seq_along(transfer_middle2_list)) {
             transfer_long <- get_transfercriteria(transfer_middle_second$Name[j2], arrival, penalty = 0.05)
             # set criteria wider for available transfer station(branch line)
-            transfer_middle_get <- transfer_long %>% filter(str_detect(Transfer, transfer_middle2_list[j]))
-            transfer_middle_get <- transfer_middle_get %>% filter(str_detect(Transfer, fixed(arrival_line)))
-            transfer_middle_get <- transfer_middle_get %>% 
-              filter(Name %in% subway_data[[transfer_middle2_list[j]]]$Name) %>% 
-              filter(Name %in% subway_data[[arrival_line]]$Name)
-            if(nrow(transfer_middle_get)==0){
-              transfer_long <- get_transfercriteria(transfer_middle_second$Name[j2], 
-                                                    arrival, penalty = 0.1)
-              transfer_middle_get <- transfer_long %>% filter(str_detect(Transfer, transfer_middle2_list[j]))
-              transfer_middle_get <- transfer_middle_get %>% filter(str_detect(Transfer, fixed(arrival_line)))
+            transfer_middle_get <- transfer_long %>%
+              filter(str_detect(Transfer, transfer_middle2_list[j])) %>%
+              filter(str_detect(Transfer, fixed(arrival_line)))
+            if(nrow(transfer_middle_get)!=0){
               transfer_middle_get <- transfer_middle_get %>% 
                 filter(Name %in% subway_data[[transfer_middle2_list[j]]]$Name) %>% 
-                filter(Name %in% subway_data[[arrival_line]]$Name)
+                filter(Name %in% subway_data[[arrival_line]]$Name) %>% 
+                checkline(depart_line = transfer_middle2_list[k], arrival_line = arrival_line)
             }
-            # find available transfer station(depart, arrival both)
-            transfer_middle_get <- checkline(transfer_middle_get, 
-                                             depart_line = transfer_middle2_list[k], 
-                                             arrival_line = arrival_line)
             for (k2 in 1:nrow(transfer_middle_get)) {
               transfer_arrival[[paste0(i, "-", j, "-", j2, "-", 
                                       k, "-", k2)]] <- list(first = transfer_middle_first[i, ],
