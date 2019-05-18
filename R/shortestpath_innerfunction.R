@@ -35,25 +35,28 @@ checkline <- function(dat, depart_line, arrival_line) {
 
 # 하나의 노선에 대하여 총 역수(total), start(역 1 위치순서), end(역 2 위치순서) 그리고 line(노선)을 입력하면
 # 두 역 사이의 이동역수와 소요시간을 산출한다.
-
 get_pathinfo <- function(total, start, end, line) {
   data(subway_data, envir = environment())
   if(is.null(start)|is.null(end)){
     stop("you can`t get a path from these transfer count number")
   }
   Path_Count <- abs(start - end)
+  if(start<end){
+    Path_Time <- sum(subway_data[[line]][start:end,]$Time) - subway_data[[line]][end,]$Time
+  }
   Path_Time <- sum(subway_data[[line]][start:end,]$Time) - subway_data[[line]][start,]$Time
   # (normal case) get index.
   if (line == "2") {
     Circulate <- total - abs(start - end)
     Circulate2 <- abs(start - end)
     Circulate <- c(Circulate, Circulate2)
-    Circulate_Time <- c(sum(subway_data[[line]][c(start:total,
-                                                  1:end),]$Time) - subway_data[[line]][start, ]$Time,
-                        sum(subway_data[[line]][c(end:total,1:start),]$Time) - subway_data[[line]][start,]$Time)
+    Circulate_Time <- c(sum(subway_data[[line]][c(start:total,1:end),"Time", with=FALSE]) - 
+                          subway_data[[line]][start, "Time", with=FALSE],
+                        sum(subway_data[[line]][c(end:total,1:start),"Time", with=FALSE]) -
+                          subway_data[[line]][start,"Time", with=FALSE])
     Circulate_Time <- Circulate_Time[which.min(Circulate_Time)]
-    Circulate2_Time <- sum(subway_data[[line]][start:end,]$Time) - 
-      subway_data[[line]][start,]$Time
+    Circulate2_Time <- sum(subway_data[[line]][start:end,"Time", with=FALSE]) - 
+      subway_data[[line]][start,"Time", with=FALSE]
     Circulate_Time <- c(Circulate_Time, Circulate2_Time)
     Path_Count <- Circulate[which.min(Circulate_Time)]
     Path_Time <- Circulate_Time[which.min(Circulate_Time)]
@@ -61,8 +64,8 @@ get_pathinfo <- function(total, start, end, line) {
   }
   if (line == "6_A" & start > end) {
     Path_Count <- 6 + end - start 
-    Path_Time <- sum(subway_data[[line]][c(end:6,1:start),]$Time) - 
-      subway_data[[line]][start,]$Time + 2 
+    Path_Time <- sum(subway_data[[line]][c(end:6,1:start),"Time", with=FALSE]) - 
+      subway_data[[line]][start,"Time", with=FALSE] + 3 
     # 6-A -> 6-A circulate line.
   }
   return(data.frame(count = as.numeric(Path_Count), time = as.numeric(Path_Time)))
@@ -79,23 +82,22 @@ get_transfercriteria <- function(depart, arrival, penalty) {
   data(subway_data, envir = environment())
   data(transfer_info, envir = environment())
   data(transfer_station, envir = environment())
-  
   # load data
-  depart_info <- subway_data_DT[which(subway_data_DT$Name == depart)[1], ]
-  arrival_info <- subway_data_DT[which(subway_data_DT$Name == arrival)[1], ]
+  
+  station_info <- subway_data_DT %>%
+    filter(Name %in% c(depart, arrival)) %>% filter(!duplicated(Name))
   # get criteria from depart/arrival's longitude&lattitude
-  lat_criteria <- c(depart_info$lat, arrival_info$lat)
-  lat_lowerbound <- as.numeric(lat_criteria[which.min(lat_criteria)]) - penalty
-  lat_upperbound <- as.numeric(lat_criteria[which.max(lat_criteria)]) + penalty
-  long_criteria <- c(depart_info$long, arrival_info$long)
-  long_lowerbound <- as.numeric(long_criteria[which.min(long_criteria)]) - penalty
-  long_upperbound <- as.numeric(long_criteria[which.max(long_criteria)]) + penalty
+  lat_criteria <- station_info$lat %>% as.numeric
+  lat_lowerbound <- min(lat_criteria) - penalty
+  lat_upperbound <- max(lat_criteria) + penalty
+  long_criteria <- station_info$long %>% as.numeric
+  long_lowerbound <- min(long_criteria) - penalty
+  long_upperbound <- max(long_criteria) + penalty
   # give penalty for bypass selection
-  transfer_lat <- transfer_station[which(transfer_station$lat <= lat_upperbound), ]
-  transfer_lat <- transfer_lat[which(transfer_lat$lat >= lat_lowerbound), ]
-  transfer_long <- transfer_lat[which(transfer_lat$long <= long_upperbound), ]
-  transfer_long <- transfer_long[which(transfer_long$long >= long_lowerbound), ]
-  return(transfer_long)
+  transfer_list <- transfer_station %>% 
+    filter(lat <= lat_upperbound & lat >= lat_lowerbound) %>% 
+    filter(long <= long_upperbound & long >= long_lowerbound)
+  return(transfer_list)
 }
 
 # 보조함수(get_transferinfo)
