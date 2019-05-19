@@ -116,7 +116,6 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
       filter(str_detect(Transfer, fixed(arrival_line))) %>% 
       checkline(depart_line = depart_line, arrival_line = arrival_line)
     # find available transfer station(depart, arrival both)
-    transfer_arrival$Name %in% subway_data[[arrival_line]]$Name
     transfer_arrival <- transfer_arrival %>% filter(Name %in% subway_data[[arrival_line]]$Name)
   }
   if (transfer_count == 2) {
@@ -146,8 +145,8 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
         } 
         # use checkline for erro selection.
         for (k in 1:nrow(transfer_middle_get)) {
-          transfer_arrival[[paste0(i, "-", j, "-", k)]] <- list(first = transfer_middle[i, ],
-                                                                second = transfer_middle_get[k, ])
+          transfer_arrival[[paste0(i, "-", j, "-", k)]] <- 
+            list(first = transfer_middle[i, ], second = transfer_middle_get[k, ])
         }
       }
     }
