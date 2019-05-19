@@ -4,7 +4,7 @@
 
 이 패키지 내에는 서울 지하철에 대한 정보와 최단거리 함수 그리고 지도상의 표현이 가능한 함수가 포함되어 있습니다.
 
-contact: kinh4k@@g.skku.edu
+contact: kinh4k@g.skku.edu
 
 <hr>
 
