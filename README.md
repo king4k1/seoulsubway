@@ -21,7 +21,7 @@ devtools::install_github("king4k1/seoulsubway")
 
 <hr>
 
-### reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arrival_line"))
+### `reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arrival_line"))`
 
 reconstruct_data 함수를 통하여 이용객 개별에 대한 raw_data 입력 시 패키지에 맞게 가공합니다.
 
@@ -52,7 +52,8 @@ subway_count <- subway_sample %>% group_by(Time, down_Name) %>% summarise(N=n())
 # 4개의 역에 대한 결과 (예시)
 subway_count <- filter(subway_count, down_Name%in%c("강남","혜화","시청", "서울"))
 
-ggplot(subway_count, aes(x=Time, y=N, col=down_Name)) + geom_line(position = 'jitter') +  theme(legend.position="bottom")
+ggplot(subway_count, aes(x=Time, y=N, col=down_Name)) + 
+geom_line(position = 'jitter') + theme(legend.position="bottom")
 ```
 ![](tools/Rplot1.png)
 
