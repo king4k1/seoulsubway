@@ -4,31 +4,31 @@
 
 # 지하철 노선형태로 네트워크를 구축하므로 중도 노선명이 잘못하여 입력되는 경우가 존재함.
 # checkline will check the dataset for select accurate line 
-checkline <- function(dat, depart_line, arrival_line) {
+checkline <- function(check_data, depart_line, arrival_line) {
   data("subway_data", envir = environment())
   # in multi transfer case, we should consider every possible line 
   if (FALSE %in% (names(subway_data) %in% arrival_line)) {
     if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, 
                                                                   depart_line)) == FALSE) {
-      anywrongdat_list <- str_remove(dat$Transfer, paste0(depart_line, "_", "A"))
+      anywrongdat_list <- str_remove(check_data$Transfer, paste0(depart_line, "_", "A"))
       anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "P"))
       anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
       anyrightdat <- str_which(anywrongdat_list, depart_line)
-      dat <- dat[anyrightdat, ]
-      anywrongdat_list <- str_remove(dat$Transfer, paste0(arrival_line, "_", "A"))
+      check_data <- check_data[anyrightdat, ]
+      anywrongdat_list <- str_remove(check_data$Transfer, paste0(arrival_line, "_", "A"))
       anywrongdat_list <- str_remove(anywrongdat_list, paste0(arrival_line, "_", "P"))
       anywrongdat_list <- str_remove(anywrongdat_list, paste0(arrival_line, "_", "B"))
       anyrightdat <- str_which(anywrongdat_list, arrival_line)
-      dat <- dat[anyrightdat,]
+      check_data <- check_data[anyrightdat,]
     }
   }else{
-    anywrongdat_list <- str_remove(dat$Transfer, paste0(depart_line, "_", "A"))
+    anywrongdat_list <- str_remove(check_data$Transfer, paste0(depart_line, "_", "A"))
     anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
     anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "P"))
     anyrightdat <- str_which(anywrongdat_list, depart_line)
-    dat <- dat[anyrightdat, ]
+    check_data <- check_data[anyrightdat, ]
   }
-  return(dat)
+  return(check_data)
 }
 
 # 보조함수(get_pathinfo)
@@ -74,7 +74,7 @@ get_pathinfo <- function(total, start, end, line) {
 # 자른 공간에 속하는 출발역과 도착역이 모두 포함된 환승가능한 역을 산출한다.
 # shortestpath() 함수의 속도를 향상시키기 위함에 본 함수의 목적이 있다.
 
-get_transfercriteria <- function(depart, arrival, penalty) {
+get_transfercriteria <- function(depart, arrival, penalty=0.05) {
   data(subway_data_DT, envir = environment())
   data(subway_data, envir = environment())
   data(transfer_info, envir = environment())
@@ -115,10 +115,9 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
   # set criteria for available transfer station
   if (transfer_count == 1) {
     transfer_depart <- transfer_list %>% filter(str_detect(Transfer, fixed(depart_line)))
-    transfer_arrival <- transfer_depart %>% filter(str_detect(Transfer, fixed(arrival_line)))
-    transfer_arrival <- checkline(dat = transfer_arrival, 
-                                  depart_line = depart_line, 
-                                  arrival_line = arrival_line)
+    transfer_arrival <- transfer_depart %>% 
+      filter(str_detect(Transfer, fixed(arrival_line))) %>% 
+      checkline(depart_line = depart_line, arrival_line = arrival_line)
     # find available transfer station(depart, arrival both)
     transfer_arrival$Name %in% subway_data[[arrival_line]]$Name
     transfer_arrival <- transfer_arrival %>% filter(Name %in% subway_data[[arrival_line]]$Name)
@@ -155,8 +154,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
         }
       }
     }
-    cut_na <- c()
-    cut_dup <- c()
+    cut_na <- cut_dup <- c()
     for (k in seq_along(transfer_arrival)) {
       cut_na[k] <- is.na(transfer_arrival[[k]]$second[1,1])
       cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1,1] == transfer_arrival[[k]]$second[1,1])
@@ -186,10 +184,9 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
       for (j in seq_along(transfer_middle_list)) {
         transfer_long <- get_transfercriteria(transfer_middle_first$Name[i],
                                               arrival, penalty = 0.05)
-        transfer_middle_second <- transfer_long %>% filter(str_detect(Transfer, transfer_middle_list[j]))
-        transfer_middle_second <- checkline(dat = transfer_middle_second, 
-                                            depart_line = transfer_middle_list[j], 
-                                            arrival_line = names(subway_data))
+        transfer_middle_second <- transfer_long %>% 
+          filter(str_detect(Transfer, transfer_middle_list[j])) %>% 
+          checkline(depart_line = transfer_middle_list[j], arrival_line = names(subway_data))
         for (j2 in 1:nrow(transfer_middle_second)) {
           transfer_middle2_list <- unlist(str_split(transfer_middle_second$Transfer[j2], pattern = fixed("|")))    
           index <- which(transfer_middle2_list=="")
@@ -218,9 +215,7 @@ get_transferinfo <- function(depart, depart_line, arrival, arrival_line, transfe
         }
       }
     }
-    cut_na <- c()
-    cut_dup <- c()
-    cut_dup2 <- c()
+    cut_na <- cut_dup <- cut_dup2 <- c()
     for (k in seq_along(transfer_arrival)) {
       cut_na[k] <- is.na(transfer_arrival[[k]]$third[1, 1])
       cut_dup[k] <- isTRUE(transfer_arrival[[k]]$first[1, 1] == transfer_arrival[[k]]$second[1, 1])
