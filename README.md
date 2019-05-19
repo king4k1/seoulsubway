@@ -18,6 +18,17 @@ devtools::install_github("king4k1/seoulsubway")
 ```
 
 <hr>
+### reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arrival_line"))
+
+reconstruct_data 함수를 통하여 이용객 개별에 대한 raw_data 입력 시 패키지에 맞게 가공합니다.
+
+* 노선의 통일과 지선의 경우 새로운 노선으로의 정의
+
+* 기본 몽촌토성(평화의문)과 같은 역명을 몽촌토성으로, 이수역과 총신대입구를 동일한 역명으로 변환
+
+raw_data의 경우, 컴퓨팅 속도를 위하여 data.table::fread()로 읽는 것을 권장합니다.
+
+<hr>
 
 ### subway_sample
 
