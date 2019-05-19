@@ -21,9 +21,12 @@ devtools::install_github("king4k1/seoulsubway")
 
 <hr>
 
-### `reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arrival_line"))`
+### `reconstruct_data()` 함수는 이용객 개별에 대한 raw_data 입력 시 패키지에 맞게 가공합니다.
 
-reconstruct_data 함수를 통하여 이용객 개별에 대한 raw_data 입력 시 패키지에 맞게 가공합니다.
+```r
+raw_data <- data.tabel::fread(file="")
+reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arrival_line"))
+```
 
 * 노선의 통일과 지선의 경우 새로운 노선으로의 정의
 
