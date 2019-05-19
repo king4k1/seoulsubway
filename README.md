@@ -4,6 +4,8 @@
 
 이 패키지 내에는 서울 지하철에 대한 정보와 최단거리 함수 그리고 지도상의 표현이 가능한 함수가 포함되어 있습니다.
 
+contact: kinh4k@@g.skku.edu
+
 <hr>
 
 ### _Install!_ 
@@ -18,6 +20,7 @@ devtools::install_github("king4k1/seoulsubway")
 ```
 
 <hr>
+
 ### reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arrival_line"))
 
 reconstruct_data 함수를 통하여 이용객 개별에 대한 raw_data 입력 시 패키지에 맞게 가공합니다.
