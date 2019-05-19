@@ -1,10 +1,11 @@
 # get_path from shortestpath
 
 get_path <- function(depart, arrival){
-  result <- shortestpath(depart, arrival)
+  result <- shortestpath_G(depart, arrival)
   station <- "no_result"
   index <- result %>% names %>% str_which("Path")
-  if(result$Time!=300){
+  if(!(result$Time %in% c(300,600))){
+    Path <- result[[index[1]]]
     for(i in 2:length(index)){
       Path <- rbind(Path, result[[index[i]]])
     }
@@ -13,5 +14,7 @@ get_path <- function(depart, arrival){
   n_row <- length(station)
   station_1 <- station[1:(n_row-1)]
   station_2 <- station[2:n_row]
-  return(data.frame(from=station_1, to=station_2))
+  result_set <- data.frame(set=paste0(depart, "-", arrival),
+                           from=station_1, to=station_2)
+  return(result_set %>% na.omit)
 }

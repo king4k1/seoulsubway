@@ -21,4 +21,3 @@ shortestpath_plot <- function (depart, arrival, google_key, zoom = zoom){
                fill = "black", col = "white", alpha = 0.5)
   return(g)
 }
-

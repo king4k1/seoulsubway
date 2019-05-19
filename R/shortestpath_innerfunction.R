@@ -12,7 +12,7 @@ checkline <- function(check_data, depart_line, arrival_line) {
                                                                   depart_line)) == FALSE) {
       anywrongdat_list <- str_remove(check_data$Transfer, paste0(depart_line, "_", "A")) %>% 
         str_remove(pattern = paste0(depart_line, "_", "P")) %>% 
-        str_remove(pattern = paste0(depart_line, "_", "B")) %>% 
+        str_remove(pattern = paste0(depart_line, "_", "B")) 
       check_data <- check_data[str_which(anywrongdat_list, depart_line), ]
       anywrongdat_list <- str_remove(check_data$Transfer, paste0(arrival_line, "_", "A")) %>% 
         str_remove(pattern = paste0(arrival_line, "_", "P")) %>% 
