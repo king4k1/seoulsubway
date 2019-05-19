@@ -10,23 +10,20 @@ checkline <- function(check_data, depart_line, arrival_line) {
   if (FALSE %in% (names(subway_data) %in% arrival_line)) {
     if (isTRUE(str_detect(depart_line, arrival_line) | str_detect(arrival_line, 
                                                                   depart_line)) == FALSE) {
-      anywrongdat_list <- str_remove(check_data$Transfer, paste0(depart_line, "_", "A"))
-      anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "P"))
-      anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
-      anyrightdat <- str_which(anywrongdat_list, depart_line)
-      check_data <- check_data[anyrightdat, ]
-      anywrongdat_list <- str_remove(check_data$Transfer, paste0(arrival_line, "_", "A"))
-      anywrongdat_list <- str_remove(anywrongdat_list, paste0(arrival_line, "_", "P"))
-      anywrongdat_list <- str_remove(anywrongdat_list, paste0(arrival_line, "_", "B"))
-      anyrightdat <- str_which(anywrongdat_list, arrival_line)
-      check_data <- check_data[anyrightdat,]
+      anywrongdat_list <- str_remove(check_data$Transfer, paste0(depart_line, "_", "A")) %>% 
+        str_remove(pattern = paste0(depart_line, "_", "P")) %>% 
+        str_remove(pattern = paste0(depart_line, "_", "B")) %>% 
+      check_data <- check_data[str_which(anywrongdat_list, depart_line), ]
+      anywrongdat_list <- str_remove(check_data$Transfer, paste0(arrival_line, "_", "A")) %>% 
+        str_remove(pattern = paste0(arrival_line, "_", "P")) %>% 
+        str_remove(pattern = paste0(arrival_line, "_", "B"))
+      check_data <- check_data[str_which(anywrongdat_list, arrival_line),]
     }
   }else{
-    anywrongdat_list <- str_remove(check_data$Transfer, paste0(depart_line, "_", "A"))
-    anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "B"))
-    anywrongdat_list <- str_remove(anywrongdat_list, paste0(depart_line, "_", "P"))
-    anyrightdat <- str_which(anywrongdat_list, depart_line)
-    check_data <- check_data[anyrightdat, ]
+    anywrongdat_list <- str_remove(check_data$Transfer, paste0(depart_line, "_", "A")) %>% 
+      str_remove(pattern = paste0(depart_line, "_", "B")) %>% 
+      str_remove(pattern = paste0(depart_line, "_", "P"))
+    check_data <- check_data[str_which(anywrongdat_list, depart_line), ]
   }
   return(check_data)
 }
