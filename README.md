@@ -32,7 +32,7 @@ reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arr
 
 * 기본 몽촌토성(평화의문)과 같은 역명을 몽촌토성으로, 이수역과 총신대입구를 동일한 역명으로 변환
 
-raw_data의 경우, 컴퓨팅 속도를 위하여 data.table::fread()로 읽는 것을 권장합니다.
+* raw_data의 경우, 컴퓨팅 속도를 위하여 data.table::fread()로 읽는 것을 권장함
 
 <hr>
 
