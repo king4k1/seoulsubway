@@ -112,7 +112,7 @@ ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geo
 
 ### `congestion_plot()` 함수를 통하여 서울지도 내 지하철 혼잡도 시각화가 가능합니다.
 
-* 필요한 데이터셋 모양은 다음과 같습니다. vignette/Intro.pdf 를 참고하세요.
+* 필요한 데이터셋의 형태는 vignette/Intro.pdf 를 참고하세요.
 
 * 지도 상 시각화를 위하여, 구글 API key가 별도로 필요합니다. ?register_google을 참고하세요.
 
