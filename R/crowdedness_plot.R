@@ -1,4 +1,4 @@
-congestion_plot <- function(input_data, center, zoom, google_key){
+crowdedness_plot <- function(input_data, center, zoom, google_key){
   register_google(key = google_key)
   from_set <- input_data %>%
     mutate(set = paste0(from, "-", to)) %>% 
