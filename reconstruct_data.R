@@ -3,7 +3,7 @@
 ### setting line & station name(remove sub-name)
 
 
-reconstruct_data <- function(raw_data, colname_list=c("depart","depart_line",
+reconstruct_data <- function(raw_data, colname_list=c("departure","departure_line",
                                                   "arrival","arrival_line")){
   ### raw_data의 특성상 크기가 크므로, data.table 패키지를 이용
   dep_name <- raw_data[,colname_list[1], with=FALSE]
@@ -30,14 +30,14 @@ reconstruct_data <- function(raw_data, colname_list=c("depart","depart_line",
   ind_2_B_down <- which(arr_name%in%c("도림천", "양천구청", "신정네거리") & arr_line%in%c("2"))
   ind_5_A_down <- which(arr_name%in%c("둔촌동","올림픽공원", "방이","개롱","거여","마천","오금") & arr_line%in%c("5"))
   ind_6_A_down <- which(arr_name%in%c("연신내", "불광", "역촌", "구산", "독바위", "응암") & arr_line%in%c("6"))
-  raw_data[,"depart", with=FALSE] <- dep_name
-  raw_data[,"depart_line", with=FALSE] <- dep_line
+  raw_data[,"departure", with=FALSE] <- dep_name
+  raw_data[,"departure_line", with=FALSE] <- dep_line
   raw_data[,"arrival", with=FALSE] <- arr_name
   raw_data[,"arrival_line", with=FALSE] <- arr_lin
-  raw_data[ind_2_A_up,4, "depart_line", with=FALSE] <- "2_A"
-  raw_data[ind_2_B_up,4, "depart_line", with=FALSE] <- "2_B"
-  raw_data[ind_5_A_up,4, "depart_line", with=FALSE] <- "5_A"
-  raw_data[ind_6_A_up,4, "depart_line", with=FALSE] <- "6_A"
+  raw_data[ind_2_A_up,4, "departure_line", with=FALSE] <- "2_A"
+  raw_data[ind_2_B_up,4, "departure_line", with=FALSE] <- "2_B"
+  raw_data[ind_5_A_up,4, "departure_line", with=FALSE] <- "5_A"
+  raw_data[ind_6_A_up,4, "departure_line", with=FALSE] <- "6_A"
   raw_data[ind_2_A_down,7, "arrival_line", with=FALSE] <- "2_A"
   raw_data[ind_2_B_down,7, "arrival_line", with=FALSE] <- "2_B"
   raw_data[ind_5_A_down,7, "arrival_line", with=FALSE] <- "5_A"

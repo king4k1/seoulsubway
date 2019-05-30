@@ -25,7 +25,7 @@ devtools::install_github("king4k1/seoulsubway")
 
 ```r
 raw_data <- data.tabel::fread(file="")
-reconstruct_data(raw_data, colname_list=c("depart","depart_line", "arrival","arrival_line"))
+reconstruct_data(raw_data, colname_list=c("departure","departure_line", "arrival","arrival_line"))
 ```
 
 * 노선의 통일과 지선의 경우 새로운 노선으로의 정의
@@ -69,28 +69,28 @@ geom_line(position = 'jitter') + theme(legend.position="bottom")
 
 ### ex1. 먹골 -> 혜화
 ```r
-shortestpath(depart="먹골", depart_line="7", arrival = "혜화", arrival_line = "4")
+shortestpath(departure="먹골", departure_line="7", arrival = "혜화", arrival_line = "4")
 ```
 
 ![](tools/path1.png)
 
 
 ```r
-shortestpath_plot(depart = "먹골", arrival = "혜화", google_key = private_key, zoom = 13)
+shortestpath_plot(departure = "먹골", arrival = "혜화", google_key = private_key, zoom = 13)
 ```
 
 ![](tools/Rplot2.png)
 
 ### ex2. 태릉입구 -> 혜화
 ```r
-shortestpath_plot(depart = "태릉입구", arrival = "혜화", google_key = private_key, zoom = 13)
+shortestpath_plot(departure = "태릉입구", arrival = "혜화", google_key = private_key, zoom = 13)
 
 ```
 ![](tools/Rplot6BS.png)
 
 ### ex3. 보문 -> 서울
 ```r
-shortestpath_plot(depart = "보문", arrival = "서울", google_key = private_key, zoom = 13)
+shortestpath_plot(departure = "보문", arrival = "서울", google_key = private_key, zoom = 13)
 
 ```
 ![](tools/Rplot3.png)
@@ -102,7 +102,7 @@ shortestpath_plot(depart = "보문", arrival = "서울", google_key = private_ke
 * 5000건의 subway_sample 데이터를 통하여 지하철의 혼잡도를 확인하자.
 
 ```r
-total_count <- get_total_count(dat=subway_sample, depart_name = "up_Name", depart_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
+total_count <- get_total_count(dat=subway_sample, departure_name = "up_Name", departure_line_name = "up_Line", arrival_name = "down_Name", arrival_line_name = "down_Line")
 
 total_count_upper500 <- total_count[which(total_count$count>=500), ]
 ggplot(data=total_count_upper500, aes(x=station, y=count, fill = station)) + geom_bar(stat="identity") +  theme(axis.text.x=element_text(angle=90, face="bold")) + theme(legend.position="none")
