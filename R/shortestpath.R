@@ -19,7 +19,7 @@ shortestpath_0 <- function(departure, departure_line, arrival, arrival_line) {
   return(Set)
 }
 
-# shortestpath_1
+# shortestpath_1(departure, departure_line, arrival, arrival_line)
 ## when using transfer 1 time.
 shortestpath_1 <- function(departure, departure_line, arrival, arrival_line) {
   data("subway_data", envir = environment())
@@ -72,7 +72,7 @@ shortestpath_1 <- function(departure, departure_line, arrival, arrival_line) {
   Path_1_Shortest <- which.min(Transfer_1_Count_Time)
   Transfer_1 <- Transfer_1[[Path_1_Shortest]]
   # get shortestpath(time depend)
-  Set <- get_pathresult(Transfer_1)
+  Set <- get_pathresult(shortestpath_result = Transfer_1)
   # get_route / consider line number 2 & 6_A for circulate system.
   return(Set)
 }
