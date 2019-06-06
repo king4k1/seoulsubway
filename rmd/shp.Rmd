@@ -10,30 +10,7 @@ editor_options:
 ```{r}
 library(seoulsubway)
 library(sp)
-API_key <- 'AIzaSyCvFJzO8nrvmospv--Mhi9XypO7PvBcZcw'
-register_google(key = API_key)
 data(subway_data_DT)
-
-address_station <- function(code, apikey) {
-  base_url <- "http://openAPI.seoul.go.kr:8088/"
-  url_fed_to_get <- paste0(base_url,apikey, "/xml",
-                           '/SearchSTNInfoByFRCodeService',
-                           '/1/5/', code)
-  APItree <- xmlTreeParse(url_fed_to_get, useInternalNodes = TRUE)
-  APIroot <- xmlRoot(APItree)
-  APIports <- APIroot[[3]]
-  result <- data.frame("STATION_NM" =  
-                         xmlApply(APIports[2]$STATION_NM, xmlValue)$text,
-                       "STATION_NM_ENG" = 
-                         xmlApply(APIports[3]$STATION_NM_ENG, xmlValue)$text,
-                       "address" = 
-                         xmlApply(APIports[13]$ADDRESS, xmlValue)$text,
-                       "lat" =
-                         xmlApply(APIports[36]$XPOINT_WGS, xmlValue)$text,
-                       "long" = xmlApply(APIports[37]$YPOINT_WGS, xmlValue)$text)
-  return(result)
-}
-
 ```
 
 ```{r}
