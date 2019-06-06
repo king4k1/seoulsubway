@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "get distance between 2 station"
 author: "Kwangmin Son"
 date: "2019년 6월 2일"
 output: html_document
@@ -8,33 +8,13 @@ editor_options:
 ---
 
 ```{r}
+#devtools::install_github("king4k1/seoulsubway")
 library(seoulsubway)
 library(sp)
-API_key <- 'AIzaSyCvFJzO8nrvmospv--Mhi9XypO7PvBcZcw'
-register_google(key = API_key)
+library(sf)
+setwd(paste0(getwd(), "/rmd"))
 data(subway_data_DT)
-
-
-address_station <- function(code, apikey) {
-  base_url <- "http://openAPI.seoul.go.kr:8088/"
-  url_fed_to_get <- paste0(base_url,apikey, "/xml",
-                           '/SearchSTNInfoByFRCodeService',
-                           '/1/5/', code)
-  APItree <- xmlTreeParse(url_fed_to_get, useInternalNodes = TRUE)
-  APIroot <- xmlRoot(APItree)
-  APIports <- APIroot[[3]]
-  result <- data.frame("STATION_NM" =  
-                         xmlApply(APIports[2]$STATION_NM, xmlValue)$text,
-                       "STATION_NM_ENG" = 
-                         xmlApply(APIports[3]$STATION_NM_ENG, xmlValue)$text,
-                       "address" = 
-                         xmlApply(APIports[13]$ADDRESS, xmlValue)$text,
-                       "lat" =
-                         xmlApply(APIports[36]$XPOINT_WGS, xmlValue)$text,
-                       "long" = xmlApply(APIports[37]$YPOINT_WGS, xmlValue)$text)
-  return(result)
-}
-
+data(subway_data)
 ```
 
 ```{r}
@@ -202,7 +182,10 @@ get_section <- function(line_choose){
   stn_shp_fty_line1 %>% select(group_id, long, lat) %>% mutate(dist = c(0, section_select)) %>% rename(Name = group_id)
 }
 
-get_section(line_choose = "1호선") %>% knitr::kable()
+ggplot() + geom_point(aes(x=subway_data[["1"]]$Dist, y=get_section(line_choose = "1호선")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["3"]]$Dist, y=get_section(line_choose = "3호선")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["4"]]$Dist, y=get_section(line_choose = "4호선")$dist)) + theme_bw()
+
 get_section(line_choose = "2호선") %>% knitr::kable()
 get_section(line_choose = "3호선") %>% knitr::kable()
 get_section(line_choose = "4호선") %>% knitr::kable()
