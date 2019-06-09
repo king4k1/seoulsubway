@@ -11,7 +11,7 @@ shortestpath_0 <- function(departure, departure_line, arrival, arrival_line) {
                               end = End_Ind_0, line = departure_line)
     Path_Count <- as.numeric(Path_Info["count"])
     Path_Time <- as.numeric(Path_Info["time"])
-    Transfer_0 <- list(Info = data.frame(departure = departure, Line = departure_line, Count = Path_Count, 
+    Transfer_0 <- list(Info = data.frame(Departure = departure, Line = departure_line, Count = Path_Count, 
                                          Time = Path_Time, Arrival = arrival),
                        Total = c(Count = Path_Count, Time = Path_Time))
   }
@@ -362,8 +362,8 @@ shortestpath <- function(departure, arrival) {
   arrival_line_list <- subway_data_DT[which(subway_data_DT$Name %in% 
                                               c(arrival)), ]$Line
   result <- shortest_index <- list()
-  for (i in seq_along(departure_line_list)) {
-    for (j in seq_along(arrival_line_list)) {
+  for (i in seq_along(departure_line_list)) { 
+    for (j in seq_along(arrival_line_list)) { 
       result[[paste0(i, "-", j)]] <-
         tryCatch(shortestpath_all(departure, departure_line = departure_line_list[i],
                               arrival, arrival_line = arrival_line_list[j]), 
