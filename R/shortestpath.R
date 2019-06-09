@@ -135,7 +135,7 @@ shortestpath_2 <- function(departure, departure_line, arrival, arrival_line) {
       } else {
         Transfer_Time2 <- 2.35
       }
-      Transfer_2[[i]] <- list(Info = data.frame(departure = c(departure, Transfer_First$Name, Transfer_Second$Name),
+      Transfer_2[[i]] <- list(Info = data.frame(Departure = c(departure, Transfer_First$Name, Transfer_Second$Name),
                                                 Line = c(departure_line, Transfer_First_Line, arrival_line), 
                                                 Count = c(Path1_Info$count, Path2_Info$count, Path3_Info$count), 
                                                 Time = c(Path1_Info$time, Path2_Info$time, Path3_Info$time),
@@ -232,7 +232,7 @@ shortestpath_3 <- function(departure, departure_line, arrival, arrival_line) {
       } else {
         Transfer_Time3 <- 2.35
       }
-      Transfer_3[[i]] <- list(Info = data.frame(departure = c(departure, Transfer_First$Name, Transfer_Second$Name, Transfer_Third$Name),
+      Transfer_3[[i]] <- list(Info = data.frame(Departure = c(departure, Transfer_First$Name, Transfer_Second$Name, Transfer_Third$Name),
                                                 Line = c(departure_line, Transfer_First_Line, Transfer_Second_Line, arrival_line), 
                                                 Count = c(Path1_Info$count, Path2_Info$count, Path3_Info$count, Path4_Info$count),
                                                 Time = c(Path1_Info$time, Path2_Info$time, Path3_Info$time, Path4_Info$time),
