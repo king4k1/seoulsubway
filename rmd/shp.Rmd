@@ -8,65 +8,109 @@ editor_options:
 ---
 
 ```{r}
-#devtools::install_github("king4k1/seoulsubway")
-#install.packages("RANN")
-library(seoulsubway)
 library(sp)
 library(sf)
-library(RANN)
+library(maptools)
+library(rgdal)
+library(rgeos)
+library(seoulsubway)
 
-setwd(paste0(getwd(), "/rmd"))
+setwd(paste0("D:/workspace/seoulsubway/rmd"))
 data(subway_data_DT)
 data(subway_data)
-```
+load(file="shape_data/subwayline_fty.RData")
 
-```{r}
-raw_shp <- rgdal::readOGR("shape_data/TL_SPSB_RLWAY.shp")
-stn_shp <- rgdal::readOGR("shape_data/TL_SPSB_STATN.shp")
-line_subway <- c('1호선', '2호선', '3호선', '4호선', '5호선', '6호선',
-                 '7호선', '8호선', '9호선', '경의중앙선', '우이신설선',
-                 '분당선', '신분당선', '공항선')
+dist_sht <- function(df, line_choose, departure, arrival){
+  df <- df %>% rbind(subway_data[[line_choose]] %>% filter(Name %in% c(departure, arrival)) %>% 
+                       select(long, lat, Name) %>% rename(group_id = Name))
+  df1 <- df %>% arrange(long) %>% arrange(lat)
+  df2 <- df %>% arrange(lat) %>% arrange(long)
+  df3 <- df %>% arrange(lat)
+  df4 <- df %>% arrange(long)
+  df1_dist <- sum(sapply(1:(nrow(df1)-1),
+             function(x){geosphere::distGeo(p1=c(df1$long[x], df1$lat[x]),
+                                            p2=c(df1$long[x+1], df1$lat[x+1]))}))
+  df2_dist <- sum(sapply(1:(nrow(df2)-1),
+             function(x){geosphere::distGeo(p1=c(df2$long[x], df2$lat[x]),
+                                            p2=c(df2$long[x+1], df2$lat[x+1]))}))
+  df3_dist <- sum(sapply(1:(nrow(df3)-1),
+             function(x){geosphere::distGeo(p1=c(df3$long[x], df3$lat[x]),
+                                            p2=c(df3$long[x+1], df3$lat[x+1]))}))
+  df4_dist <- sum(sapply(1:(nrow(df4)-1),
+             function(x){geosphere::distGeo(p1=c(df4$long[x], df4$lat[x]),
+                                            p2=c(df4$long[x+1], df4$lat[x+1]))}))
+  min(df1_dist, df2_dist, df3_dist, df4_dist)
+}
 
-### 자료 전처리 / long-lat 구조 / 역명
-seoul_subwayline <- raw_shp[raw_shp@data$KOR_SBR_NM%in%line_subway,]
-seoul_subwayline <- spTransform(seoul_subwayline, "+proj=longlat")
-seoul_subwayline <- seoul_subwayline[str_detect(seoul_subwayline@data$SIG_CD, "^1|^4|^28"),]
-dep_name <- stn_shp@data$KOR_SUB_NM
-dep_name_index <- which(str_detect(dep_name, "[(]"))
-dep_name_index_nm <- str_locate(dep_name[dep_name_index], "[(]")
-dep_name <- as.character(dep_name)
-dep_name[dep_name_index] <- str_sub(dep_name[dep_name_index], 1, dep_name_index_nm[, 1] - 1)
-length_index <- str_length(dep_name[str_detect(dep_name, "역$")])
-dep_name[str_detect(dep_name, "역$")] <- str_sub(dep_name[str_detect(dep_name, "역$")], 1, length_index-1)
-stn_shp@data$KOR_SUB_NM <- dep_name
-stn_shp <- spTransform(stn_shp, "+proj=longlat")
-stn_shp_edit <- stn_shp[stn_shp@data$KOR_SUB_NM %in% subway_data_DT$Name,]
-stn_shp_edit <- stn_shp_edit[str_detect(stn_shp_edit@data$SIG_CD, "^1|^4|^28"),]
-```
+line_compare <- function(line_select){
+  subway_data[[line_select]] %>% rename(St_dist = Dist) %>% 
+    mutate(Dist = get_section(line_choose = line_select)$dist, 
+           diff = Dist - St_dist) 
+}
 
+get_unit_section <- function(line_choose, departure, arrival){
+  line_1_fty <- subwayline_fty[[line_choose]]
+  line_1_nms <- subway_data_DT %>% filter(Line %in% line_choose) %>% filter(Name%in%c(departure, arrival))
+  stn_shp_fty_line1 <- stn_shp_fty_trim_mean %>% 
+    mutate(group_id = str_remove(group_id, ".[1-9]")) %>% 
+    filter(long <= max(line_1_nms$long), lat <= max(line_1_nms$lat)) %>% 
+    filter(group_id %in% line_1_nms$Name) %>% filter(!duplicated(group_id))
+  ind <- setdiff(line_1_nms$Name, stn_shp_fty_line1$group_id)
+  stn_shp_fty_line1 <- stn_shp_fty_line1 %>% 
+    rbind(line_1_nms %>% 
+            filter(Name %in% ind) %>%
+            select(Name, long, lat) %>% 
+    mutate(Name = factor(Name)) %>% rename(group_id=Name))
+  long_select <- stn_shp_fty_line1$long # stn_shp_fty_line1[c(i, i+1),] 
+  lat_select <- stn_shp_fty_line1$lat
+  section <- line_1_fty %>% select(long, lat, id) %>% rename(group_id=id) %>% 
+    filter(long >= min(long_select), long <= max(long_select)) %>% 
+    filter(lat >= min(lat_select), lat <= max(lat_select)) %>% 
+    mutate(long = round(long, 4), lat = round(lat, 4)) %>%
+    filter(!duplicated(long, lat))
+  stn_shp_fty_line1[1,] %>% select(long, lat, group_id) %>%
+    rbind(section) %>% 
+    rbind(stn_shp_fty_line1[2,] %>% select(long, lat, group_id)) %>%
+    rename(Name = group_id) %>% 
+    mutate(dist = dist_sht(section, line_choose, departure, arrival))
+}
 
-## get_section
-```{r}
-seoul_subwayline_fty <- seoul_subwayline %>% fortify(region="KOR_SBR_NM")
-stn_shp_fty <- stn_shp_edit %>% fortify(region='KOR_SUB_NM')
-stn_shp_fty$group_id <- stn_shp_fty$group
-stn_shp_fty_trim_mean <- stn_shp_fty %>% group_by(group_id) %>%
-  summarise(long = mean(long, trim=0.2), lat=mean(lat, trim=0.2)) 
-
-line_choose <- "3호선"
+make_shape_line <- function(line_choose){
+  line_data <- subway_data[[line_choose]]
+  stn_vec <- line_data$Name
+  Spline <- list()
+  for(i in 1:(length(stn_vec))){  
+    departure = stn_vec[i]
+    arrival = ifelse(is.na(stn_vec[i+1]) & line_choose %in% c("2", "6_A"),
+                     stn_vec[1], stn_vec[i+1])
+    if(!is.na(arrival)){ 
+      # get_unit_section(line_choose, departure, arrival) %>% ggplot(aes(x=long, y=lat)) + geom_point()
+      ll <- get_unit_section(line_choose, departure, arrival) %>% 
+        dplyr::select(long, lat) %>%
+        arrange(long, lat) %>% mutate_all(as.numeric) %>% as.matrix() 
+      departure_excode <- subway_data[[line_choose]] %>% filter(Name==departure)
+      arrival_excode <- subway_data[[line_choose]] %>% filter(Name==arrival)
+      for(j in 2:nrow(ll)){ 
+        nms <- paste0(departure_excode$ExCode, "___", arrival_excode$ExCode, "___", (j-1))
+        Sl <- Line(ll[c(j-1, j), ])
+        s1 <- Lines(list(Sl), ID = nms)
+        Spline[[paste0(i,"_",j)]] <- s1
+      }
+    }
+  }
+  Splineset <- SpatialLines(Spline)
+  df <- data.frame(len = sapply(1:length(Splineset), function(i) gLength(Splineset[i, ])))
+  rownames(df) <- sapply(1:length(Splineset), function(i) Splineset@lines[[i]]@ID)
+  ## SpatialLines to SpatialLinesDataFrame
+  Sldf <- SpatialLinesDataFrame(Splineset, data = df)
+  Sldf
+}
 
 get_section <- function(line_choose){
-  line_1_fty <- seoul_subwayline[seoul_subwayline@data$KOR_SBR_NM%in%line_choose,] %>% fortify()
-  if(line_choose %>% str_detect("[1-9]")){
-    line_select <- str_remove(line_choose, "호선")
-  }else if(line_choose == "경의중앙선"){line_select <- "K"
-  }else if(line_choose == "우이신설선"){line_select <- "UI"
-  }else if(line_choose == "분당선"){line_select <- "B"
-  }else if(line_choose == "신분당선"){line_select <- "S"
-  }else if(line_choose == "공항선"){line_select <- "A"}
-  line_1_nms <- subway_data_DT %>% filter(Line %in% line_select)
-  line_1_fty <- line_1_fty %>% filter(!duplicated(long, lat))
-  stn_shp_fty_line1 <- stn_shp_fty_trim_mean %>% filter(long <= 127.5) %>% 
+  line_1_fty <- subwayline_fty[[line_choose]]
+  line_1_nms <- subway_data_DT %>% filter(Line %in% line_choose) %>% filter(!duplicated(Name))
+  stn_shp_fty_line1 <- stn_shp_fty_trim_mean %>%
+    filter(long <= max(line_1_nms$long), lat <= max(line_1_nms$lat)) %>% 
     mutate(group_id = str_remove(group_id, ".[1-9]")) %>% 
     filter(group_id %in% line_1_nms$Name) %>% filter(!duplicated(group_id))
   ind <- setdiff(line_1_nms$Name, stn_shp_fty_line1$group_id)
@@ -75,12 +119,13 @@ get_section <- function(line_choose){
             filter(Name %in% ind) %>%
             select(Name, long, lat) %>% 
     mutate(Name = factor(Name)) %>% rename(group_id=Name))
+  stn_shp_fty_line1$group_id
   stn_shp_fty_line1 <- stn_shp_fty_line1 %>% 
     mutate(group_id = factor(group_id, levels=line_1_nms$Name),
            station_lev = as.numeric(group_id)) %>% arrange(station_lev)
   section_select <- c() 
   for(i in 1:(nrow(stn_shp_fty_line1)-1)){ 
-    long_select <- stn_shp_fty_line1[c(i, i+1),]$long # stn_shp_fty_line1[c(i, i+1),] 
+    long_select <- stn_shp_fty_line1[c(i, i+1),]$long # stn_shp_fty_line1[c(33, 34),] 
     lat_select <- stn_shp_fty_line1[c(i, i+1),]$lat
     section <- line_1_fty %>% select(long, lat, id) %>% rename(group_id=id) %>% 
       filter(long >= min(long_select), long <= max(long_select)) %>% 
@@ -130,7 +175,7 @@ get_section <- function(line_choose){
           if(sum(sapply(1:(nrow(section_i)-1), function(x){
             geosphere::distGeo(p1=c(section_i$long[x], section_i$lat[x]),
                                p2=c(section_i$long[x+1], section_i$lat[x+1]))
-          }) >= 300)>=1){
+          }) >= 300)==1){
             section_i <- section_i %>% arrange(long, lat)
             sum_section <- sum(sapply(1:(nrow(section_i)-1), function(x){
             geosphere::distGeo(p1=c(section_i$long[x], section_i$lat[x]),
@@ -152,8 +197,7 @@ get_section <- function(line_choose){
           geosphere::distGeo(p1 = c(section_i[nrow(section_i),"long"], section_i[nrow(section_i),"lat"]),
                              p2 = stn_shp_fty_line1[c(i),c("long", "lat")] %>% as.numeric())) 
         }else{
-          #stn_shp_fty_line1[c(i, i+1),]
-        section_list_i[j] <- min(
+        section_list_i[[j]] <- min(
           geosphere::distGeo(p1 = c(section_i[1,"long"], section_i[1,"lat"]),
                              p2 = stn_shp_fty_line1[c(i+1),c("long", "lat")] %>% as.numeric()),
           geosphere::distGeo(p1 = c(section_i[nrow(section_i),"long"], section_i[nrow(section_i),"lat"]),
@@ -185,83 +229,112 @@ get_section <- function(line_choose){
                                p2 = stn_shp_fty_line1[c(i+1),c("long", "lat")] %>% as.numeric()),
             geosphere::distGeo(p1 = c(section[nrow(section),"long"], section[nrow(section),"lat"]),
                                p2 = stn_shp_fty_line1[c(i+1),c("long", "lat")] %>% as.numeric())) 
-    }# stn_shp_fty_line1[c(i, i+1),]
-    section_select[i] <- max(geosphere::distGeo(p1=c(stn_shp_fty_line1[c(i, i+1),]$long[1], stn_shp_fty_line1[c(i, i+1),]$lat[1]),
-                                                p2=c(stn_shp_fty_line1[c(i, i+1),]$long[2], stn_shp_fty_line1[c(i, i+1),]$lat[2])),
-                             section_select[i])
+    }# stn_shp_fty_line1[c(i, i+1),]i
+    section_select[i] <- min(dist_sht(section, line_choose, 
+                                      departure = stn_shp_fty_line1[i,]$group_id %>% as.character(),
+                                      arrival = stn_shp_fty_line1[(i+1),]$group_id %>% as.character()),
+                             max(section_select[i], 
+                                 geosphere::distGeo(p1 = c(stn_shp_fty_line1[i, c("long", "lat")] %>% as.numeric()),
+                                                    p2 = c(stn_shp_fty_line1[(i+1), c("long", "lat")] %>% as.numeric()))))
   }
-  stn_shp_fty_line1 %>% select(group_id, long, lat) %>% mutate(dist = c(0, section_select)) %>% rename(Name = group_id)
+  stn_shp_fty_line1 %>% select(group_id, long, lat) %>% 
+    mutate(dist = c(0, section_select)) %>% rename(Name = group_id)
 }
 
+raw_shp <- rgdal::readOGR("shape_data/TL_SPSB_RLWAY.shp")
+stn_shp <- rgdal::readOGR("shape_data/TL_SPSB_STATN.shp")
+line_subway <- c('1호선', '2호선', '3호선', '4호선', '5호선', '6호선',
+                 '7호선', '8호선', '9호선', '경의중앙선', '우이신설선',
+                 '분당선', '신분당선', '공항선')
 
+seoul_subwayline <- raw_shp[raw_shp@data$KOR_SBR_NM%in%line_subway,]
+seoul_subwayline <- spTransform(seoul_subwayline, "+proj=longlat")
+seoul_subwayline <- seoul_subwayline[str_detect(seoul_subwayline@data$SIG_CD, "^1|^4|^28"),]
+dep_name <- stn_shp@data$KOR_SUB_NM
+dep_name_index <- which(str_detect(dep_name, "[(]"))
+dep_name_index_nm <- str_locate(dep_name[dep_name_index], "[(]")
+dep_name <- as.character(dep_name)
+dep_name[dep_name_index] <- str_sub(dep_name[dep_name_index], 1, dep_name_index_nm[, 1] - 1)
+length_index <- str_length(dep_name[str_detect(dep_name, "역$")])
+dep_name[str_detect(dep_name, "역$")] <- str_sub(dep_name[str_detect(dep_name, "역$")], 1, length_index-1)
+stn_shp@data$KOR_SUB_NM <- dep_name
+stn_shp <- spTransform(stn_shp, "+proj=longlat")
+stn_shp_edit <- stn_shp[stn_shp@data$KOR_SUB_NM %in% subway_data_DT$Name,]
+stn_shp_edit <- stn_shp_edit[str_detect(stn_shp_edit@data$SIG_CD, "^1|^4|^28"),]
 
-i<- 6
-ggplot() + geom_point(aes(x=subway_data[["1"]]$Dist, y=get_section(line_choose = "1호선")$dist)) + theme_bw()
-ggplot() + geom_point(aes(x=subway_data[["3"]]$Dist, y=get_section(line_choose = "3호선")$dist)) + theme_bw()
-ggplot() + geom_point(aes(x=subway_data[["4"]]$Dist, y=get_section(line_choose = "4호선")$dist)) + theme_bw()
-ggplot() + geom_point(aes(x=subway_data[["7"]]$Dist, y=get_section(line_choose = "7호선")$dist)) + theme_bw()
-ggplot() + geom_point(aes(x=subway_data[["8"]]$Dist, y=get_section(line_choose = "8호선")$dist)) + theme_bw()
-ggplot() + geom_point(aes(x=subway_data[["9"]]$Dist, y=get_section(line_choose = "9호선")$dist)) + theme_bw()
-ggplot() + geom_point(aes(x=subway_data[["K"]]$Dist, y=get_section(line_choose = "경의중앙선")$dist)) + theme_bw()
-
-get_section(line_choose = "2호선") %>% data.frame
-get_section(line_choose = "3호선") %>% data.frame
-get_section(line_choose = "4호선") %>% data.frame
-get_section(line_choose = "7호선") %>% data.frame
-get_section(line_choose = "8호선") %>% data.frame
-get_section(line_choose = "9호선") %>% data.frame
-get_section(line_choose = "경의중앙선") %>% data.frame
 ```
 
+## get_section
+```{r}
+seoul_subwayline_fty <- seoul_subwayline %>% fortify(region="KOR_SBR_NM")
+stn_shp_fty <- stn_shp_edit %>% fortify(region='KOR_SUB_NM')
+stn_shp_fty$group_id <- stn_shp_fty$group
+stn_shp_fty_trim_mean <- stn_shp_fty %>% group_by(group_id) %>%
+  summarise(long = mean(long, trim=0.3), lat=mean(lat, trim=0.3)) 
+line_choose <- "5"
+line_1_fty <- subwayline_fty[[line_choose]]
+line_1_fty %>% ggplot(aes(x=long, y=lat)) + geom_point()
+line_1_fty %>% ggplot(aes(x=long, y=lat)) + geom_point()
 
+ggplot() + geom_point(aes(x=subway_data[["1"]]$Dist, y=get_section(line_choose = "1")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["1_P"]]$Dist, y=get_section(line_choose = "1_P")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["1_A"]]$Dist, y=get_section(line_choose = "1_A")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["1_B"]]$Dist, y=get_section(line_choose = "1_B")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["2"]]$Dist, y=get_section(line_choose = "2")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["2_A"]]$Dist, y=get_section(line_choose = "2_A")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["2_B"]]$Dist, y=get_section(line_choose = "2_B")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["3"]]$Dist, y=get_section(line_choose = "3")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["4"]]$Dist, y=get_section(line_choose = "4")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["5"]]$Dist, y=get_section(line_choose = "5")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["5_A"]]$Dist, y=get_section(line_choose = "5_A")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["6"]]$Dist, y=get_section(line_choose = "6")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["6_A"]]$Dist, y=get_section(line_choose = "6_A")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["7"]]$Dist, y=get_section(line_choose = "7")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["8"]]$Dist, y=get_section(line_choose = "8")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["9"]]$Dist, y=get_section(line_choose = "9")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["K"]]$Dist, y=get_section(line_choose = "K")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["B"]]$Dist, y=get_section(line_choose = "B")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["S"]]$Dist, y=get_section(line_choose = "S")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["UI"]]$Dist, y=get_section(line_choose = "UI")$dist)) + theme_bw()
+ggplot() + geom_point(aes(x=subway_data[["A"]]$Dist, y=get_section(line_choose = "A")$dist)) + theme_bw()
+
+
+name_vec <- names(subwayline_fty)
+compare_list <- list()
+
+for(i in seq_along(name_vec)){
+  compare_list[[name_vec[i]]] <- line_compare(name_vec[i]) %>%
+    mutate(Time = Dist * 60 / 34000) %>% 
+    mutate(Time = round(Time, 2),
+           Dist = round(Dist, 2)) %>% 
+    select(-St_dist, -diff)
+}
+compare_list$`2`[1,"Dist"] <- get_unit_section(line_choose = "2", departure = "충정로", arrival="시청")$dist[1] %>% round(2)
+compare_list$`2`[1,"Time"] <- (compare_list$`2`[1,"Dist"] * 60 / 34000)  %>% round(2)
+
+
+
+for(i in seq_along(name_vec)){
+  subway_data[[name_vec[i]]] <- compare_list[[name_vec[i]]]
+}
+
+subway_data_DT <- subway_data[[name_vec[1]]]
+for(i in 2:length(name_vec)){
+  subway_data_DT <- rbind(subway_data_DT, subway_data[[name_vec[i]]])
+}
+
+save(file="../data/subway_data.RData", subway_data)
+save(file="../data/subway_data_DT.RData", subway_data_DT)
+```
 
 
 ```{r}
-line_1_fty <- seoul_subwayline[seoul_subwayline@data$KOR_SBR_NM%in%line_choose,] %>% fortify()
-line_1_fty_longlat <- line_1_fty %>% select(long, lat)
-line_1_fty %>% ggplot(aes(x=long, y=lat, col=id)) + geom_point()
-nearest_pt <- nn2(line_1_fty_longlat, k = 1, searchtype = "radius", radius = 0.001)
-nearest_pt$nn.idx
-
-line_1_fty
-data_1_P <- subway_data[["1_P"]]
-l1 <- cbind(seq(data_1_P[1 ,"lat"] %>% as.numeric(), data_1_P[2,"lat"] %>% as.numeric(), length.out=100), 
-            seq(data_1_P[1 ,"long"] %>% as.numeric(), data_1_P[2,"long"] %>% as.numeric(), length.out=100))
-Sl1 <- Line(l1)
-plot(Sl1@coords)
-
-
-line_shp <- seoul_subwayline[seoul_subwayline@data$KOR_SBR_NM%in%line_choose,]
-
-line_shp@lines[[1]]
-line_shp@lines[[2]]
-
-
-
-r = sqrt(2)/10
-pt1 = st_point(c(.1,.1))
-pt2 = st_point(c(.9,.9))
-pt3 = st_point(c(.9,.1))
-b1 = st_buffer(pt1, r)
-b2 = st_buffer(pt2, r)
-b3 = st_buffer(pt3, r)
-(ls0 = st_nearest_points(b1, b2)) # sfg
-(ls = st_nearest_points(st_sfc(b1), st_sfc(b2, b3))) # sfc
-plot(b1, xlim = c(-.2,1.2), ylim = c(-.2,1.2), col = NA, border = 'green')
-plot(st_sfc(b2, b3), add = TRUE, col = NA, border = 'blue')
-plot(ls, add = TRUE, col = 'red')
-
-nc = read_sf(system.file("gpkg/nc.gpkg", package="sf"))
-plot(st_geometry(nc))
-ls = st_nearest_points(nc[1,], nc)
-plot(ls, col = 'red', add = TRUE)
-pts = st_cast(ls, "POINT") # gives all start & end points
-# starting, "from" points, corresponding to x:
-plot(pts[seq(1, 200, 2)], add = TRUE, col = 'blue')
-# ending, "to" points, corresponding to y:
-plot(pts[seq(2, 200, 2)], add = TRUE, col = 'green')
+make_shape_line("2") %>% plot
+make_shape_line("3") %>% plot
+make_shape_line("4") %>% plot
+make_shape_line("5") %>% plot
+make_shape_line("6") %>% plot
+make_shape_line("7") %>% plot
+make_shape_line("8") %>% plot
 ```
-
-
-
 
