@@ -144,7 +144,7 @@ shortestpath_2 <- function(departure, departure_line, arrival, arrival_line) {
                                         Time = sum(Path1_Info$time + Path2_Info$time + Path3_Info$time) +
                                           Transfer_Time1 + Transfer_Time2 + 6))
     }else{
-      Transfer_3[[i]] <- list(Total = c(Time = 300))
+      Transfer_2[[i]] <- list(Total = c(Time = 300))
     }
   }
   Transfer_2_Count_Time <- c()
