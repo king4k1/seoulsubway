@@ -238,7 +238,6 @@ get_transferinfo <- function(departure, departure_line, arrival, arrival_line, t
 
 # 최단거리에 따른 세부 이동경로에 대한 결과를 산출하는 함수
 # 결과 포맷을 일정하게 함수형태로 산출하기 위함
-
 get_pathresult <- function(shortestpath_result) {
   data("subway_data", envir = environment())
   Set <- list(Info = shortestpath_result$Info,
@@ -332,7 +331,7 @@ get_pathresult <- function(shortestpath_result) {
       Set$Path2 <- subway_data[["2"]][c(Start_Ind2_2:1, Total_Transfer_Raw:End_Ind2_2), ]
     }
     if (isTRUE(Set$Info$Line[3] == 2) & isTRUE(Set$Info$Count[3] == 
-                                                  (Total_End_Raw - Start_Ind3_2 + End_Ind3_2))) {
+                                               (Total_End_Raw - Start_Ind3_2 + End_Ind3_2))) {
       Set$Path3 <- subway_data[["2"]][c(Start_Ind3_2:Total_End_Raw, 
                                         1:End_Ind3_2), ]
     } else if (isTRUE(Set$Info$Line[3] == 
@@ -417,5 +416,4 @@ get_pathresult <- function(shortestpath_result) {
   }
   return(Set)
 }
-
 

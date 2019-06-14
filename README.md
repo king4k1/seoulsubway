@@ -69,7 +69,7 @@ geom_line(position = 'jitter') + theme(legend.position="bottom")
 
 ### ex1. 먹골 -> 혜화
 ```r
-shortestpath(departure="먹골", departure_line="7", arrival = "혜화", arrival_line = "4")
+shortestpath(departure="먹골", arrival = "혜화", max_route = 1)
 ```
 
 ![](tools/path1.png)

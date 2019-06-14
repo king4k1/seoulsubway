@@ -1,6 +1,6 @@
 shortestpath_plot <- function (departure, arrival, google_key, zoom = zoom){
   register_google(key = google_key)
-  result <- shortestpath(departure, arrival)
+  result <- shortestpath(departure, arrival, max_route=1)[[1]]
   Info <- result$Info
   index <- result %>% names %>% str_which("Path")
   Path <- result[[index[1]]]

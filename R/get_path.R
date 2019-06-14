@@ -1,7 +1,7 @@
 # get_path from shortestpath
 
 get_path <- function(departure, arrival){
-  result <- shortestpath_G(departure, arrival)
+  result <- shortestpath(departure, arrival, max_route=1)[[1]] %>% get_pathresult()
   station <- "no_result"
   index <- result %>% names %>% str_which("Path")
   if(!(result$Time %in% c(300,600))){
