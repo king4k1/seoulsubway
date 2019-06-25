@@ -374,7 +374,7 @@ section %>% ggplot(aes(x=long, y=lat)) + geom_point() +
   geom_line(size=1) + geom_point(size=ifelse(is.na(section$Name), 3, 3),
                                  shape=ifelse(is.na(section$Name), 16, 17), col="blue") +
   geom_text(aes(label=Name), vjust=1.5, size=5) + ylim(c(37.5635, 37.5705)) + 
-  xlim(c(126.976, 126.984)) + theme_bw()
+  xlim(c(126.976, 126.984)) + theme_bw() + xlab("경도") + ylab("위도")
 
 #ggsave(filename="shape_distance_ex.pdf", path="D:/workspace/seoulsubway_G/line_G/figure")
 ```
