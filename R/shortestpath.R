@@ -342,6 +342,9 @@ shortestpath <- function(departure, arrival, max_route=1) {
   nms_index <- names(result)
   for(i in seq_along(nms_index)){
     inner_vec <- result[[nms_index[i]]] %>% names()
+    if(is.null(inner_vec)){
+      inner_vec <- result[[nms_index[i]]] %>% seq_along()
+    }
     for(j in seq_along(inner_vec)){
       if(is.data.frame(result[[nms_index[i]]][[j]])){
         path_index[[paste0(i, "-", j, "-", 1)]] <- result[[i]][[j]]
